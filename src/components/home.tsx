@@ -49,7 +49,7 @@ export function HomePage() {
   return (
     <div className="page-enter">
       <Hero settings={settings} />
-      <TrustBar />
+      <TrustBar settings={settings} />
 
       {/* หมวดหมู่ที่ 1: ไอดีเกม */}
       <section className="mx-auto max-w-7xl px-4 py-12 md:px-6">
@@ -191,13 +191,13 @@ function MarqueeProductCard({ p }: { p: Product }) {
 
 function Hero({ settings }: { settings: Record<string, string> }) {
   return (
-    <section className="relative overflow-hidden bg-black">
+    <section className="relative overflow-hidden bg-black">\n      {settings.hero_background_image && <img src={settings.hero_background_image} alt="" aria-hidden="true" className="absolute inset-0 h-full w-full object-cover opacity-35" />}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_72%_42%,rgba(200,149,101,0.16),transparent_48%),radial-gradient(ellipse_at_12%_90%,rgba(143,96,61,0.10),transparent_42%)]" />
       <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/70" />
       <div className="relative mx-auto max-w-7xl px-4 py-20 md:px-6 md:py-28">
         <div className="max-w-2xl animate-fade-up">
           <span className="inline-flex items-center gap-2 rounded-full border border-[#f0b429]/40 bg-[#f0b429]/10 px-4 py-1.5 text-sm text-[#f0b429] font-medium">
-            <BadgeCheck className="h-4 w-4" /> ร้านเกมมิ่งอันดับต้นของคนไทย
+            <BadgeCheck className="h-4 w-4" /> {settings.hero_badge_text || 'ร้านเกมมิ่งอันดับต้นของคนไทย'}
           </span>
           <h1 className="mt-5 font-display text-3xl font-extrabold leading-[1.2] sm:text-4xl md:text-6xl">
             <span className="text-glow text-primary">{settings.hero_title || 'พร้อมลุยแล้วหรือยัง?'}</span>
@@ -221,20 +221,20 @@ function Hero({ settings }: { settings: Record<string, string> }) {
   );
 }
 
-function TrustBar() {
+function TrustBar({ settings }: { settings: Record<string, string> }) {
   const items = [
-    { icon: Timer, title: 'ส่งไวใน 5-10 นาที', desc: 'ดำเนินการรวดเร็วทุกออเดอร์' },
-    { icon: ShieldCheck, title: 'ปลอดภัย 100%', desc: 'ระบบจ่ายเงินมาตรฐาน' },
-    { icon: BadgeCheck, title: 'ประกันไอดี 7 วัน', desc: 'ยินดีรับผิดชอบทุกกรณี' },
-    { icon: Sparkles, title: 'ราคาดีกว่าในเกม', desc: 'ส่วนลดทุกแพ็กเกจ' },
+    { icon: Timer, image: settings.trust_1_image, title: settings.trust_1_title || 'ส่งไวใน 5-10 นาที', desc: settings.trust_1_desc || 'ดำเนินการรวดเร็วทุกออเดอร์' },
+    { icon: ShieldCheck, image: settings.trust_2_image, title: settings.trust_2_title || 'ปลอดภัย 100%', desc: settings.trust_2_desc || 'ระบบจ่ายเงินมาตรฐาน' },
+    { icon: BadgeCheck, image: settings.trust_3_image, title: settings.trust_3_title || 'ประกันไอดี 7 วัน', desc: settings.trust_3_desc || 'ยินดีรับผิดชอบทุกกรณี' },
+    { icon: Sparkles, image: settings.trust_4_image, title: settings.trust_4_title || 'ราคาดีกว่าในเกม', desc: settings.trust_4_desc || 'ส่วนลดทุกแพ็กเกจ' },
   ];
   return (
     <div className="border-b border-border bg-card/50">
       <div className="mx-auto grid max-w-7xl grid-cols-2 gap-4 px-4 py-6 md:grid-cols-4 md:px-6">
         {items.map((it, i) => (
           <div key={i} className="flex min-w-0 items-center gap-3">
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/15 text-primary">
-              <it.icon className="h-5 w-5" />
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-primary/15 text-primary">
+              {it.image ? <img src={it.image} alt="" className="h-full w-full object-contain" /> : <it.icon className="h-5 w-5" />}
             </span>
             <div className="min-w-0">
               <div className="font-display text-sm font-semibold leading-snug">{it.title}</div>
