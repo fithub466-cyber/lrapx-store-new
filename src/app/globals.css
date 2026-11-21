@@ -49,73 +49,73 @@
 
 :root {
   --radius: 0.75rem;
-  /* ธีมมืด Gaming — พื้นหลังดำเข้ม + ม่วงนีออน + ทอง */
-  --background: #07070d;
-  --foreground: #ececf2;
-  --card: #10101a;
-  --card-foreground: #ececf2;
-  --popover: #14141f;
-  --popover-foreground: #ececf2;
-  --primary: #a855f7;
+  /* LrapX Hub theme — pure black, charcoal surfaces, warm bronze-gold */
+  --background: #000000;
+  --foreground: #ffffff;
+  --card: #0a0a0a;
+  --card-foreground: #ffffff;
+  --popover: #0d0d0d;
+  --popover-foreground: #ffffff;
+  --primary: #c89565;
   --primary-foreground: #ffffff;
-  --secondary: #1a1a28;
-  --secondary-foreground: #d9d9e3;
-  --muted: #16161f;
-  --muted-foreground: #9c9cae;
-  --accent: #2a1a45;
-  --accent-foreground: #d8b4fe;
+  --secondary: #151515;
+  --secondary-foreground: #eeeeee;
+  --muted: #141414;
+  --muted-foreground: #9e9e9e;
+  --accent: #1f1b17;
+  --accent-foreground: #c89565;
   --destructive: #f43f5e;
-  --border: #242433;
-  --input: #2a2a3a;
-  --ring: #a855f7;
+  --border: #242424;
+  --input: #282828;
+  --ring: #c89565;
   --chart-1: #a855f7;
   --chart-2: #f0b429;
   --chart-3: #22d3ee;
   --chart-4: #f43f5e;
   --chart-5: #34d399;
-  --sidebar: #0a0a12;
-  --sidebar-foreground: #ececf2;
-  --sidebar-primary: #a855f7;
+  --sidebar: #0d0d0d;
+  --sidebar-foreground: #ffffff;
+  --sidebar-primary: #c89565;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #1c1c2a;
-  --sidebar-accent-foreground: #d8b4fe;
-  --sidebar-border: #242433;
-  --sidebar-ring: #a855f7;
-  --gold: #f0b429;
-  --gold-foreground: #1a1205;
-  --neon: #c084fc;
+  --sidebar-accent: #151515;
+  --sidebar-accent-foreground: #c89565;
+  --sidebar-border: #242424;
+  --sidebar-ring: #c89565;
+  --gold: #c89565;
+  --gold-foreground: #000000;
+  --neon: #c89565;
 }
 
 .dark {
-  --background: #07070d;
-  --foreground: #ececf2;
-  --card: #10101a;
-  --card-foreground: #ececf2;
-  --popover: #14141f;
-  --popover-foreground: #ececf2;
-  --primary: #a855f7;
+  --background: #000000;
+  --foreground: #ffffff;
+  --card: #0a0a0a;
+  --card-foreground: #ffffff;
+  --popover: #0d0d0d;
+  --popover-foreground: #ffffff;
+  --primary: #c89565;
   --primary-foreground: #ffffff;
-  --secondary: #1a1a28;
-  --secondary-foreground: #d9d9e3;
-  --muted: #16161f;
-  --muted-foreground: #9c9cae;
-  --accent: #2a1a45;
-  --accent-foreground: #d8b4fe;
+  --secondary: #151515;
+  --secondary-foreground: #eeeeee;
+  --muted: #141414;
+  --muted-foreground: #9e9e9e;
+  --accent: #1f1b17;
+  --accent-foreground: #c89565;
   --destructive: #f43f5e;
-  --border: #242433;
-  --input: #2a2a3a;
-  --ring: #a855f7;
-  --sidebar: #0a0a12;
-  --sidebar-foreground: #ececf2;
-  --sidebar-primary: #a855f7;
+  --border: #242424;
+  --input: #282828;
+  --ring: #c89565;
+  --sidebar: #0d0d0d;
+  --sidebar-foreground: #ffffff;
+  --sidebar-primary: #c89565;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #1c1c2a;
-  --sidebar-accent-foreground: #d8b4fe;
-  --sidebar-border: #242433;
-  --sidebar-ring: #a855f7;
-  --gold: #f0b429;
-  --gold-foreground: #1a1205;
-  --neon: #c084fc;
+  --sidebar-accent: #151515;
+  --sidebar-accent-foreground: #c89565;
+  --sidebar-border: #242424;
+  --sidebar-ring: #c89565;
+  --gold: #c89565;
+  --gold-foreground: #000000;
+  --neon: #c89565;
 }
 
 @layer base {
@@ -130,7 +130,7 @@
     @apply font-display;
   }
   ::selection {
-    background: rgba(168, 85, 247, 0.35);
+    background: rgba(200, 149, 101, 0.35);
     color: #ffffff;
   }
 }
@@ -141,60 +141,60 @@
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #0c0c14;
+  background: #0d0d0d;
 }
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #3b2a5e, #a855f7);
+  background: linear-gradient(180deg, #6d4c35, #c89565);
   border-radius: 8px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #a855f7;
+  background: #c89565;
 }
 
 /* ---------- เอฟเฟกต์ Glow และการ์ดเกมมิ่ง ---------- */
 
 @utility text-glow {
-  text-shadow: 0 0 18px rgba(168, 85, 247, 0.65), 0 0 42px rgba(168, 85, 247, 0.3);
+  text-shadow: 0 0 18px rgba(200, 149, 101, 0.45), 0 0 42px rgba(200, 149, 101, 0.2);
 }
 
 @utility text-glow-gold {
-  text-shadow: 0 0 16px rgba(240, 180, 41, 0.55), 0 0 36px rgba(240, 180, 41, 0.25);
+  text-shadow: 0 0 16px rgba(200, 149, 101, 0.45), 0 0 36px rgba(200, 149, 101, 0.2);
 }
 
 @utility glow-purple {
-  box-shadow: 0 0 22px rgba(168, 85, 247, 0.35), 0 0 60px rgba(168, 85, 247, 0.12);
+  box-shadow: 0 0 22px rgba(200, 149, 101, 0.25), 0 0 60px rgba(200, 149, 101, 0.1);
 }
 
 @utility gaming-grid {
   background-image:
-    linear-gradient(rgba(168, 85, 247, 0.07) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(168, 85, 247, 0.07) 1px, transparent 1px);
+    linear-gradient(rgba(200, 149, 101, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(200, 149, 101, 0.045) 1px, transparent 1px);
   background-size: 44px 44px;
 }
 
 @utility neon-ring {
   box-shadow:
-    0 0 0 1px rgba(168, 85, 247, 0.5),
-    0 0 24px rgba(168, 85, 247, 0.25),
-    inset 0 0 18px rgba(168, 85, 247, 0.08);
+    0 0 0 1px rgba(200, 149, 101, 0.45),
+    0 0 24px rgba(200, 149, 101, 0.2),
+    inset 0 0 18px rgba(200, 149, 101, 0.06);
 }
 
 @utility gaming-card {
-  background: linear-gradient(160deg, #12121c 0%, #0e0e16 100%);
-  border: 1px solid #242433;
+  background: linear-gradient(160deg, #0d0d0d 0%, #0a0a0a 100%);
+  border: 1px solid #1c1c1c;
   border-radius: var(--radius-lg);
   transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
 }
 @utility gaming-card-hover {
   transform: translateY(-4px);
-  border-color: rgba(168, 85, 247, 0.6);
-  box-shadow: 0 8px 30px rgba(168, 85, 247, 0.18), 0 0 0 1px rgba(168, 85, 247, 0.3);
+  border-color: rgba(200, 149, 101, 0.5);
+  box-shadow: 0 8px 30px rgba(200, 149, 101, 0.12), 0 0 0 1px rgba(200, 149, 101, 0.2);
 }
 
 .gaming-card:hover {
   transform: translateY(-4px);
-  border-color: rgba(168, 85, 247, 0.6);
-  box-shadow: 0 8px 30px rgba(168, 85, 247, 0.18), 0 0 0 1px rgba(168, 85, 247, 0.3);
+  border-color: rgba(200, 149, 101, 0.5);
+  box-shadow: 0 8px 30px rgba(200, 149, 101, 0.12), 0 0 0 1px rgba(200, 149, 101, 0.2);
 }
 
 /* ---------- ปุ่มเอฟเฟกต์กด ---------- */
