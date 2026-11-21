@@ -83,6 +83,7 @@ model Product {
   categoryId  String
   category    Category @relation(fields: [categoryId], references: [id])
   price       Float
+  stock       Int      @default(1) // จำนวนสต็อกที่พร้อมขาย
   images      String   @default("[]") // JSON array ของ url
   details     String   @default("[]") // JSON array [{label, value}]
   status      String   @default("AVAILABLE") // AVAILABLE | SOLD | HIDDEN
