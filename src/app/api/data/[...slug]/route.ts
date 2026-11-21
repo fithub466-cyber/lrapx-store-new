@@ -92,6 +92,37 @@ export async function GET(req: NextRequest, ctx: { params: Promise<{ slug: strin
       if (!catSlug) return err('BAD_REQUEST: ต้องระบุ category');
       const cat = await db.category.findUnique({ where: { slug: catSlug } });
       if (!cat) return err('NOT_FOUND: ไม่พบหมวดหมู่นี้', 404);
+      // ติดตั้งเรทราคา Roblox จากรายการอ้างอิงครั้งแรกเท่านั้น (ไม่เขียนทับราคาเมื่อมีรายการครบแล้ว)
+      if (catSlug === 'roblox-topup') {
+        const robloxRates: [number, number][] = [
+          [80,37],[120,58],[150,71],[160,71],[200,92],[240,103],[250,124],[280,124],
+          [320,130],[350,154],[400,159],[500,161],[520,191],[540,191],[550,191],[560,191],
+          [580,191],[600,221],[620,221],[640,221],[660,221],[680,255],[700,255],[720,256],
+          [740,256],[780,289],[800,289],[820,289],[850,319],[900,319],[960,319],[1000,319],
+          [1040,333],[1080,347],[1160,376],[1200,406],[1500,464],[1580,492],[1660,520],
+          [1700,549],[1740,560],[2000,618],[3000,907],[3400,1062],[3500,1062],[4000,1206],
+          [4500,1370],[5000,1515],[5500,1660],[6000,1804],[6200,1901],[6500,1959],
+          [7000,2103],[7500,2248],[8000,2412],[8500,2557],[9000,2701],[9500,2846],
+          [10000,3009],[14000,4196],[14500,4361],[15000,4505],[16200,4891],[45000,12813],
+        ];
+        const existingRobux = await db.topupPackage.count({ where: { categoryId: cat.id, active: true } });
+        if (existingRobux < robloxRates.length) {
+          for (let index = 0; index < robloxRates.length; index++) {
+            const [amount, price] = robloxRates[index];
+            const name = amount.toLocaleString('en-US') + ' Robux';
+            const current = await db.topupPackage.findFirst({ where: { categoryId: cat.id, name } });
+            if (current) {
+              await db.topupPackage.update({ where: { id: current.id }, data: { amount, price, active: true, sortOrder: index + 1 } });
+            } else {
+              await db.topupPackage.create({ data: { categoryId: cat.id, name, amount, price, active: true, sortOrder: index + 1 } });
+            }
+          }
+          await db.topupPackage.updateMany({
+            where: { categoryId: cat.id, active: true, NOT: { name: { in: robloxRates.map(([amount]) => amount.toLocaleString('en-US') + ' Robux') } } },
+            data: { active: false },
+          });
+        }
+      }
       const packages = await db.topupPackage.findMany({
         where: { categoryId: cat.id, active: true },
         orderBy: { sortOrder: 'asc' },
