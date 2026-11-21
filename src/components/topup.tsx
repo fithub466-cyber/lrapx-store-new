@@ -102,7 +102,6 @@ export function GameTopupPage({ slug }: { slug: 'freefire-topup' | 'roblox-topup
   const [selected, setSelected] = useState<TopupPackage | null>(null);
   const [selectedRobux, setSelectedRobux] = useState<string[]>([]);
   const [playerId, setPlayerId] = useState('');
-  const [robloxMethod, setRobloxMethod] = useState<'GAMEPASS' | 'PAGE'>('GAMEPASS');
     const [dialogOpen, setDialogOpen] = useState(false);
 
   const isFF = slug === 'freefire-topup';
@@ -128,8 +127,8 @@ export function GameTopupPage({ slug }: { slug: 'freefire-topup' | 'roblox-topup
 
   const idValid = useMemo(() => {
     if (isFF) return /^[0-9]{6,12}$/.test(playerId.trim());
-    return robloxMethod === 'PAGE' || playerId.trim().length >= 3;
-  }, [playerId, isFF, robloxMethod]);
+    return true;
+  }, [playerId, isFF]);
 
   function openConfirm() {
     if (isFF ? !selected : selectedRobuxPackages.length === 0) {
@@ -138,8 +137,8 @@ export function GameTopupPage({ slug }: { slug: 'freefire-topup' | 'roblox-topup
     }
     if (!idValid) {
       toast({
-        title: isFF ? 'Player ID ไม่ถูกต้อง' : 'ตรวจสอบข้อมูล Roblox อีกครั้ง',
-        description: isFF ? 'Player ID ต้องเป็นตัวเลข 6-12 หลัก (ดูได้ในโปรไฟล์ของเกม)' : 'กรอก Username Roblox ให้ถูกต้อง (ไม่ต้องส่งรหัสผ่านหรือ OTP)',
+        title: 'Player ID ไม่ถูกต้อง',
+        description: 'Player ID ต้องเป็นตัวเลข 6-12 หลัก (ดูได้ในโปรไฟล์ของเกม)',
         variant: 'destructive',
       });
       return;
@@ -160,10 +159,9 @@ export function GameTopupPage({ slug }: { slug: 'freefire-topup' | 'roblox-topup
         price: isFF ? selected!.price : robuxTotal,
         contact: {
           playerId: isFF ? playerId.trim() : undefined,
-          robloxUsername: !isFF && robloxMethod === 'GAMEPASS' ? playerId.trim() : undefined,
-          note: !isFF ? (robloxMethod === 'GAMEPASS' ? `วิธีรับบริการ: เติมผ่าน ID Pass | Username Roblox: ${playerId.trim()} | ทางร้านจะติดต่อแจ้งขั้นตอนการเติม (ไม่ต้องส่งรหัสผ่านหรือ OTP)` : 'วิธีรับบริการ: สั่งซื้อแล้วทักเพจ LrapX Store | หลังชำระเงิน กรุณาแคปหน้ารายการสั่งซื้อแล้วส่งให้เพจ พร้อมแจ้ง Username Roblox | เปิดบริการ 16:30-22:00 น.') : undefined,
+          note: !isFF ? 'วิธีรับบริการ: สั่งซื้อแล้วทักเพจ LrapX Store | หลังชำระเงิน กรุณาแคปหน้ารายการสั่งซื้อแล้วส่งให้เพจ พร้อมแจ้ง Username Roblox | เปิดบริการ 16:30-22:00 น.' : undefined,
         },
-        requirePlayerId: true,
+        requirePlayerId: isFF,
       }
     : null;
 
@@ -246,58 +244,31 @@ export function GameTopupPage({ slug }: { slug: 'freefire-topup' | 'roblox-topup
             <h2 className="font-display text-lg font-semibold">กรอกข้อมูลที่จะรับบริการ</h2>
           </div>
           <div className="gaming-card p-5">
-            {!isFF && (
-              <div className="mb-4 space-y-2">
-                <Label className="text-sm font-medium">เลือกวิธีรับ Robux</Label>
-                <div className="grid gap-2 sm:grid-cols-2">
-                  <button type="button" onClick={() => setRobloxMethod('GAMEPASS')} className={`rounded-xl border p-3 text-left transition-colors ${robloxMethod === 'GAMEPASS' ? 'border-primary bg-primary/10' : 'border-border hover:border-primary/50'}`}>
-                    <span className="block text-sm font-semibold">เติมผ่าน ID Pass</span>
-                    <span className="mt-1 block text-xs text-muted-foreground">กรอก Username Roblox เพื่อให้ร้านดำเนินการต่อ ไม่ต้องกรอกรหัสผ่านในเว็บ</span>
-                  </button>
-                  <button type="button" onClick={() => setRobloxMethod('PAGE')} className={`rounded-xl border p-3 text-left transition-colors ${robloxMethod === 'PAGE' ? 'border-primary bg-primary/10' : 'border-border hover:border-primary/50'}`}>
-                    <span className="block text-sm font-semibold">สั่งซื้อแล้วทักเพจ</span>
-                    <span className="mt-1 block text-xs text-muted-foreground">สร้างคำสั่งซื้อก่อน แล้วติดต่อเพจร้านเพื่อแจ้งรายละเอียด</span>
-                  </button>
-                </div>
-              </div>
-            )}
-            {(isFF || robloxMethod === 'GAMEPASS') ? (
+            {isFF ? (
               <>
-                <Label htmlFor="tpid" className="text-sm font-medium">
-                  {isFF ? 'Player ID (ตัวเลข 6-12 หลัก)' : 'ชื่อผู้ใช้ Roblox (Username)'}
-                </Label>
+                <Label htmlFor="tpid" className="text-sm font-medium">Player ID (ตัวเลข 6-12 หลัก)</Label>
                 <Input
                   id="tpid"
                   value={playerId}
                   onChange={(e) => setPlayerId(e.target.value)}
-                  placeholder={isFF ? 'เช่น 1234567890' : 'เช่น lrapx_gamer'}
+                  placeholder="เช่น 1234567890"
                   className="mt-2 h-12 bg-secondary/60 font-mono text-lg tracking-wide"
-                  inputMode={isFF ? 'numeric' : 'text'}
+                  inputMode="numeric"
                 />
+                <p className="mt-2 text-xs text-muted-foreground">
+                  ดู Player ID ได้ที่หน้าโปรไฟล์ในเกม Free Fire หรือดูจากคู่มือ <button className="text-primary underline cursor-pointer" onClick={() => navigate('/how-to')}>วิธีใช้งาน</button>
+                </p>
+                {playerId.trim() && !idValid && <p className="mt-2 text-xs text-amber-400">Player ID ต้องเป็นตัวเลข 6-12 หลัก</p>}
               </>
             ) : (
               <div className="rounded-xl border border-[#d6b65d]/40 bg-[#d6b65d]/10 p-4 text-sm leading-6">
-                <p className="font-semibold text-[#e7ca79]">คำแนะนำสำหรับการสั่งซื้อแบบทักเพจ</p>
-                <p className="mt-2">1. สั่งซื้อและชำระเงินให้เรียบร้อย</p>
+                <p className="font-semibold text-[#e7ca79]">วิธีสั่งซื้อ Robux</p>
+                <p className="mt-2">1. เลือกแพ็กเกจและชำระเงินให้เรียบร้อย</p>
                 <p>2. แคปหน้ารายการสั่งซื้อ แล้วส่งให้เพจ <strong>LrapX Store</strong></p>
                 <p>3. แจ้ง Username Roblox ให้ทางร้านในแชต</p>
                 <p className="mt-2 font-semibold">เวลาเปิดบริการ 16:30-22:00 น.</p>
-                <p className="mt-1 text-xs text-muted-foreground">กรุณาอ่านคำแนะนำก่อนสั่งซื้อ ทางร้านไม่จำเป็นต้องใช้รหัสผ่านหรือรหัส OTP ของบัญชี</p>
+                <p className="mt-1 text-xs text-muted-foreground">ไม่ต้องส่งรหัสผ่านหรือรหัส OTP ของบัญชี Roblox</p>
               </div>
-            )}
-            <p className="mt-2 text-xs text-muted-foreground">
-              {isFF ? (
-                <>ดู Player ID ได้ที่หน้าโปรไฟล์ในเกม Free Fire ด้านบนของชื่อ หรือดูจากคู่มือ <button className="text-primary underline cursor-pointer" onClick={() => navigate('/how-to')}>วิธีใช้งาน</button></>
-              ) : robloxMethod === 'GAMEPASS' ? (
-                <>กรอก Username Roblox แล้วรอทางร้านติดต่อเพื่อแจ้งขั้นตอนการเติม ไม่ต้องส่งรหัสผ่านหรือ OTP</>
-              ) : (
-                <>หลังสร้างคำสั่งซื้อแล้ว ให้เปิดหน้าคำสั่งซื้อและติดต่อเพจร้านเพื่อแจ้งรายละเอียดเพิ่มเติม</>
-              )}
-            </p>
-            {(isFF || robloxMethod === 'GAMEPASS') && playerId.trim() && !idValid && (
-              <p className="mt-2 text-xs text-amber-400">
-                {isFF ? 'Player ID ต้องเป็นตัวเลข 6-12 หลัก' : robloxMethod === 'GAMEPASS' ? 'กรุณากรอก Username Roblox อย่างน้อย 3 ตัวอักษร' : 'ชื่อผู้ใช้ต้องมีอย่างน้อย 3 ตัวอักษร'}
-              </p>
             )}
           </div>
         </div>
@@ -315,8 +286,8 @@ export function GameTopupPage({ slug }: { slug: 'freefire-topup' | 'roblox-topup
                 <span className="font-medium text-right">{isFF ? (selected?.name ?? <span className="text-muted-foreground">ยังไม่ได้เลือก</span>) : (selectedRobuxPackages.length ? selectedRobuxPackages.map((p) => (p.amount ?? p.name) + ' Robux').join(', ') : <span className="text-muted-foreground">ยังไม่ได้เลือก</span>)}</span>
               </div>
               <div className="flex justify-between gap-2">
-                <span className="text-muted-foreground">{isFF ? 'Player ID' : robloxMethod === 'GAMEPASS' ? 'Username Roblox' : 'วิธีรับบริการ'}</span>
-                <span className="font-mono font-medium">{(isFF || robloxMethod === 'GAMEPASS') ? (playerId.trim() || <span className="text-muted-foreground">ยังไม่ได้กรอก</span>) : <span className="text-[#e7ca79]">ทักเพจ LrapX Store</span>}</span>
+                <span className="text-muted-foreground">{isFF ? 'Player ID' : 'วิธีรับบริการ'}</span>
+                <span className="font-medium">{isFF ? (playerId.trim() || <span className="text-muted-foreground">ยังไม่ได้กรอก</span>) : <span className="text-[#e7ca79]">ทักเพจ LrapX Store</span>}</span>
               </div>
               <div className="flex justify-between gap-2 border-t border-border pt-3">
                 <span className="font-medium">ยอดที่ต้องชำระ</span>
