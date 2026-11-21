@@ -357,8 +357,7 @@ async function main() {
   console.log('สร้างคำสั่งซื้อและประวัติกระเป๋าเงินตัวอย่างแล้ว');
 
   console.log('=== Seed เสร็จสมบูรณ์ ===');
-  console.log('Admin: admin@lrapx.store / Admin@LrapX2024');
-  console.log('Demo:  demo@lrapx.store / Demo1234 (ยอดกระเป๋า 500 บาท)');
+  console.log('สร้างบัญชีเริ่มต้นแล้ว (ไม่แสดงรหัสผ่านใน log)');
   await db.$disconnect();
 }
 
