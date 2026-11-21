@@ -135,7 +135,7 @@ export function PurchaseDialog({
               </DialogDescription>
             </DialogHeader>
             <div className="mt-4 rounded-xl border border-border bg-secondary/50 p-4 text-sm space-y-2 text-left">
-              <div className="flex justify-between"><span className="text-muted-foreground">รายการ</span><span className="font-medium">{done.items[0]?.name}</span></div>
+              <div className="space-y-1"><span className="text-muted-foreground">รายการที่สั่งซื้อ</span>{done.items.map((item) => <div key={item.id} className="flex justify-between gap-3"><span className="font-medium">{item.name}</span><span className="shrink-0">{formatTHB(item.price)}</span></div>)}</div>
               <div className="flex justify-between"><span className="text-muted-foreground">ยอดรวม</span><span className="price-gold">{formatTHB(done.total)}</span></div>
               <div className="flex justify-between"><span className="text-muted-foreground">สถานะ</span><span className="font-medium text-violet-300">
                 {done.status === 'PROCESSING' ? 'กำลังดำเนินการ' : done.status === 'REVIEWING' ? 'กำลังตรวจสอบการชำระเงิน' : done.status}
@@ -163,7 +163,7 @@ export function PurchaseDialog({
             <div className="mt-2 rounded-xl border border-border bg-secondary/40 p-4 space-y-2 text-sm">
               <div className="flex justify-between gap-3">
                 <span className="text-muted-foreground shrink-0">รายการ</span>
-                <span className="font-medium text-right line-clamp-2">{draft.title}</span>
+                <span className="font-medium text-right">{draft.items.length > 1 ? draft.items.length + ' รายการ' : draft.title}</span>
               </div>
               {draft.contact?.playerId && (
                 <div className="flex justify-between"><span className="text-muted-foreground shrink-0">Player ID / ไอดีรับของ</span><span className="font-mono font-medium">{draft.contact.playerId}</span></div>
