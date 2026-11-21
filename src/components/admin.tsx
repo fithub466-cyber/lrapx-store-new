@@ -864,7 +864,30 @@ function CategoriesTab() {
         <p className="text-xs text-muted-foreground">หมวดหมู่ที่ «เปิดใช้งาน» เท่านั้นที่แสดงบนเว็บหลัก — แต่ละหมวดใส่รูปปก ชื่อ และคำอธิบายได้เอง</p>
         <Button className="btn-neon bg-gradient-to-r from-violet-600 to-fuchsia-500 text-white" onClick={openNew}><Plus className="mr-1.5 h-4 w-4" /> เพิ่มหมวดหมู่</Button>
       </div>
-      <div className="rounded-2xl border border-border overflow-hidden">
+      <div className="grid gap-3 md:hidden">
+        {loading ? (
+          <div className="rounded-xl border border-border p-5 text-center text-sm text-muted-foreground">กำลังโหลดหมวดหมู่...</div>
+        ) : cats.map((c) => (
+          <div key={c.id} className="rounded-xl border border-border bg-card p-3 flex gap-3">
+            <SafeImage src={c.image} alt={`ปก ${c.name}`} className="h-16 w-20 shrink-0 rounded-lg object-cover border border-border" />
+            <div className="min-w-0 flex-1">
+              <div className="font-semibold truncate">{c.name}</div>
+              <div className="text-[11px] text-muted-foreground font-mono">{c.slug}</div>
+              <div className="mt-1 text-xs text-muted-foreground">
+                {c.type === 'GAME_ID' ? 'ไอดีเกม' : 'เติมเกม'} · {c.type !== 'GAME_ID' ? 'แพ็กเกจเติมเกม' : c.deliveryMode === 'ACCOUNT' ? 'รับ User:Pass' : 'ทักเพจ'}
+              </div>
+              <div className="mt-2 flex items-center gap-3">
+                <Button size="sm" variant="outline" onClick={() => openEdit(c)}><Pencil className="mr-1 h-3.5 w-3.5" /> Edit / แก้ไข</Button>
+                <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                  <Switch checked={c.active} onCheckedChange={() => toggleActive(c)} aria-label={`สลับการใช้งาน ${c.name}`} />
+                  {c.active ? 'เปิดใช้งาน' : 'ปิดใช้งาน'}
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="hidden md:block rounded-2xl border border-border overflow-hidden">
         <table className="w-full text-sm">
           <thead className="bg-secondary/50 text-muted-foreground">
             <tr>
