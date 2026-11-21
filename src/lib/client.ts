@@ -8,6 +8,7 @@ export type Product = {
   description: string;
   categoryId: string;
   price: number;
+  stock: number;
   images: string[];
   details: { label: string; value: string }[];
   status: 'AVAILABLE' | 'SOLD' | 'HIDDEN';
