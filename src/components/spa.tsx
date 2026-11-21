@@ -6,7 +6,7 @@
 
 import { useEffect, useSyncExternalStore } from 'react';
 import { useHashRoute, navigate } from '@/lib/router';
-import { useApp } from '@/lib/store';
+import { useApp } from '@/lib/store';\nimport { api } from '@/lib/client';
 import { Header, Footer } from '@/components/shell';
 import { PopupOverlay } from '@/components/popup';
 import { HomePage } from '@/components/home';
@@ -84,7 +84,7 @@ function Router({ path }: { path: string }) {
 
 export default function App() {
   const path = useHashRoute();
-  const { refresh, setSidebarOpen } = useApp();
+  const { refresh, setSidebarOpen } = useApp();\n  const [loaderSettings, setLoaderSettings] = useState<Record<string, string>>({});\n  const [settingsLoaded, setSettingsLoaded] = useState(false);\n\n  useEffect(() => {\n    api<{ settings: Record<string, string> }>('/api/data/settings', { silent: true })\n      .then((d) => setLoaderSettings(d.settings))\n      .catch(() => {})\n      .finally(() => setSettingsLoaded(true));\n  }, []);
   // true เฉพาะหลัง hydration บน client — ใช้กัน SSR/client render ไม่ตรงกัน
   const mounted = useSyncExternalStore(
     () => () => {},
@@ -102,14 +102,14 @@ export default function App() {
   }, [path, setSidebarOpen]);
 
   // ป้องกัน hydration mismatch: SSR เรนเดอร์ skeleton เดียวกับ client เฟรมแรก
-  if (!mounted) {
+  if (!mounted || !settingsLoaded) {
     return (
-      <div className="flex min-h-screen flex-col bg-background">
+      <div className="flex min-h-screen flex-col bg-background" style={loaderSettings.loader_background_image ? { backgroundImage: `linear-gradient(rgba(0,0,0,.72), rgba(0,0,0,.88)), url(${loaderSettings.loader_background_image})`, backgroundSize: "cover", backgroundPosition: "center" } : undefined}>
         <div className="h-[104px] w-full border-b border-border bg-[#000000]" />
         <div className="flex flex-1 items-center justify-center">
           <div className="flex flex-col items-center gap-4">
-            <img src="/images/logo.png" alt="โลโก้ LrapX Store" className="h-20 w-20 object-contain animate-floaty" />
-            <div className="h-1.5 w-40 overflow-hidden rounded-full bg-secondary">
+            <img src={loaderSettings.loader_logo || loaderSettings.store_logo || "/images/logo.png"} alt="โลโก้ร้าน" className="h-20 w-20 object-contain animate-floaty" />
+            <div className="text-center text-sm font-semibold text-[#d9b18d]">{loaderSettings.loading_title || loaderSettings.store_name || "LrapX Store"}</div>\n            {loaderSettings.loading_subtitle && <div className="text-xs text-muted-foreground">{loaderSettings.loading_subtitle}</div>}\n            <div className="h-1.5 w-40 overflow-hidden rounded-full bg-secondary">
               <div className="h-full w-1/2 animate-shimmer rounded-full bg-gradient-to-r from-[#8f603d] to-[#c89565]" />
             </div>
           </div>
