@@ -9,7 +9,7 @@ import { SectionHeading, RatingStars, SafeImage, ProductCard } from '@/component
 import { Button } from '@/components/ui/button';
 import {
   Gamepad2, Zap, ShieldCheck, Timer, BadgeCheck,
-  ChevronRight, Gift, Star, ShoppingBag,
+  ChevronRight, Gift, Star, ShoppingBag, Sparkles,
 } from 'lucide-react';
 
 function StoreLogoIcon({ className }: { className?: string }) {
@@ -55,8 +55,8 @@ export function HomePage() {
       <section className="mx-auto max-w-7xl px-4 py-12 md:px-6">
         <SectionHeading
           icon={Gamepad2}
-          title="หมวดหมู่ไอดีเกม"
-          subtitle="ไอดีสำเร็จรูปพร้อมขาย ตรวจสอบทุกไอดีก่อนส่งมอบ"
+          title={settings.home_id_title || "หมวดหมู่ไอดีเกม"}
+          subtitle={settings.home_id_subtitle || "ไอดีสำเร็จรูปพร้อมขาย ตรวจสอบทุกไอดีก่อนส่งมอบ"}
           action={
             <Button variant="outline" size="sm" onClick={() => navigate('/game-ids')} className="border-primary/40 text-primary hover:bg-primary/10">
               ดูทั้งหมด <ChevronRight className="ml-1 h-4 w-4" />
@@ -74,8 +74,8 @@ export function HomePage() {
       <section className="mx-auto max-w-7xl px-4 py-12 md:px-6">
         <SectionHeading
           icon={Zap}
-          title="หมวดหมู่เติมเกม"
-          subtitle="เลือกหมวดย่อยที่ต้องการ — เติมเพชร FF, Robux และ Gift Game Pass ส่งไวใน 5 นาที"
+          title={settings.home_topup_title || "หมวดหมู่เติมเกม"}
+          subtitle={settings.home_topup_subtitle || "เลือกหมวดย่อยที่ต้องการ — เติมเพชร FF, Robux และ Gift Game Pass ส่งไวใน 5 นาที"}
           action={
             <Button variant="outline" size="sm" onClick={() => navigate('/topup')} className="border-primary/40 text-primary hover:bg-primary/10">
               ดูทั้งหมด <ChevronRight className="ml-1 h-4 w-4" />
@@ -120,7 +120,6 @@ export function HomePage() {
         <SectionHeading
           icon={StoreLogoIcon}
           title="สินค้าแนะนำ"
-          subtitle="สินค้าที่คัดเลือกมาแนะนำจากร้าน LrapX Store"
         />
         {loading ? (
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 md:gap-4">
