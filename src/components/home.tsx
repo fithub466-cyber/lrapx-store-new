@@ -191,7 +191,8 @@ function MarqueeProductCard({ p }: { p: Product }) {
 
 function Hero({ settings }: { settings: Record<string, string> }) {
   return (
-    <section className="relative overflow-hidden bg-black">\n      {settings.hero_background_image && <img src={settings.hero_background_image} alt="" aria-hidden="true" className="absolute inset-0 h-full w-full object-cover opacity-35" />}
+    <section className="relative overflow-hidden bg-black">
+      {settings.hero_background_image && <img src={settings.hero_background_image} alt="" aria-hidden="true" className="absolute inset-0 h-full w-full object-cover opacity-35" />}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_72%_42%,rgba(200,149,101,0.16),transparent_48%),radial-gradient(ellipse_at_12%_90%,rgba(143,96,61,0.10),transparent_42%)]" />
       <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/70" />
       <div className="relative mx-auto max-w-7xl px-4 py-20 md:px-6 md:py-28">
