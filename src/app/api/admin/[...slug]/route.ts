@@ -342,8 +342,8 @@ export async function PATCH(req: NextRequest, ctx: { params: Promise<{ slug: str
               const product = await tx.product.findUnique({ where: { id: item.productId }, include: { category: { select: { deliveryMode: true } } } });
               if (!product) continue;
               if (product.category.deliveryMode === 'ACCOUNT' && item.deliveryInfo) {
-                const username = item.deliveryInfo.match(/User\\s*:\\s*(.*)/i)?.[1]?.trim();
-                const password = item.deliveryInfo.match(/Pass\\s*:\\s*(.*)/i)?.[1]?.trim();
+                const username = item.deliveryInfo.match(/User\s*:\s*(.*)/i)?.[1]?.trim();
+                const password = item.deliveryInfo.match(/Pass\s*:\s*(.*)/i)?.[1]?.trim();
                 if (username && password) {
                   const inventory = parseJson<{ username: string; password: string }[]>(product.credentialStock, []);
                   inventory.push({ username, password });
