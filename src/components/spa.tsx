@@ -25,7 +25,7 @@ function NotFound() {
       <Gamepad2 className="mx-auto h-12 w-12 text-muted-foreground/50" />
       <h1 className="mt-4 font-display text-2xl font-bold">ไม่พบหน้าที่คุณกำลังหา</h1>
       <p className="mt-1 text-sm text-muted-foreground">ลิงก์อาจผิดพลาดหรือหน้าถูกย้ายไปแล้ว</p>
-      <Button className="mt-6 btn-neon bg-gradient-to-r from-violet-600 to-fuchsia-500 text-white" onClick={() => navigate('/')}>กลับหน้าหลัก</Button>
+      <Button className="mt-6 btn-neon bg-gradient-to-r from-[#8f603d] to-[#c89565] text-white" onClick={() => navigate('/')}>กลับหน้าหลัก</Button>
     </div>
   );
 }
@@ -102,12 +102,12 @@ export default function App() {
   if (!mounted) {
     return (
       <div className="flex min-h-screen flex-col bg-background">
-        <div className="h-[104px] w-full border-b border-border bg-[#0a0a12]" />
+        <div className="h-[104px] w-full border-b border-border bg-[#000000]" />
         <div className="flex flex-1 items-center justify-center">
           <div className="flex flex-col items-center gap-4">
             <img src="/images/logo.png" alt="โลโก้ LrapX Store" className="h-20 w-20 object-contain animate-floaty" />
             <div className="h-1.5 w-40 overflow-hidden rounded-full bg-secondary">
-              <div className="h-full w-1/2 animate-shimmer rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-500" />
+              <div className="h-full w-1/2 animate-shimmer rounded-full bg-gradient-to-r from-[#8f603d] to-[#c89565]" />
             </div>
           </div>
         </div>
