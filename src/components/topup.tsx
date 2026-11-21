@@ -219,7 +219,7 @@ export function GameTopupPage({ slug }: { slug: 'freefire-topup' | 'roblox-topup
                     return <button key={p.id} type="button" onClick={() => setSelectedRobux((current) => active ? current.filter((id) => id !== p.id) : [...current, p.id])} aria-pressed={active}
                       className={'relative flex min-h-[104px] flex-col items-center justify-center gap-1.5 rounded-xl border p-3 text-center transition-all ' + (active ? 'border-[#d6b65d] bg-[#d6b65d]/15 shadow-[0_0_0_1px_rgba(214,182,93,.45)]' : 'border-border bg-card/80 hover:border-[#d6b65d]/70 hover:bg-[#d6b65d]/5')}>
                       {active && <span className="absolute right-2 top-2 text-[10px] font-bold text-[#e7ca79]">เลือกแล้ว ✓</span>}
-                      <span className="mt-2 flex items-center gap-2 font-display text-lg font-bold"><img src="/images/logo-mark.svg" alt="Robux" className="h-10 w-10 shrink-0 object-contain" />{p.amount?.toLocaleString('th-TH') ?? p.name} <span className="text-xs font-medium text-muted-foreground">Robux</span></span>
+                      <span className="mt-2 flex items-center gap-2 font-display text-lg font-bold"><img src={settings.robux_package_logo || "/images/logo-mark.svg"} alt="Robux" className="h-10 w-10 shrink-0 object-contain" />{p.amount?.toLocaleString('th-TH') ?? p.name} <span className="text-xs font-medium text-muted-foreground">Robux</span></span>
                       <span className="text-sm font-semibold text-[#f0b429]">{formatTHB(p.price)}</span>
                     </button>;
                   })}
