@@ -54,8 +54,7 @@ export function Header({ currentPath }: { currentPath: string }) {
             {/* โลโก้พื้นหลังโปร่งใส ไม่มีกรอบ */}
             <img src="/images/logo.png" alt="โลโก้ LrapX Store" className="h-10 w-10 object-contain drop-shadow-[0_0_8px_rgba(240,180,41,0.45)]" />
             <span className="text-left leading-tight">
-              <span className="font-display text-base sm:text-lg font-bold tracking-wide text-glow-gold text-[#f0b429]">LRAPX</span>
-              <span className="font-display text-base sm:text-lg font-bold"> STORE</span>
+              <span className="font-display text-lg sm:text-xl font-black italic tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-[#f3d0a5] via-[#c89565] to-[#8f603d] drop-shadow-[0_0_10px_rgba(200,149,101,0.3)]">LrapX Store</span>
               <span className="hidden sm:block text-[10px] text-muted-foreground tracking-widest uppercase">Game ID &amp; Top-Up Center</span>
             </span>
           </button>
@@ -97,7 +96,7 @@ export function Header({ currentPath }: { currentPath: string }) {
                 <Button size="sm" variant="ghost" className="h-10" onClick={() => setPopup('login')}>
                   <LogIn className="mr-1 h-4 w-4" /> เข้าสู่ระบบ
                 </Button>
-                <Button size="sm" className="h-10 btn-neon bg-gradient-to-r from-[#8f603d] to-[#c89565] text-white hover:from-violet-500 hover:to-fuchsia-400" onClick={() => setPopup('register')}>
+                <Button size="sm" className="h-10 btn-neon bg-gradient-to-r from-[#8f603d] to-[#c89565] text-white hover:from-[#a87349] hover:to-[#d7a879]" onClick={() => setPopup('register')}>
                   <UserPlus className="mr-1 h-4 w-4" /> สมัครสมาชิก
                 </Button>
               </div>
@@ -233,7 +232,7 @@ function SidebarDrawer({ currentPath }: { currentPath: string }) {
           <div className="flex items-center gap-2.5">
             <img src="/images/logo.png" alt="โลโก้ LrapX Store" className="h-10 w-10 object-contain" />
             <div className="leading-tight">
-              <div className="font-display font-bold text-[#f0b429]">LRAPX STORE</div>
+              <div className="font-display text-lg font-black italic tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-[#f3d0a5] via-[#c89565] to-[#8f603d]">LrapX Store</div>
               <div className="text-[10px] text-muted-foreground">Game ID &amp; Top-Up Center</div>
             </div>
           </div>
@@ -388,7 +387,7 @@ export function Footer() {
             <div className="flex items-center gap-2.5 mb-4">
               <img src="/images/logo.png" alt="โลโก้ LrapX Store" className="h-12 w-12 object-contain" />
               <div>
-                <div className="font-display font-bold text-lg text-glow-gold text-[#f0b429]">LRAPX STORE</div>
+                <div className="font-display text-xl font-black italic tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-[#f3d0a5] via-[#c89565] to-[#8f603d]">LrapX Store</div>
                 <div className="text-xs text-muted-foreground">{settings.store_tagline || 'ร้านขายไอดีเกมและเติมเกมออนไลน์'}</div>
               </div>
             </div>
