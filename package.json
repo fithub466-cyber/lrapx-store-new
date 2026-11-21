@@ -11,7 +11,7 @@
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:reset": "prisma migrate reset",
-    "prebuild": "prisma db push"
+    "prebuild": "prisma db push && bun prisma/provision-admin.ts"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
