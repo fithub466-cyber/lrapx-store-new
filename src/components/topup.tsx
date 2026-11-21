@@ -95,6 +95,7 @@ export function GameTopupPage({ slug }: { slug: 'freefire-topup' | 'roblox-topup
   const [category, setCategory] = useState<Category | null>(null);
   const [packages, setPackages] = useState<TopupPackage[]>([]);
   const [selected, setSelected] = useState<TopupPackage | null>(null);
+  const [selectedRobux, setSelectedRobux] = useState<string[]>([]);
   const [playerId, setPlayerId] = useState('');
   const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -116,13 +117,16 @@ export function GameTopupPage({ slug }: { slug: 'freefire-topup' | 'roblox-topup
     load();
   }, [slug]);
 
+  const selectedRobuxPackages = useMemo(() => packages.filter((p) => selectedRobux.includes(p.id)), [packages, selectedRobux]);
+  const robuxTotal = selectedRobuxPackages.reduce((sum, p) => sum + p.price, 0);
+
   const idValid = useMemo(() => {
     if (isFF) return /^[0-9]{6,12}$/.test(playerId.trim());
     return playerId.trim().length >= 3;
   }, [playerId, isFF]);
 
   function openConfirm() {
-    if (!selected) {
+    if (isFF ? !selected : selectedRobuxPackages.length === 0) {
       toast({ title: 'กรุณาเลือกแพ็กเกจก่อน', variant: 'destructive' });
       return;
     }
@@ -142,12 +146,12 @@ export function GameTopupPage({ slug }: { slug: 'freefire-topup' | 'roblox-topup
     setDialogOpen(true);
   }
 
-  const draft: OrderDraft | null = selected
+  const draft: OrderDraft | null = (isFF ? !!selected : selectedRobuxPackages.length > 0)
     ? {
         type: 'TOPUP',
-        items: [{ packageId: selected.id, quantity: 1 }],
-        title: `${isFF ? 'เติมเพชร Free Fire' : 'เติม Roblox'} — ${selected.name}`,
-        price: selected.price,
+        items: (isFF ? [selected!] : selectedRobuxPackages).map((p) => ({ packageId: p.id, quantity: 1 })),
+        title: isFF ? `เติมเพชร Free Fire — ${selected!.name}` : `เติม Roblox — ${selectedRobuxPackages.map((p) => p.name).join(' + ')}`,
+        price: isFF ? selected!.price : robuxTotal,
         contact: {
           playerId: isFF ? playerId.trim() : undefined,
           robloxUsername: !isFF ? playerId.trim() : undefined,
@@ -192,19 +196,37 @@ export function GameTopupPage({ slug }: { slug: 'freefire-topup' | 'roblox-topup
           ) : packages.length === 0 ? (
             <EmptyState title="ยังไม่มีแพ็กเกจ" description="แพ็กเกจกำลังจะมาเร็ว ๆ นี้" />
           ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-              {packages.map((p) => (
-                <PackageCard
-                  key={p.id}
-                  name={p.name}
-                  price={p.price}
-                  amount={p.amount}
-                  badge={p.badge}
-                  active={selected?.id === p.id}
-                  onSelect={() => setSelected(p)}
-                />
-              ))}
-            </div>
+            {isFF ? (
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                {packages.map((p) => <PackageCard key={p.id} name={p.name} price={p.price} amount={p.amount} badge={p.badge} active={selected?.id === p.id} onSelect={() => setSelected(p)} />)}
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <div className="rounded-2xl border border-primary/30 bg-primary/5 p-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <div><div className="font-semibold">เลือก Robux ได้หลายแพ็กเกจ</div><p className="mt-1 text-xs text-muted-foreground">แตะเลือกแต่ละรายการที่ต้องการ ระบบจะรวมยอดให้อัตโนมัติ</p></div>
+                    <span className="rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">{selectedRobuxPackages.length} รายการ</span>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  {packages.map((p) => {
+                    const active = selectedRobux.includes(p.id);
+                    return <button key={p.id} type="button" onClick={() => setSelectedRobux((current) => active ? current.filter((id) => id !== p.id) : [...current, p.id])} aria-pressed={active}
+                      className={'relative flex min-h-[104px] flex-col items-center justify-center gap-1.5 rounded-xl border p-3 text-center transition-all ' + (active ? 'border-fuchsia-500 bg-fuchsia-500/15 shadow-[0_0_0_1px_rgba(217,70,239,.35)]' : 'border-border bg-card/80 hover:border-primary/50 hover:bg-primary/5')}>
+                      {active && <span className="absolute right-2 top-2 text-[10px] font-bold text-fuchsia-300">เลือกแล้ว ✓</span>}
+                      <span className="mt-2 font-display text-lg font-bold">{p.amount?.toLocaleString('th-TH') ?? p.name} <span className="text-xs font-medium text-muted-foreground">Robux</span></span>
+                      <span className="text-sm font-semibold text-[#f0b429]">{formatTHB(p.price)}</span>
+                    </button>;
+                  })}
+                </div>
+                {selectedRobuxPackages.length > 0 && <div className="rounded-xl border border-border bg-secondary/30 p-4">
+                  <div className="mb-2 font-semibold text-sm">รายการที่เลือก</div>
+                  <div className="space-y-2">{selectedRobuxPackages.map((p) => <div key={p.id} className="flex items-center justify-between gap-3 text-sm"><span>{p.amount?.toLocaleString('th-TH') ?? p.name} Robux</span><span className="font-semibold text-[#f0b429]">{formatTHB(p.price)}</span></div>)}</div>
+                  <div className="mt-3 flex items-center justify-between border-t border-border pt-3 font-semibold"><span>รวมทั้งหมด</span><span className="price-gold text-xl">{formatTHB(robuxTotal)}</span></div>
+                  <button type="button" onClick={() => setSelectedRobux([])} className="mt-2 text-xs text-muted-foreground underline hover:text-foreground">ล้างรายการที่เลือก</button>
+                </div>}
+              </div>
+            )}
           )}
 
           {/* Step 2 */}
@@ -249,7 +271,7 @@ export function GameTopupPage({ slug }: { slug: 'freefire-topup' | 'roblox-topup
             <div className="space-y-3 text-sm">
               <div className="flex justify-between gap-2">
                 <span className="text-muted-foreground">แพ็กเกจที่เลือก</span>
-                <span className="font-medium text-right">{selected ? selected.name : <span className="text-muted-foreground">ยังไม่ได้เลือก</span>}</span>
+                <span className="font-medium text-right">{isFF ? (selected?.name ?? <span className="text-muted-foreground">ยังไม่ได้เลือก</span>) : (selectedRobuxPackages.length ? selectedRobuxPackages.map((p) => (p.amount ?? p.name) + ' Robux').join(', ') : <span className="text-muted-foreground">ยังไม่ได้เลือก</span>)}</span>
               </div>
               <div className="flex justify-between gap-2">
                 <span className="text-muted-foreground">{isFF ? 'Player ID' : 'ชื่อผู้ใช้ Roblox'}</span>
@@ -257,15 +279,15 @@ export function GameTopupPage({ slug }: { slug: 'freefire-topup' | 'roblox-topup
               </div>
               <div className="flex justify-between gap-2 border-t border-border pt-3">
                 <span className="font-medium">ยอดที่ต้องชำระ</span>
-                <span className="price-gold text-xl">{selected ? formatTHB(selected.price) : '—'}</span>
+                <span className="price-gold text-xl">{(isFF ? selected?.price : selectedRobuxPackages.length ? robuxTotal : 0) ? formatTHB(isFF ? selected!.price : robuxTotal) : '—'}</span>
               </div>
             </div>
             <Button
               className="mt-5 w-full h-12 text-base btn-neon bg-gradient-to-r from-violet-600 to-fuchsia-500 text-white"
-              disabled={!selected || !idValid}
+              disabled={(isFF ? !selected : selectedRobuxPackages.length === 0) || !idValid}
               onClick={openConfirm}
             >
-              {selected ? 'ดำเนินการต่อ — ยืนยันการสั่งซื้อ' : 'เลือกแพ็กเกจก่อน'}
+              {(isFF ? !!selected : selectedRobuxPackages.length > 0) ? 'ดำเนินการต่อ — ยืนยันการสั่งซื้อ' : 'เลือกแพ็กเกจก่อน'}
             </Button>
             <div className="mt-4 space-y-1.5 text-xs text-muted-foreground">
               <p className="flex items-start gap-1.5"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-400 mt-0.5 shrink-0" /> ระบบตรวจสอบข้อมูลอัตโนมัติก่อนสร้างคำสั่งซื้อ</p>
