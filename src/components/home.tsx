@@ -75,7 +75,7 @@ export function HomePage() {
         <SectionHeading
           icon={Zap}
           title={settings.home_topup_title || "หมวดหมู่เติมเกม"}
-          subtitle={settings.home_topup_subtitle || "เลือกหมวดย่อยที่ต้องการ — เติมเพชร FF, Robux และ Gift Game Pass ส่งไวใน 5 นาที"}
+          subtitle={settings.home_topup_subtitle || "เลือกหมวดย่อยที่ต้องการ — เติมเพชร FF, Robux และ Gift Game Pass"}
           action={
             <Button variant="outline" size="sm" onClick={() => navigate('/topup')} className="border-primary/40 text-primary hover:bg-primary/10">
               ดูทั้งหมด <ChevronRight className="ml-1 h-4 w-4" />
@@ -205,7 +205,7 @@ function Hero({ settings }: { settings: Record<string, string> }) {
             <span className="text-white">LrapX Store จัดให้ครบ</span>
           </h1>
           <p className="mt-4 max-w-xl text-base md:text-lg text-muted-foreground leading-relaxed">
-            {settings.hero_subtitle || 'ไอดีเกมคุณภาพ เติมเกมราคาดี ส่งไวปลอดภัย มีประกัน เปิดให้บริการ 24 ชั่วโมง'}
+            {settings.hero_subtitle || 'ไอดีเกมคุณภาพ เติมเกมราคาดี มีประกัน พร้อมทีมงานดูแล'}
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Button size="lg" className="h-12 px-7 text-base btn-neon bg-gradient-to-r from-[#8f603d] to-[#c89565] text-white hover:from-[#a87349] hover:to-[#d7a879]" onClick={() => navigate('/game-ids')}>
@@ -223,7 +223,7 @@ function Hero({ settings }: { settings: Record<string, string> }) {
 
 function TrustBar() {
   const items = [
-    { icon: Timer, title: 'ส่งไวใน 5-10 นาที', desc: 'ทำรายการอัตโนมัติ 24 ชม.' },
+    { icon: Timer, title: 'ส่งไวใน 5-10 นาที', desc: '' },
     { icon: ShieldCheck, title: 'ปลอดภัย 100%', desc: 'ระบบจ่ายเงินมาตรฐาน' },
     { icon: BadgeCheck, title: 'ประกันไอดี 7 วัน', desc: 'ยินดีรับผิดชอบทุกกรณี' },
     { icon: Sparkles, title: 'ราคาดีกว่าในเกม', desc: 'ส่วนลดทุกแพ็กเกจ' },
@@ -238,7 +238,7 @@ function TrustBar() {
             </span>
             <div>
               <div className="font-display text-sm font-semibold">{it.title}</div>
-              <div className="text-xs text-muted-foreground">{it.desc}</div>
+              {it.desc && <div className="text-xs text-muted-foreground">{it.desc}</div>}
             </div>
           </div>
         ))}
