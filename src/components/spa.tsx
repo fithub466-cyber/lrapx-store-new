@@ -49,10 +49,8 @@ function Router({ path }: { path: string }) {
       return segments[1] ? <ProductDetailPage id={segments[1]} /> : <NotFound />;
     case 'topup': {
       if (segments.length === 1) return <TopupHubPage />;
-      if (segments[1] === 'freefire') return <GameTopupPage slug="freefire-topup" />;
-      if (segments[1] === 'roblox') return <GameTopupPage slug="roblox-topup" />;
       if (segments[1] === 'gift-pass') return <GiftPassPage />;
-      return <NotFound />;
+      return <GameTopupPage slug={segments[1]} />;
     }
     case 'login':
       return <LoginPage />;
