@@ -22,6 +22,7 @@ import {
 export function TopupHubPage() {
   const [loading, setLoading] = useState(true);
   const [settings, setSettings] = useState<Record<string, string>>({});
+  const [settings, setSettings] = useState<Record<string, string>>({});
   const [cats, setCats] = useState<Category[]>([]);
 
   useEffect(() => {
@@ -106,6 +107,10 @@ export function GameTopupPage({ slug }: { slug: 'freefire-topup' | 'roblox-topup
     const [dialogOpen, setDialogOpen] = useState(false);
 
   const isFF = slug === 'freefire-topup';
+
+  useEffect(() => {
+    api<{ settings: Record<string, string> }>('/api/data/settings', { silent: true }).then((d) => setSettings(d.settings)).catch(() => {});
+  }, []);
 
   useEffect(() => {
     const load = async () => {
