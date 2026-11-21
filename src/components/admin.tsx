@@ -1174,7 +1174,6 @@ function SettingsTab() {
   }, []);
 
   const fields: { key: string; label: string; icon?: React.ComponentType<{ className?: string }>; placeholder?: string }[] = [
-    { key: 'store_name', label: 'ชื่อร้าน' },
     { key: 'store_tagline', label: 'คำโปรยร้าน' },
     { key: 'hero_title', label: 'หัวข้อ Hero Banner' },
     { key: 'hero_subtitle', label: 'ข้อความรอง Hero Banner' },
