@@ -552,7 +552,7 @@ function ProductsTab() {
             </thead>
             <tbody className="divide-y divide-border">
               {loading ? (
-                <tr><td colSpan={7} className="px-4 py-8 text-center text-muted-foreground">กำลังโหลด...</td></tr>
+                <tr><td colSpan={8} className="px-4 py-8 text-center text-muted-foreground">กำลังโหลด...</td></tr>
               ) : products.filter((p) => filterCat === 'ALL' || p.categoryId === filterCat).length === 0 ? (
                 <tr><td colSpan={8} className="px-4 py-8 text-center text-muted-foreground">ยังไม่มีสินค้าในหมวดนี้ — กด "เพิ่มสินค้าใหม่" เพื่อเริ่ม</td></tr>
               ) : (
