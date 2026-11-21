@@ -48,11 +48,17 @@ async function main() {
   await db.user.deleteMany();
 
   // ===== ผู้ใช้: Admin + Demo =====
+  // กำหนดรหัสผ่านผ่าน environment variables เท่านั้น ห้ามฝังรหัสผ่านใน source code
+  const adminPassword = process.env.ADMIN_PASSWORD;
+  const demoPassword = process.env.DEMO_PASSWORD;
+  if (!adminPassword || !demoPassword) {
+    throw new Error('ต้องกำหนด ADMIN_PASSWORD และ DEMO_PASSWORD ก่อนรัน seed');
+  }
   const admin = await db.user.create({
     data: {
       username: 'admin',
       email: 'admin@lrapx.store',
-      passwordHash: hashPassword('Admin@LrapX2024'),
+      passwordHash: hashPassword(adminPassword),
       role: 'ADMIN',
     },
   });
@@ -60,7 +66,7 @@ async function main() {
     data: {
       username: 'demo',
       email: 'demo@lrapx.store',
-      passwordHash: hashPassword('Demo1234'),
+      passwordHash: hashPassword(demoPassword),
       role: 'USER',
     },
   });
