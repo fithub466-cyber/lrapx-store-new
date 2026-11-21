@@ -43,6 +43,8 @@ export function Header({ currentPath }: { currentPath: string }) {
           '--accent-foreground': d.settings.theme_primary || '#c89565',
           '--sidebar-primary': d.settings.theme_primary || '#c89565',
           '--gold': d.settings.theme_primary || '#c89565',
+          '--icon-color': d.settings.theme_icon_color || d.settings.theme_primary || '#c89565',
+          '--icon-stroke-width': d.settings.theme_icon_weight || '2',
           '--neon': d.settings.theme_primary || '#c89565',
           '--background': d.settings.theme_background || '#000000',
           '--card': d.settings.theme_surface || '#0a0a0a',
