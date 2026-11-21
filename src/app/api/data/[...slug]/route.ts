@@ -12,7 +12,7 @@ import { parseJson } from '@/lib/api-helpers';
 
 /** แปลงสินค้า: images/details เป็น array ก่อนส่งให้ client */
 function mapProduct<T extends { images?: string; details?: string }>(p: T) {
-  const { privateDelivery: _privateDelivery, ...safeProduct } = p as T & { privateDelivery?: string | null };
+  const { privateDelivery: _privateDelivery, credentialStock: _credentialStock, ...safeProduct } = p as T & { privateDelivery?: string | null; credentialStock?: string };
   return {
     ...safeProduct,
     images: parseJson<string[]>(p.images ?? '[]', []),
@@ -245,7 +245,7 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ slug: stri
       }
 
       const result = await db.$transaction(async (tx) => {
-        const lines: { name: string; price: number; productId?: string; packageId?: string; meta?: string; deliveryInfo?: string | null }[] = [];
+        const lines: { name: string; price: number; productId?: string; packageId?: string; meta?: string; deliveryInfo?: string | null; credentialSnapshot?: string | null }[] = [];
         let total = 0;
 
         for (const item of body.items) {
@@ -255,14 +255,16 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ slug: stri
             if (lines.some((l) => l.productId === item.productId)) {
               throw new Error('BAD_REQUEST: ห้ามเลือกสินค้าไอดีชิ้นเดียวกันซ้ำ');
             }
-            const product = await tx.product.findUnique({ where: { id: item.productId }, include: { category: { select: { game: true } } } });
+            const product = await tx.product.findUnique({ where: { id: item.productId }, include: { category: { select: { game: true, deliveryMode: true } } } });
             if (!product || product.status === 'HIDDEN') throw new Error('BAD_REQUEST: ไม่พบสินค้านี้ในระบบ');
             if (product.status !== 'AVAILABLE' || product.stock < 1) throw new Error('BAD_REQUEST: สินค้าชิ้นนี้หมดสต็อกแล้ว');
+            if (product.category.deliveryMode === 'ACCOUNT' && parseJson<{ username: string; password: string }[]>(product.credentialStock, []).length < 1) throw new Error('BAD_REQUEST: สินค้าชิ้นนี้หมดสต็อกแล้ว');
             total += product.price;
             lines.push({
               name: product.title, price: product.price, productId: product.id,
               meta: JSON.stringify({ code: product.code, game: product.category.game }),
-              deliveryInfo: product.category.game === 'roblox' ? product.privateDelivery : null,
+              deliveryInfo: product.category.deliveryMode === 'ACCOUNT' ? null : null,
+              credentialSnapshot: product.category.deliveryMode === 'ACCOUNT' ? product.credentialStock : null,
             });
           } else {
             if (!item.packageId) throw new Error('BAD_REQUEST: รายการเติมเกมต้องระบุแพ็กเกจ');
@@ -291,7 +293,7 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ slug: stri
           });
           walletBalanceAfter = updated.balance;
           paidWalletId = wallet.id;
-          orderStatus = body.type === 'GAME_ID' && lines.every((line) => line.deliveryInfo) ? 'COMPLETED' : 'PROCESSING';
+          orderStatus = body.type === 'GAME_ID' && lines.every((line) => line.credentialSnapshot) ? 'COMPLETED' : 'PROCESSING';
         } else {
           orderStatus = 'REVIEWING';
         }
@@ -305,7 +307,7 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ slug: stri
             paymentMethod: body.paymentMethod,
             slipImage: body.slipImage ?? null,
             status: orderStatus,
-            adminNote: body.type === 'TOPUP' ? 'กรุณาติดต่อเพจร้านเพื่อให้แอดมินดำเนินการเติมเกม' : body.type === 'GAME_ID' && lines.some((l) => l.meta?.includes('freefire')) ? 'กรุณาทักเพจร้านเพื่อรับสินค้า Free Fire' : null,
+            adminNote: body.type === 'TOPUP' ? 'กรุณาติดต่อเพจร้านเพื่อให้แอดมินดำเนินการเติมเกม' : body.type === 'GAME_ID' && lines.some((l) => !l.credentialSnapshot) ? 'กรุณาทักเพจร้านเพื่อรับสินค้า' : null,
             contactInfo: body.contact ? JSON.stringify(body.contact) : null,
             items: {
               create: lines.map((l) => ({
@@ -315,7 +317,7 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ slug: stri
                 price: l.price,
                 quantity: 1,
                 meta: l.meta ?? null,
-                deliveryInfo: l.deliveryInfo ?? null,
+                deliveryInfo: l.credentialSnapshot ? (() => { const list = parseJson<{ username: string; password: string }[]>(l.credentialSnapshot, []); const first = list[0]; return first ? `User : ${first.username}\nPass : ${first.password}` : null; })() : null,
               })),
             },
           },
@@ -341,9 +343,11 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ slug: stri
         // ตัดสต็อกแบบ atomic ป้องกันลูกค้าสองคนซื้อชิ้นสุดท้ายพร้อมกัน
         for (const l of lines) {
           if (l.productId) {
+            const inventory = l.credentialSnapshot ? parseJson<{ username: string; password: string }[]>(l.credentialSnapshot, []) : [];
+            const nextInventory = l.credentialSnapshot ? JSON.stringify(inventory.slice(1)) : '[]';
             const changed = await tx.product.updateMany({
-              where: { id: l.productId, status: 'AVAILABLE', stock: { gt: 0 } },
-              data: { stock: { decrement: 1 }, soldCount: { increment: 1 } },
+              where: { id: l.productId, status: 'AVAILABLE', stock: { gt: 0 }, ...(l.credentialSnapshot ? { credentialStock: l.credentialSnapshot } : {}) },
+              data: { stock: { decrement: 1 }, soldCount: { increment: 1 }, ...(l.credentialSnapshot ? { credentialStock: nextInventory } : {}) },
             });
             if (changed.count !== 1) throw new Error('BAD_REQUEST: สินค้าชิ้นนี้หมดสต็อกแล้ว');
             const remaining = await tx.product.findUnique({ where: { id: l.productId }, select: { stock: true } });
