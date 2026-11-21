@@ -254,13 +254,13 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ slug: stri
             if (lines.some((l) => l.productId === item.productId)) {
               throw new Error('BAD_REQUEST: ห้ามเลือกสินค้าไอดีชิ้นเดียวกันซ้ำ');
             }
-            const product = await tx.product.findUnique({ where: { id: item.productId } });
+            const product = await tx.product.findUnique({ where: { id: item.productId }, include: { category: { select: { game: true } } } });
             if (!product || product.status === 'HIDDEN') throw new Error('BAD_REQUEST: ไม่พบสินค้านี้ในระบบ');
             if (product.status !== 'AVAILABLE' || product.stock < 1) throw new Error('BAD_REQUEST: สินค้าชิ้นนี้หมดสต็อกแล้ว');
             total += product.price;
             lines.push({
               name: product.title, price: product.price, productId: product.id,
-              meta: JSON.stringify({ code: product.code }),
+              meta: JSON.stringify({ code: product.code, game: product.category.game }),
             });
           } else {
             if (!item.packageId) throw new Error('BAD_REQUEST: รายการเติมเกมต้องระบุแพ็กเกจ');
@@ -303,6 +303,7 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ slug: stri
             paymentMethod: body.paymentMethod,
             slipImage: body.slipImage ?? null,
             status: orderStatus,
+            adminNote: body.type === 'TOPUP' ? 'กรุณาติดต่อเพจร้านเพื่อให้แอดมินดำเนินการเติมเกม' : body.type === 'GAME_ID' && lines.some((l) => l.meta?.includes('freefire')) ? 'กรุณาทักเพจร้านเพื่อรับสินค้า Free Fire' : null,
             contactInfo: body.contact ? JSON.stringify(body.contact) : null,
             items: {
               create: lines.map((l) => ({
