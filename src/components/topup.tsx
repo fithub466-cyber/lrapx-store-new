@@ -196,7 +196,7 @@ export function GameTopupPage({ slug }: { slug: 'freefire-topup' | 'roblox-topup
           ) : packages.length === 0 ? (
             <EmptyState title="ยังไม่มีแพ็กเกจ" description="แพ็กเกจกำลังจะมาเร็ว ๆ นี้" />
           ) : (
-            {isFF ? (
+            isFF ? (
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 {packages.map((p) => <PackageCard key={p.id} name={p.name} price={p.price} amount={p.amount} badge={p.badge} active={selected?.id === p.id} onSelect={() => setSelected(p)} />)}
               </div>
@@ -226,7 +226,7 @@ export function GameTopupPage({ slug }: { slug: 'freefire-topup' | 'roblox-topup
                   <button type="button" onClick={() => setSelectedRobux([])} className="mt-2 text-xs text-muted-foreground underline hover:text-foreground">ล้างรายการที่เลือก</button>
                 </div>}
               </div>
-            )}
+            )
           )}
 
           {/* Step 2 */}
