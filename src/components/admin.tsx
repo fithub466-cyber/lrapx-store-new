@@ -1219,6 +1219,8 @@ function SettingsTab() {
     { key: 'trust_4_image', label: 'ภาพจุดเด่น 4' },
   ];
 
+  const themeColors = [{key:'theme_primary',label:'สีหลักของเว็บ',help:'ปุ่มหลัก ลิงก์ และจุดเน้น'},{key:'theme_background',label:'สีพื้นหลังเว็บไซต์',help:'พื้นหลังทุกหน้า'},{key:'theme_surface',label:'สีพื้นการ์ดและกล่อง',help:'การ์ดสินค้าและเมนู'},{key:'theme_text',label:'สีตัวอักษรหลัก',help:'หัวข้อและเนื้อหาหลัก'},{key:'theme_muted',label:'สีข้อความรอง',help:'คำอธิบาย'},{key:'theme_border',label:'สีเส้นขอบ',help:'กรอบและเส้นแบ่ง'}];
+  const presetThemes = [{name:'ดำ–ทอง',v:['#c89565','#000000','#0a0a0a','#ffffff','#9e9e9e','#242424']},{name:'น้ำเงิน–ฟ้า',v:['#38bdf8','#07111f','#0d1b2d','#f8fafc','#9fb3c8','#26384d']},{name:'ม่วง–ชมพู',v:['#d879ff','#100817','#1d1028','#fff7ff','#c5a9d1','#392344']},{name:'เขียว–มิ้นต์',v:['#34d399','#06130f','#0d211a','#f0fdf4','#9ab8a9','#244234']},{name:'แดง–ดำ',v:['#fb7185','#14090b','#241216','#fff1f2','#c9aeb2','#43242b']}];
   const bankFields: { key: string; label: string; placeholder?: string }[] = [
     { key: 'bank_name', label: 'ชื่อธนาคาร', placeholder: 'เช่น ธนาคารกสิกรไทย (KBank)' },
     { key: 'bank_account_name', label: 'ชื่อบัญชีร้าน' },
@@ -1242,6 +1244,7 @@ function SettingsTab() {
 
   return (
     <div className="space-y-5">
+      <div className="sticky top-2 z-20 flex items-center justify-between gap-3 rounded-xl border border-primary/30 bg-background/95 p-3 shadow-lg backdrop-blur"><div><b className="text-sm">บันทึกการเปลี่ยนแปลง</b><p className="text-xs text-muted-foreground">แก้ไขหลายส่วนแล้วบันทึกได้จากตรงนี้</p></div><Button onClick={save} disabled={saving} className="bg-primary text-primary-foreground">{saving&&<Loader2 className="mr-2 h-4 w-4 animate-spin"/>}บันทึกทั้งหมด</Button></div>
       <div className="gaming-card p-6 space-y-4">
         <div>
           <h3 className="font-display font-semibold mb-1">แบรนด์ร้านค้า</h3>
@@ -1257,6 +1260,14 @@ function SettingsTab() {
             <SingleImageUpload value={settings.store_logo ?? ''} onChange={(url) => setSettings((s) => ({ ...s, store_logo: url }))} label="อัปโหลดโลโก้ร้าน" aspect="aspect-square max-w-40" />
           </div>
         </div>
+      </div>
+      <div className="gaming-card p-6 space-y-5">
+        <h3 className="font-display font-semibold text-lg">🎨 ปรับแต่งธีมและสีเว็บไซต์</h3>
+        <p className="text-sm text-muted-foreground">เลือกชุดสีสำเร็จรูป หรือกดช่องสีเพื่อเลือกเอง สีจะใช้กับพื้นหลัง การ์ด ปุ่ม และตัวอักษร</p>
+        <div className="flex flex-wrap gap-2">{presetThemes.map((p)=><button key={p.name} type="button" onClick={()=>setSettings((s)=>({...s,theme_primary:p.v[0],theme_background:p.v[1],theme_surface:p.v[2],theme_text:p.v[3],theme_muted:p.v[4],theme_border:p.v[5]}))} className="rounded-lg border border-border px-3 py-2 text-sm">{p.name}</button>)}</div>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{themeColors.map((f)=><div key={f.key} className="rounded-xl border border-border p-3"><Label htmlFor={f.key}>{f.label}</Label><p className="my-1 text-xs text-muted-foreground">{f.help}</p><div className="flex items-center gap-2"><input id={f.key} type="color" value={settings[f.key] || ({theme_primary:'#c89565',theme_background:'#000000',theme_surface:'#0a0a0a',theme_text:'#ffffff',theme_muted:'#9e9e9e',theme_border:'#242424'} as Record<string,string>)[f.key]} onChange={(e)=>setSettings((s)=>({...s,[f.key]:e.target.value}))} className="h-10 w-12 rounded border bg-transparent p-1"/><Input value={settings[f.key]||''} placeholder="ค่าเริ่มต้น" onChange={(e)=>setSettings((s)=>({...s,[f.key]:e.target.value}))}/></div></div>)}</div>
+        <div className="grid gap-3 sm:grid-cols-2"><div><Label>ความโค้งของมุม</Label><select value={settings.theme_radius||'12'} onChange={(e)=>setSettings((s)=>({...s,theme_radius:e.target.value}))} className="mt-2 h-10 w-full rounded-md border bg-secondary px-3"><option value="6">เหลี่ยม 6px</option><option value="12">มาตรฐาน 12px</option><option value="18">โค้ง 18px</option><option value="24">โค้งมาก 24px</option></select><p className="mt-1 text-xs text-muted-foreground">กำหนดมุมโค้งของการ์ดและช่องต่าง ๆ</p></div><div><Label>พื้นผิวการ์ด</Label><select value={settings.theme_card_style||'gradient'} onChange={(e)=>setSettings((s)=>({...s,theme_card_style:e.target.value}))} className="mt-2 h-10 w-full rounded-md border bg-secondary px-3"><option value="gradient">ไล่เฉดสี</option><option value="flat">สีเรียบ</option><option value="glass">กระจกโปร่งแสง</option></select><p className="mt-1 text-xs text-muted-foreground">เปลี่ยนลักษณะพื้นหลังของการ์ด</p></div></div>
+        <div className="rounded-xl border p-4" style={{backgroundColor:settings.theme_background||'#000000',color:settings.theme_text||'#ffffff'}}><b>ตัวอย่างธีม</b><div className="mt-2 rounded-lg border p-4" style={{backgroundColor:settings.theme_surface||'#0a0a0a',borderColor:settings.theme_border||'#242424'}}><b>ตัวอย่างการ์ด</b><p className="text-sm" style={{color:settings.theme_muted||'#9e9e9e'}}>คำอธิบายสินค้าและรายละเอียด</p><button type="button" className="mt-2 rounded px-4 py-2" style={{backgroundColor:settings.theme_primary||'#c89565',color:'#fff'}}>ปุ่มตัวอย่าง</button></div></div>
       </div>
       <div className="gaming-card p-6">
         <h3 className="font-display font-semibold mb-4">ข้อมูลร้านและช่องทางติดต่อ</h3>
