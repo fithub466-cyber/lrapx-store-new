@@ -12,11 +12,12 @@ import { ok, err, handleError, requireAdmin } from '@/lib/api-helpers';
 import { hashPassword, makeRef } from '@/lib/auth';
 import { parseJson } from '@/lib/api-helpers';
 
-function mapProduct<T extends { images?: string; details?: string }>(p: T) {
+function mapProduct<T extends { images?: string; details?: string; credentialStock?: string }>(p: T) {
   return {
     ...p,
     images: parseJson<string[]>(p.images ?? '[]', []),
     details: parseJson<{ label: string; value: string }[]>(p.details ?? '[]', []),
+    credentials: parseJson<{ username: string; password: string }[]>(p.credentialStock ?? '[]', []),
   };
 }
 
@@ -28,6 +29,7 @@ const productBody = z.object({
   price: z.number().min(1, 'ราคาต้องมากกว่า 0').max(1000000),
   stock: z.number().int().min(0).max(100000).default(1),
   privateDelivery: z.string().max(2000).nullable().optional(),
+  credentials: z.array(z.object({ username: z.string().trim().min(1).max(120), password: z.string().min(1).max(200) })).max(500).optional(),
   images: z.array(z.string().max(300)).max(8),
   details: z.array(z.object({ label: z.string().max(60), value: z.string().max(200) })).max(15),
   status: z.enum(['AVAILABLE', 'SOLD', 'HIDDEN']),
@@ -39,6 +41,7 @@ const categoryBody = z.object({
   name: z.string().trim().min(2).max(80),
   type: z.enum(['GAME_ID', 'TOPUP']),
   game: z.enum(['freefire', 'roblox', 'giftpass']).nullable().optional(),
+  deliveryMode: z.enum(['PAGE', 'ACCOUNT']).default('PAGE'),
   image: z.string().max(300).nullable().optional(),
   description: z.string().max(500).nullable().optional(),
   sortOrder: z.number().int().min(0).max(99).default(0),
@@ -207,8 +210,13 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ slug: stri
       const body = productBody.parse(await req.json());
       const exists = await db.product.findUnique({ where: { code: body.code } });
       if (exists) return err('รหัสสินค้านี้มีอยู่แล้วในระบบ');
+      const category = await db.category.findUnique({ where: { id: body.categoryId } });
+      if (!category || category.type !== 'GAME_ID') return err('กรุณาเลือกหมวดไอดีเกมที่ถูกต้อง');
+      const credentials = category.deliveryMode === 'ACCOUNT' ? (body.credentials ?? []) : [];
+      const stock = category.deliveryMode === 'ACCOUNT' ? credentials.length : 1;
+      const { credentials: _credentials, ...fields } = body;
       const product = await db.product.create({
-        data: { ...body, status: body.stock === 0 ? 'SOLD' : body.status, images: JSON.stringify(body.images), details: JSON.stringify(body.details) },
+        data: { ...fields, stock, status: stock === 0 ? 'SOLD' : (body.status === 'HIDDEN' ? 'HIDDEN' : 'AVAILABLE'), credentialStock: JSON.stringify(credentials), images: JSON.stringify(body.images), details: JSON.stringify(body.details) },
       });
       return ok({ product }, { status: 201 });
     }
@@ -359,8 +367,17 @@ export async function PATCH(req: NextRequest, ctx: { params: Promise<{ slug: str
     }
     if (head === 'products' && second) {
       const body = productBody.partial().parse(await req.json());
-      const data: Record<string, unknown> = { ...body };
-      if (body.stock !== undefined) data.status = body.stock === 0 ? 'SOLD' : (body.status === 'HIDDEN' ? 'HIDDEN' : 'AVAILABLE');
+      const existing = await db.product.findUnique({ where: { id: second }, include: { category: true } });
+      if (!existing) return err('ไม่พบสินค้า', 404);
+      const categoryId = body.categoryId ?? existing.categoryId;
+      const category = await db.category.findUnique({ where: { id: categoryId } });
+      if (!category || category.type !== 'GAME_ID') return err('กรุณาเลือกหมวดไอดีเกมที่ถูกต้อง');
+      const credentials = category.deliveryMode === 'ACCOUNT'
+        ? (body.credentials ?? parseJson<{ username: string; password: string }[]>(existing.credentialStock, []))
+        : [];
+      const stock = category.deliveryMode === 'ACCOUNT' ? credentials.length : 1;
+      const { credentials: _credentials, stock: _stock, ...fields } = body;
+      const data: Record<string, unknown> = { ...fields, categoryId, stock, credentialStock: JSON.stringify(credentials), status: stock === 0 ? 'SOLD' : (body.status === 'HIDDEN' ? 'HIDDEN' : 'AVAILABLE') };
       if (body.images) data.images = JSON.stringify(body.images);
       if (body.details) data.details = JSON.stringify(body.details);
       const product = await db.product.update({ where: { id: second }, data });
@@ -388,6 +405,14 @@ export async function PATCH(req: NextRequest, ctx: { params: Promise<{ slug: str
     if (head === 'categories' && second) {
       const body = categoryBody.partial().parse(await req.json());
       const cat = await db.category.update({ where: { id: second }, data: body });
+      if (body.deliveryMode) {
+        const products = await db.product.findMany({ where: { categoryId: second } });
+        await db.$transaction(products.map((p) => {
+          const credentials = body.deliveryMode === 'ACCOUNT' ? parseJson<{ username: string; password: string }[]>(p.credentialStock, []) : [];
+          const stock = body.deliveryMode === 'ACCOUNT' ? credentials.length : 1;
+          return db.product.update({ where: { id: p.id }, data: { stock, credentialStock: JSON.stringify(credentials), status: stock === 0 ? 'SOLD' : (p.status === 'HIDDEN' ? 'HIDDEN' : 'AVAILABLE') } });
+        }));
+      }
       return ok({ category: cat });
     }
 
