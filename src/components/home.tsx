@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 
 function StoreLogoIcon({ className }: { className?: string }) {
-  return <img src="/images/logo.png" alt="" aria-hidden="true" className={`object-contain ${className ?? ''}`} />;
+  return <img src="/images/logo-mark.svg" alt="" aria-hidden="true" className={`object-contain ${className ?? ''}`} />;
 }
 
 export function HomePage() {
@@ -208,10 +208,10 @@ function Hero({ settings }: { settings: Record<string, string> }) {
             {settings.hero_subtitle || 'ไอดีเกมคุณภาพ เติมเกมราคาดี มีประกัน พร้อมทีมงานดูแล'}
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <Button size="lg" className="h-12 px-7 text-base btn-neon bg-gradient-to-r from-[#8f603d] to-[#c89565] text-white hover:from-[#a87349] hover:to-[#d7a879]" onClick={() => navigate('/game-ids')}>
+            <Button size="lg" className="h-12 px-7 text-base font-display btn-neon bg-gradient-to-r from-[#8f603d] to-[#c89565] text-white hover:from-[#a87349] hover:to-[#d7a879]" onClick={() => navigate('/game-ids')}>
               <Gamepad2 className="mr-2 h-5 w-5" /> ดูสินค้าไอดีเกม
             </Button>
-            <Button size="lg" variant="outline" className="h-12 px-7 text-base border-[#f0b429]/50 text-[#f0b429] hover:bg-[#f0b429]/10 hover:text-[#f0b429]" onClick={() => navigate('/topup')}>
+            <Button size="lg" variant="outline" className="h-12 px-7 text-base font-display border-[#f0b429]/50 text-[#f0b429] hover:bg-[#f0b429]/10 hover:text-[#f0b429]" onClick={() => navigate('/topup')}>
               <Zap className="mr-2 h-5 w-5" /> เติมเกมเลย
             </Button>
           </div>
@@ -223,7 +223,7 @@ function Hero({ settings }: { settings: Record<string, string> }) {
 
 function TrustBar() {
   const items = [
-    { icon: Timer, title: 'ส่งไวใน 5-10 นาที', desc: '' },
+    { icon: Timer, title: 'ส่งไวใน 5-10 นาที', desc: 'ดำเนินการรวดเร็วทุกออเดอร์' },
     { icon: ShieldCheck, title: 'ปลอดภัย 100%', desc: 'ระบบจ่ายเงินมาตรฐาน' },
     { icon: BadgeCheck, title: 'ประกันไอดี 7 วัน', desc: 'ยินดีรับผิดชอบทุกกรณี' },
     { icon: Sparkles, title: 'ราคาดีกว่าในเกม', desc: 'ส่วนลดทุกแพ็กเกจ' },

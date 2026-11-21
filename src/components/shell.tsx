@@ -52,7 +52,7 @@ export function Header({ currentPath }: { currentPath: string }) {
 
           <button onClick={() => navigate('/')} className="flex shrink-0 items-center gap-2 cursor-pointer" aria-label="ไปหน้าหลัก">
             {/* โลโก้พื้นหลังโปร่งใส ไม่มีกรอบ */}
-            <img src="/images/logo.png" alt="โลโก้ LrapX Store" className="h-10 w-10 object-contain drop-shadow-[0_0_8px_rgba(240,180,41,0.45)]" />
+            <img src="/images/logo-mark.svg" alt="โลโก้ LrapX Store" className="h-10 w-10 object-contain drop-shadow-[0_0_8px_rgba(240,180,41,0.45)]" />
             <span className="text-left leading-tight">
               <span className="font-brand text-lg sm:text-xl font-bold not-italic normal-case tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-[#f7dfbd] via-[#c89565] to-[#a56b42] drop-shadow-[0_0_12px_rgba(200,149,101,0.38)]">LrapX Store</span>
               <span className="hidden sm:block text-[10px] text-muted-foreground tracking-widest uppercase">Game ID &amp; Top-Up Center</span>
@@ -230,7 +230,7 @@ function SidebarDrawer({ currentPath }: { currentPath: string }) {
       >
         <div className="flex items-center justify-between border-b border-border px-4 py-3">
           <div className="flex items-center gap-2.5">
-            <img src="/images/logo.png" alt="โลโก้ LrapX Store" className="h-10 w-10 object-contain" />
+            <img src="/images/logo-mark.svg" alt="โลโก้ LrapX Store" className="h-10 w-10 object-contain" />
             <div className="leading-tight">
               <div className="font-brand text-lg font-bold not-italic normal-case tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-[#f7dfbd] via-[#c89565] to-[#a56b42]">LrapX Store</div>
               <div className="text-[10px] text-muted-foreground">Game ID &amp; Top-Up Center</div>
@@ -385,7 +385,7 @@ export function Footer() {
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
           <div>
             <div className="flex items-center gap-2.5 mb-4">
-              <img src="/images/logo.png" alt="โลโก้ LrapX Store" className="h-12 w-12 object-contain" />
+              <img src="/images/logo-mark.svg" alt="โลโก้ LrapX Store" className="h-12 w-12 object-contain" />
               <div>
                 <div className="font-brand text-xl font-bold not-italic normal-case tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-[#f7dfbd] via-[#c89565] to-[#a56b42]">LrapX Store</div>
                 <div className="text-xs text-muted-foreground">{settings.store_tagline || 'ร้านขายไอดีเกมและเติมเกมออนไลน์'}</div>
