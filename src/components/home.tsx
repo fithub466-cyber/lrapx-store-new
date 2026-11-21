@@ -3,9 +3,9 @@
 
 import { useEffect, useState } from 'react';
 import { navigate } from '@/lib/router';
-import { api, type Category, type Product, type Review, type TopupPackage } from '@/lib/client';
+import { api, type Category, type Product, type Review } from '@/lib/client';
 import { formatTHB } from '@/lib/format';
-import { SectionHeading, RatingStars, SafeImage } from '@/components/shared';
+import { SectionHeading, RatingStars, SafeImage, ProductCard } from '@/components/shared';
 import { Button } from '@/components/ui/button';
 import {
   Gamepad2, Zap, Sparkles, ShieldCheck, Timer, BadgeCheck,
@@ -17,7 +17,7 @@ export function HomePage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [bought, setBought] = useState<Product[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
-  const [recommended, setRecommended] = useState<TopupPackage[]>([]);
+  const [recommendedProducts, setRecommendedProducts] = useState<Product[]>([]);
   const [settings, setSettings] = useState<Record<string, string>>({});
 
   useEffect(() => {
@@ -25,14 +25,14 @@ export function HomePage() {
       api<{ categories: Category[] }>('/api/data/categories', { silent: true }),
       api<{ products: Product[] }>('/api/data/products?limit=8', { silent: true }),
       api<{ reviews: Review[] }>('/api/data/reviews?limit=8', { silent: true }),
-      api<{ packages: TopupPackage[] }>('/api/data/packages?category=giftpass', { silent: true }),
+      api<{ products: Product[] }>('/api/data/products?featured=1&limit=8', { silent: true }),
       api<{ settings: Record<string, string> }>('/api/data/settings', { silent: true }),
     ])
       .then(([c, b, r, p, s]) => {
         setCategories(c.categories);
         setBought(b.products.filter((x) => x.soldCount > 0).slice(0, 8));
         setReviews(r.reviews);
-        setRecommended(p.packages.slice(0, 6));
+        setRecommendedProducts(p.products);
         setSettings(s.settings);
       })
       .catch(() => {})
@@ -61,7 +61,7 @@ export function HomePage() {
         />
         <div className="grid gap-4 sm:grid-cols-2">
           {(loading ? [{}, {}] : idCategories).map((c, i) => (
-            <CategoryBanner key={i} cat={c as Category} loading={loading} href={i === 0 ? '/game-ids/freefire' : '/game-ids/roblox'} />
+            <CategoryBanner key={i} cat={c as Category} loading={loading} href={`/game-ids/${(c as Category).slug}`} />
           ))}
         </div>
       </section>
@@ -111,56 +111,27 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* สินค้าแนะนำ — ไก่ตัน, ผลโมจิตื่น และอื่น ๆ */}
+      {/* สินค้าแนะนำ: แสดงสินค้าเด่นที่แอดมินเลือก ไม่ใช่หมวดหมู่ */}
       <section className="mx-auto max-w-7xl px-4 py-12 md:px-6">
         <SectionHeading
           icon={Sparkles}
           title="สินค้าแนะนำ"
-          subtitle="ของเกมยอดฮิตอย่าง ไก่ตัน, ผลโมจิตื่น, ผลมังกรตื่น และอื่น ๆ อีกมากมาย — จ่ายง่าย ส่งไว มีประกัน"
-          action={
-            <Button variant="outline" size="sm" onClick={() => navigate('/topup/gift-pass')} className="border-primary/40 text-primary hover:bg-primary/10">
-              ดูทั้งหมด <ChevronRight className="ml-1 h-4 w-4" />
-            </Button>
-          }
+          subtitle="สินค้าที่คัดเลือกมาแนะนำจากร้าน LrapX Store"
         />
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4 lg:grid-cols-6">
-          {(loading ? Array.from({ length: 6 }) : recommended).map((p, i) => {
-            const pack = p as TopupPackage;
-            return (
-              <button
-                key={i}
-                onClick={() => navigate('/topup/gift-pass')}
-                className="gaming-card group p-4 text-left cursor-pointer hover:border-primary/50 transition-colors"
-                aria-label={loading ? undefined : `สั่ง ${pack.name}`}
-              >
-                {loading ? (
-                  <div className="h-24" />
-                ) : (
-                  <>
-                    <div className="flex items-start justify-between gap-2">
-                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-violet-600/30 to-fuchsia-500/20 border border-primary/30 text-primary">
-                        <Gift className="h-5 w-5" />
-                      </span>
-                      {pack.badge && (
-                        <span className="rounded-full bg-[#f0b429]/15 border border-[#f0b429]/40 px-2 py-0.5 text-[10px] font-semibold text-[#f0b429] whitespace-nowrap">
-                          {pack.badge}
-                        </span>
-                      )}
-                    </div>
-                    <h3 className="mt-3 font-display text-sm font-semibold leading-snug line-clamp-2 min-h-[2.6rem] group-hover:text-primary transition-colors">
-                      {pack.name}
-                    </h3>
-                    <div className="price-gold text-base mt-2">{formatTHB(pack.price)}</div>
-                    <div className="mt-2 inline-flex items-center text-xs font-medium text-primary">
-                      สั่งของได้เลย <ChevronRight className="ml-0.5 h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
-                    </div>
-                  </>
-                )}
-              </button>
-            );
-          })}
-        </div>
-      </section>
+        {loading ? (
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 md:gap-4">
+            {Array.from({ length: 8 }).map((_, i) => <div key={i} className="gaming-card aspect-[3/4] animate-pulse bg-secondary/40" />)}
+          </div>
+        ) : recommendedProducts.length > 0 ? (
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 md:gap-4">
+            {recommendedProducts.map((product) => <ProductCard key={product.id} product={product} />)}
+          </div>
+        ) : (
+          <div className="gaming-card px-5 py-8 text-center text-sm text-muted-foreground">
+            ยังไม่มีสินค้าแนะนำ — เลือกเปิด “สินค้าแนะนำ” ในหน้าจัดการสินค้าเพื่อให้แสดงที่นี่
+          </div>
+        )}
+      </section>>
     </div>
   );
 }
@@ -303,7 +274,7 @@ function CategoryBanner({ cat, loading, href }: { cat?: Category; loading: boole
 }
 
 function TopupServiceCard({ cat, loading }: { cat?: Category; loading: boolean }) {
-  const href = cat?.slug === 'giftpass' ? '/topup/gift-pass' : cat?.slug === 'freefire-topup' ? '/topup/freefire' : '/topup/roblox';
+  const href = cat?.slug === 'giftpass' ? '/topup/gift-pass' : `/topup/${cat?.slug ?? ''}`;
   const icon = cat?.slug === 'giftpass' ? Gift : Zap;
   const Icon = icon;
   if (loading || !cat) return <div className="gaming-card h-40 animate-pulse bg-secondary/40" />;
