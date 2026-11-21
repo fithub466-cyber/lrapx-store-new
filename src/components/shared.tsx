@@ -82,7 +82,7 @@ export function ProductCard({ product, compact = false }: { product: Product; co
           <img
             src={img}
             alt={product.title}
-            className={`h-full w-full object-cover transition-transform duration-500 group-hover:scale-105 ${sold ? 'grayscale' : ''}`}
+            className={`h-full w-full object-contain p-3 transition-transform duration-500 group-hover:scale-[1.03] ${sold ? 'grayscale' : ''}`}
             loading="lazy"
           />
           <div className="absolute top-2.5 left-2.5 z-10">
@@ -320,7 +320,7 @@ export function SingleImageUpload({
           <div className="flex h-full items-center justify-center"><Loader2 className="h-5 w-5 animate-spin text-primary" /></div>
         ) : value ? (
           <>
-            <img src={value} alt={label} className="h-full w-full object-cover" />
+            <img src={value} alt={label} className="h-full w-full object-contain p-3" />
             <span className="absolute bottom-1.5 right-1.5 rounded-md bg-black/70 px-2 py-0.5 text-[10px] text-white">กดเพื่อเปลี่ยนรูป</span>
           </>
         ) : (
@@ -377,7 +377,7 @@ export function MultiImageUpload({ images, onChange, max = 8 }: { images: string
       <div className="flex flex-wrap gap-2.5">
         {images.map((url, i) => (
           <div key={`${url}-${i}`} className="group relative h-20 w-28 overflow-hidden rounded-lg border border-border bg-secondary/40">
-            <img src={url} alt={`รูปที่ ${i + 1}`} className="h-full w-full object-cover" />
+            <img src={url} alt={`รูปที่ ${i + 1}`} className="h-full w-full object-contain p-1" />
             <button
               type="button"
               onClick={() => onChange(images.filter((_, idx) => idx !== i))}
