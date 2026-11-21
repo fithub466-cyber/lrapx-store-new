@@ -9,6 +9,7 @@ export type Product = {
   categoryId: string;
   price: number;
   stock: number;
+  privateDelivery?: string | null;
   images: string[];
   details: { label: string; value: string }[];
   status: 'AVAILABLE' | 'SOLD' | 'HIDDEN';
