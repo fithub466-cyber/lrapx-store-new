@@ -90,7 +90,7 @@ export function HomePage() {
       </section>
 
       {/* รีวิวจากลูกค้า + สินค้าที่มีคนซื้อ — เลื่อนไปข้าง ๆ เรื่อย ๆ วนไม่สิ้นสุด */}
-      <section className="relative py-12 gaming-grid bg-[#0a0a13] border-y border-border">
+      <section className="relative py-12 gaming-grid bg-[#000000] border-y border-border">
         <div className="mx-auto max-w-7xl px-4 md:px-6">
           <SectionHeading
             icon={Star}
@@ -154,7 +154,7 @@ function MarqueeReviewCard({ r }: { r: Review }) {
   return (
     <div className="gaming-card h-44 overflow-hidden p-4">
       <div className="flex items-center gap-2.5 mb-2.5">
-        <span className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-violet-600 to-fuchsia-500 font-bold text-white text-sm">
+        <span className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-[#8f603d] to-[#c89565] font-bold text-white text-sm">
           {r.name.charAt(0).toUpperCase()}
         </span>
         <div className="min-w-0">
@@ -164,7 +164,7 @@ function MarqueeReviewCard({ r }: { r: Review }) {
       </div>
       <p className="text-xs text-muted-foreground leading-relaxed line-clamp-3">&ldquo;{r.comment}&rdquo;</p>
       {r.gameTag && (
-        <span className="mt-2 inline-block rounded-full bg-primary/15 border border-primary/30 px-2 py-0.5 text-[10px] text-violet-200">
+        <span className="mt-2 inline-block rounded-full bg-primary/15 border border-primary/30 px-2 py-0.5 text-[10px] text-[#d9b18d]">
           {r.gameTag === 'freefire' ? 'Free Fire' : r.gameTag === 'roblox' ? 'Roblox' : r.gameTag === 'giftpass' ? 'Gift Pass' : 'รีวิวร้าน'}
         </span>
       )}
@@ -194,8 +194,8 @@ function Hero({ settings }: { settings: Record<string, string> }) {
     <section className="relative overflow-hidden">
       <div className="absolute inset-0">
         <img src="/images/hero-banner.png" alt="" className="h-full w-full object-cover" aria-hidden="true" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#07070d] via-[#07070d]/75 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#07070d] via-transparent to-[#07070d]/40" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#000000] via-[#000000]/75 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#000000] via-transparent to-[#000000]/40" />
       </div>
       <div className="relative mx-auto max-w-7xl px-4 py-20 md:px-6 md:py-28">
         <div className="max-w-2xl animate-fade-up">
@@ -211,7 +211,7 @@ function Hero({ settings }: { settings: Record<string, string> }) {
             {settings.hero_subtitle || 'ไอดีเกมคุณภาพ เติมเกมราคาดี ส่งไวปลอดภัย มีประกัน เปิดให้บริการ 24 ชั่วโมง'}
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <Button size="lg" className="h-12 px-7 text-base btn-neon bg-gradient-to-r from-violet-600 to-fuchsia-500 text-white hover:from-violet-500 hover:to-fuchsia-400" onClick={() => navigate('/game-ids')}>
+            <Button size="lg" className="h-12 px-7 text-base btn-neon bg-gradient-to-r from-[#8f603d] to-[#c89565] text-white hover:from-violet-500 hover:to-fuchsia-400" onClick={() => navigate('/game-ids')}>
               <Gamepad2 className="mr-2 h-5 w-5" /> ดูสินค้าไอดีเกม
             </Button>
             <Button size="lg" variant="outline" className="h-12 px-7 text-base border-[#f0b429]/50 text-[#f0b429] hover:bg-[#f0b429]/10 hover:text-[#f0b429]" onClick={() => navigate('/topup')}>
@@ -259,12 +259,12 @@ function CategoryBanner({ cat, loading, href }: { cat?: Category; loading: boole
       {cat.image && (
         <img src={cat.image} alt={cat.name} className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" />
       )}
-      <div className="absolute inset-0 bg-gradient-to-r from-[#07070d]/90 via-[#07070d]/55 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-r from-[#000000]/90 via-[#000000]/55 to-transparent" />
       <div className="relative flex h-full flex-col justify-end p-6">
         <h3 className="font-display text-2xl font-bold text-white">{cat.name}</h3>
-        <p className="mt-1 text-sm text-violet-200/80 line-clamp-1">{cat.description}</p>
+        <p className="mt-1 text-sm text-[#d9b18d]/80 line-clamp-1">{cat.description}</p>
         <div className="mt-3 flex items-center gap-3">
-          <span className="rounded-full bg-primary/25 border border-primary/40 px-3 py-1 text-xs font-medium text-violet-200">
+          <span className="rounded-full bg-primary/25 border border-primary/40 px-3 py-1 text-xs font-medium text-[#d9b18d]">
             มีไอดีพร้อมขาย {cat._count?.products ?? 0} ชิ้น
           </span>
           <span className="inline-flex items-center text-sm font-semibold text-[#f0b429]">
@@ -284,7 +284,7 @@ function TopupServiceCard({ cat, loading }: { cat?: Category; loading: boolean }
   return (
     <button onClick={() => navigate(href)} className="gaming-card group p-5 text-left cursor-pointer" aria-label={`เข้าบริการ ${cat.name}`}>
       <div className="flex items-start justify-between">
-        <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-violet-600/30 to-fuchsia-500/20 border border-primary/30 text-primary">
+        <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-[#8f603d]/30 to-[#c89565]/20 border border-primary/30 text-primary">
           <Icon className="h-6 w-6" />
         </span>
         {cat.image && <SafeImage src={cat.image} alt={cat.name} className="h-16 w-28 rounded-lg object-cover opacity-80" />}
