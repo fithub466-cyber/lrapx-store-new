@@ -105,12 +105,12 @@ export function ProductCard({ product, compact = false }: { product: Product; co
           <span className="price-gold text-lg">{formatTHB(product.price)}</span>
           <span className="text-xs text-muted-foreground">ขายแล้ว {product.soldCount} ชิ้น</span>
         </div>
-        <div className="flex flex-wrap sm:flex-nowrap gap-2 pt-1">
-          <Button variant="outline" size="sm" className="min-w-0 flex-1 whitespace-nowrap px-2 text-xs sm:text-sm border-border hover:border-primary hover:text-primary" onClick={() => navigate(`/product/${product.id}`)}>
-            <Eye className="mr-1 h-4 w-4" /> รายละเอียด
+        <div className="grid grid-cols-2 gap-2 pt-1">
+          <Button type="button" variant="outline" size="sm" className="h-auto min-h-10 min-w-0 w-full justify-center gap-1 px-1.5 py-2 text-[11px] leading-tight sm:text-sm border-border hover:border-primary hover:text-primary [&>svg]:mr-0 [&>svg]:h-4 [&>svg]:w-4 [&>svg]:shrink-0" onClick={() => navigate(`/product/${product.id}`)}>
+            <Eye aria-hidden="true" /> <span className="min-w-0 whitespace-normal break-words text-center">รายละเอียด</span>
           </Button>
-          <Button size="sm" className="min-w-0 flex-1 whitespace-nowrap px-2 text-xs sm:text-sm btn-neon" disabled={sold} onClick={() => navigate(`/product/${product.id}`)}>
-            <ShoppingBag className="mr-1 h-4 w-4" /> {sold ? 'ขายแล้ว' : 'ซื้อสินค้า'}
+          <Button type="button" size="sm" className="btn-neon h-auto min-h-10 min-w-0 w-full justify-center gap-1 px-1.5 py-2 text-[11px] leading-tight sm:text-sm [&>svg]:mr-0 [&>svg]:h-4 [&>svg]:w-4 [&>svg]:shrink-0" disabled={sold} onClick={() => navigate(`/product/${product.id}`)}>
+            <ShoppingBag aria-hidden="true" /> <span className="min-w-0 whitespace-normal break-words text-center">{sold ? 'ขายแล้ว' : 'ซื้อสินค้า'}</span>
           </Button>
         </div>
       </div>
