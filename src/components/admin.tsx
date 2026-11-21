@@ -448,7 +448,7 @@ function ProductsTab() {
   const [loading, setLoading] = useState(true);
   const [dialog, setDialog] = useState<'new' | 'edit' | null>(null);
   const [form, setForm] = useState({
-    id: '', code: '', title: '', description: '', categoryId: '', price: '', stock: '1', privateDelivery: '',
+    id: '', code: '', title: '', description: '', categoryId: '', price: '', stock: '1', privateDelivery: '', credentialText: '',
     images: ['/images/prod-ff-1.png', '/images/prod-ff-2.png'] as string[],
     status: 'AVAILABLE', featured: false,
     detailsText: 'เลเวล: 60\nสกินทั้งหมด: 20 สกิน',
@@ -463,12 +463,12 @@ function ProductsTab() {
   }, []);
 
   function openNew() {
-    setForm({ id: '', code: `ID-${Date.now().toString().slice(-6)}`, title: '', description: '', categoryId: cats.find((c) => c.type === 'GAME_ID')?.id ?? '', price: '', stock: '1', privateDelivery: '', images: ['/images/prod-ff-1.png'], status: 'AVAILABLE', featured: false, detailsText: '' });
+    setForm({ id: '', code: `ID-${Date.now().toString().slice(-6)}`, title: '', description: '', categoryId: cats.find((c) => c.type === 'GAME_ID')?.id ?? '', price: '', stock: '1', privateDelivery: '', credentialText: '', images: ['/images/prod-ff-1.png'], status: 'AVAILABLE', featured: false, detailsText: '' });
     setDialog('new');
   }
   function openEdit(p: Product) {
     setForm({
-      id: p.id, code: p.code, title: p.title, description: p.description, categoryId: p.categoryId, price: String(p.price), stock: String(p.status === 'SOLD' ? 0 : (p.stock ?? 1)), privateDelivery: p.privateDelivery ?? '',
+      id: p.id, code: p.code, title: p.title, description: p.description, categoryId: p.categoryId, price: String(p.price), stock: String(p.status === 'SOLD' ? 0 : (p.stock ?? 1)), privateDelivery: p.privateDelivery ?? '', credentialText: (p.credentials ?? []).map((c) => `${c.username}:${c.password}`).join('\n'),
       images: p.images.length > 0 ? p.images : ['/images/prod-ff-1.png'], status: p.status, featured: p.featured,
       detailsText: p.details.map((d) => `${d.label}: ${d.value}`).join('\n'),
     });
@@ -493,9 +493,14 @@ function ProductsTab() {
         const idx = l.indexOf(':');
         return { label: idx > 0 ? l.slice(0, idx).trim() : 'รายละเอียด', value: idx > 0 ? l.slice(idx + 1).trim() : l };
       });
+      const credentials = form.credentialText.split('\n').map((line) => {
+        const index = line.indexOf(':');
+        return index > 0 ? { username: line.slice(0, index).trim(), password: line.slice(index + 1).trim() } : null;
+      }).filter((item): item is { username: string; password: string } => !!item && !!item.username && !!item.password);
       const body = JSON.stringify({
         code: form.code, title: form.title, description: form.description, categoryId: form.categoryId,
-        price: parseFloat(form.price), stock: Math.max(0, parseInt(form.stock, 10) || 0), privateDelivery: form.privateDelivery.trim() || null, images, details, status: form.status, featured: form.featured,
+        price: parseFloat(form.price), stock: selectedCategory.deliveryMode === 'ACCOUNT' ? credentials.length : 1,
+        credentials, privateDelivery: form.privateDelivery.trim() || null, images, details, status: form.status, featured: form.featured,
       });
       if (dialog === 'new') await api('/api/admin/products', { method: 'POST', body });
       else await api(`/api/admin/products/${form.id}`, { method: 'PATCH', body });
@@ -586,7 +591,7 @@ function ProductsTab() {
           <div className="grid gap-3 sm:grid-cols-2">
             <div className="space-y-1.5"><Label>รหัสสินค้า</Label><Input value={form.code} onChange={(e) => setForm((f) => ({ ...f, code: e.target.value }))} className="bg-secondary/60 font-mono" /></div>
             <div className="space-y-1.5"><Label>ราคา (บาท)</Label><Input value={form.price} onChange={(e) => setForm((f) => ({ ...f, price: e.target.value.replace(/[^\d.]/g, '') }))} inputMode="decimal" className="bg-secondary/60" /></div>
-            <div className="space-y-1.5"><Label>จำนวนสต็อก</Label><Input type="number" min="0" step="1" value={form.stock} onChange={(e) => setForm((f) => ({ ...f, stock: e.target.value.replace(/[^\d]/g, '') }))} inputMode="numeric" className="bg-secondary/60" /><p className="text-[11px] text-muted-foreground">ตั้ง 0 เพื่อปิดการขายอัตโนมัติ</p></div>
+            <div className="space-y-1.5"><Label>สต็อกสินค้า</Label><Input value={cats.find((c) => c.id === form.categoryId)?.deliveryMode === 'ACCOUNT' ? String(form.credentialText.split('\n').filter((line) => line.includes(':') && line.split(':')[0].trim() && line.split(':').slice(1).join(':').trim()).length) : '1'} readOnly className="bg-secondary/60" /><p className="text-[11px] text-muted-foreground">{cats.find((c) => c.id === form.categoryId)?.deliveryMode === 'ACCOUNT' ? 'นับจากจำนวน User:Pass ที่เพิ่มด้านล่างอัตโนมัติ' : 'หมวดทักเพจมีสต็อก 1 ชิ้นต่อสินค้า'}</p></div>
             <div className="space-y-1.5 sm:col-span-2"><Label>ชื่อสินค้า</Label><Input value={form.title} onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))} className="bg-secondary/60" /></div>
             <div className="space-y-1.5 sm:col-span-2"><Label>รายละเอียดสินค้า</Label><Textarea value={form.description} onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))} className="bg-secondary/60 min-h-20" /></div>
             <div className="space-y-1.5">
@@ -613,7 +618,7 @@ function ProductsTab() {
               <Label>รูปสินค้า (อัปโหลดจากเครื่อง หรือวางลิงก์)</Label>
               <MultiImageUpload images={form.images} onChange={(urls) => setForm((f) => ({ ...f, images: urls }))} />
             </div>
-            {cats.find((c) => c.id === form.categoryId)?.game === 'roblox' && <div className="space-y-1.5 sm:col-span-2 rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-3"><Label>ข้อมูลส่งมอบ Roblox (ส่วนตัว — ลูกค้าเห็นหลังชำระสำเร็จ)</Label><Textarea value={form.privateDelivery} onChange={(e) => setForm((f) => ({ ...f, privateDelivery: e.target.value }))} placeholder="กรอกข้อมูลบัญชี/โค้ดที่ต้องส่งมอบให้ผู้ซื้อ" className="bg-secondary/60 min-h-24 font-mono text-xs" /><p className="text-[11px] text-muted-foreground">ข้อมูลนี้จะไม่แสดงในหน้าสินค้าสาธารณะ และจะแสดงเฉพาะเจ้าของคำสั่งซื้อเมื่อชำระสำเร็จ</p></div>}
+            {cats.find((c) => c.id === form.categoryId)?.deliveryMode === 'ACCOUNT' && <div className="space-y-1.5 sm:col-span-2 rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-3"><Label>สต็อกบัญชี (User:Pass) — เพิ่ม 1 บรรทัดต่อ 1 บัญชี</Label><Textarea value={form.credentialText} onChange={(e) => setForm((f) => ({ ...f, credentialText: e.target.value }))} placeholder={'user1:pass1\nuser2:pass2'} className="bg-secondary/60 min-h-28 font-mono text-xs" /><p className="text-[11px] text-muted-foreground">จำนวนสต็อกคำนวณจากจำนวนบรรทัด User:Pass และระบบจะตัดออก 1 ชุดเมื่อลูกค้าซื้อสำเร็จ ข้อมูลจะไม่แสดงต่อสาธารณะ</p></div>}
             <div className="space-y-1.5 sm:col-span-2">
               <Label>รายละเอียดไอดี (บรรทัดละรายการ รูปแบบ "หัวข้อ: ค่า")</Label>
               <Textarea value={form.detailsText} onChange={(e) => setForm((f) => ({ ...f, detailsText: e.target.value }))} className="bg-secondary/60 min-h-24 font-mono text-xs" />
@@ -807,7 +812,7 @@ function CategoriesTab() {
   const [cats, setCats] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [dialog, setDialog] = useState<'new' | 'edit' | null>(null);
-  const [form, setForm] = useState({ id: '', slug: '', name: '', type: 'GAME_ID', game: 'freefire', image: '/images/cover-freefire.png', description: '', sortOrder: '6', active: true });
+  const [form, setForm] = useState({ id: '', slug: '', name: '', type: 'GAME_ID', game: 'freefire', deliveryMode: 'PAGE', image: '/images/cover-freefire.png', description: '', sortOrder: '6', active: true });
   const [saving, setSaving] = useState(false);
 
   const load = () => api<{ categories: Category[] }>('/api/admin/categories', { silent: true })
@@ -815,11 +820,11 @@ function CategoriesTab() {
   useEffect(() => { load(); }, []);
 
   function openNew() {
-    setForm({ id: '', slug: '', name: '', type: 'GAME_ID', game: 'freefire', image: '/images/cover-freefire.png', description: '', sortOrder: '6', active: true });
+    setForm({ id: '', slug: '', name: '', type: 'GAME_ID', game: 'freefire', deliveryMode: 'PAGE', image: '/images/cover-freefire.png', description: '', sortOrder: '6', active: true });
     setDialog('new');
   }
   function openEdit(c: Category) {
-    setForm({ id: c.id, slug: c.slug, name: c.name, type: c.type, game: c.game ?? 'freefire', image: c.image ?? '', description: c.description ?? '', sortOrder: String(c.sortOrder ?? 0), active: c.active ?? true });
+    setForm({ id: c.id, slug: c.slug, name: c.name, type: c.type, game: c.game ?? 'freefire', deliveryMode: c.deliveryMode ?? 'PAGE', image: c.image ?? '', description: c.description ?? '', sortOrder: String(c.sortOrder ?? 0), active: c.active ?? true });
     setDialog('edit');
   }
 
@@ -827,7 +832,7 @@ function CategoriesTab() {
     setSaving(true);
     try {
       const body = JSON.stringify({
-        slug: form.slug, name: form.name, type: form.type, game: form.type === 'GAME_ID' ? form.game : null,
+        slug: form.slug, name: form.name, type: form.type, game: form.type === 'GAME_ID' ? form.game : null, deliveryMode: form.type === 'GAME_ID' ? form.deliveryMode : 'PAGE',
         image: form.image || null, description: form.description || null,
         sortOrder: parseInt(form.sortOrder, 10) || 0, active: form.active,
       });
@@ -867,6 +872,7 @@ function CategoriesTab() {
               <th className="px-4 py-3 text-left font-medium">Slug</th>
               <th className="px-4 py-3 text-left font-medium">ชื่อ</th>
               <th className="px-4 py-3 text-left font-medium">ประเภท</th>
+              <th className="px-4 py-3 text-left font-medium">วิธีรับสินค้า</th>
               <th className="px-4 py-3 text-center font-medium">สินค้า</th>
               <th className="px-4 py-3 text-center font-medium">แพ็กเกจ</th>
               <th className="px-4 py-3 text-center font-medium">ใช้งาน</th>
@@ -883,6 +889,7 @@ function CategoriesTab() {
                   <td className="px-4 py-3 font-mono text-xs">{c.slug}</td>
                   <td className="px-4 py-3 font-medium">{c.name}</td>
                   <td className="px-4 py-3">{c.type === 'GAME_ID' ? 'ไอดีเกม' : 'เติมเกม'}</td>
+                  <td className="px-4 py-3">{c.type !== 'GAME_ID' ? 'เติมเกม' : c.deliveryMode === 'ACCOUNT' ? 'รับ User:Pass' : 'ทักเพจ'}</td>
                   <td className="px-4 py-3 text-center">{c._count?.products ?? 0}</td>
                   <td className="px-4 py-3 text-center">{c._count?.packages ?? 0}</td>
                   <td className="px-4 py-3 text-center"><Switch checked={c.active} onCheckedChange={() => toggleActive(c)} aria-label={`สลับการใช้งาน ${c.name}`} /></td>
@@ -916,7 +923,18 @@ function CategoriesTab() {
               </Select>
             </div>
             <div className="space-y-1.5">
-              <Label>เกม (สำหรับไอดีเกม)</Label>
+              {form.type === 'GAME_ID' && <div className="space-y-1.5 sm:col-span-2 rounded-xl border border-primary/30 bg-primary/5 p-3">
+              <Label>วิธีรับสินค้าของหมวดนี้</Label>
+              <Select value={form.deliveryMode} onValueChange={(v) => setForm((f) => ({ ...f, deliveryMode: v }))}>
+                <SelectTrigger className="bg-secondary/60"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="PAGE">ทักเพจร้านเพื่อรับสินค้า (สต็อก 1 ต่อสินค้า)</SelectItem>
+                  <SelectItem value="ACCOUNT">รับ User : Pass อัตโนมัติ (สต็อกจากบัญชีที่เพิ่ม)</SelectItem>
+                </SelectContent>
+              </Select>
+              <p className="text-[11px] text-muted-foreground">เปลี่ยนได้ทั้งตอนสร้างหมวดใหม่และแก้ไขหมวดเดิม</p>
+            </div>}
+            <Label>เกม (สำหรับไอดีเกม)</Label>
               <Select value={form.game} onValueChange={(v) => setForm((f) => ({ ...f, game: v }))} disabled={form.type !== 'GAME_ID'}>
                 <SelectTrigger className="bg-secondary/60"><SelectValue /></SelectTrigger>
                 <SelectContent>
