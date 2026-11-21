@@ -145,6 +145,14 @@ export function PurchaseDialog({
                   ? 'หักเงินจากกระเป๋าเรียบร้อยแล้ว แอดมินจะดำเนินการส่งของ/เติมไอดีโดยเร็วที่สุด'
                   : 'รอแอดมินตรวจสอบสลิปการโอน โดยปกติใช้เวลาไม่เกิน 15 นาทีในเวลาทำการ'}
               </p>
+              {draft?.contact?.note?.includes('สั่งซื้อแล้วทักเพจ LrapX Store') && (
+                <div className="mt-3 rounded-xl border border-[#d6b65d]/40 bg-[#d6b65d]/10 p-3 text-left text-sm leading-6">
+                  <p className="font-semibold text-[#e7ca79]">ขั้นตอนรับ Robux</p>
+                  <p>กรุณาแคปหน้ารายการสั่งซื้อนี้ แล้วส่งให้เพจ LrapX Store พร้อมแจ้ง Username Roblox</p>
+                  <p className="mt-1 font-semibold">เวลาเปิดบริการ 16:30-22:00 น.</p>
+                  <p className="text-xs text-muted-foreground">ไม่ต้องส่งรหัสผ่านหรือรหัส OTP ของบัญชี Roblox</p>
+                </div>
+              )}
             </div>
             <div className="mt-4 flex gap-2">
               <Button className="flex-1 btn-neon" onClick={() => { closeAll(); navigate('/orders'); }}>
