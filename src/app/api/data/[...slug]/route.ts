@@ -158,7 +158,8 @@ export async function GET(req: NextRequest, ctx: { params: Promise<{ slug: strin
         orderBy: { createdAt: 'desc' },
         include: { items: { include: { product: { select: { code: true } } } } },
       });
-      return ok({ orders });
+      const safeOrders = orders.map((order) => ({ ...order, items: order.items.map((item) => ({ ...item, deliveryInfo: order.status === 'COMPLETED' ? item.deliveryInfo : null })) }));
+      return ok({ orders: safeOrders });
     }
 
     if (head === 'order' && second) {
@@ -167,7 +168,8 @@ export async function GET(req: NextRequest, ctx: { params: Promise<{ slug: strin
         include: { items: { include: { product: { select: { code: true } } } } },
       });
       if (!order) return err('NOT_FOUND: ไม่พบคำสั่งซื้อนี้', 404);
-      return ok({ order });
+      const safeOrder = { ...order, items: order.items.map((item) => ({ ...item, deliveryInfo: order.status === 'COMPLETED' ? item.deliveryInfo : null })) };
+      return ok({ order: safeOrder });
     }
 
     if (head === 'deposits') {
@@ -254,7 +256,7 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ slug: stri
             }
             const product = await tx.product.findUnique({ where: { id: item.productId } });
             if (!product || product.status === 'HIDDEN') throw new Error('BAD_REQUEST: ไม่พบสินค้านี้ในระบบ');
-            if (product.status !== 'AVAILABLE') throw new Error('BAD_REQUEST: สินค้าชิ้นนี้ถูกซื้อไปแล้ว');
+            if (product.status !== 'AVAILABLE' || product.stock < 1) throw new Error('BAD_REQUEST: สินค้าชิ้นนี้หมดสต็อกแล้ว');
             total += product.price;
             lines.push({
               name: product.title, price: product.price, productId: product.id,
@@ -337,7 +339,7 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ slug: stri
           if (l.productId) {
             await tx.product.update({
               where: { id: l.productId },
-              data: { status: 'SOLD', soldCount: { increment: 1 } },
+              data: { stock: { decrement: 1 }, status: l.productId ? ((await tx.product.findUnique({ where: { id: l.productId } }))?.stock === 1 ? 'SOLD' : 'AVAILABLE') : 'AVAILABLE', soldCount: { increment: 1 } },
             });
           }
         }
