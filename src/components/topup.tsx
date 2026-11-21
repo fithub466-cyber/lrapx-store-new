@@ -183,7 +183,7 @@ export function GameTopupPage({ slug }: { slug: 'freefire-topup' | 'roblox-topup
           <h1 className="font-display text-3xl font-bold">{isFF ? 'เติมเพชร Free Fire' : 'เติม Robux Roblox'}</h1>
           <p className="mt-2 max-w-2xl text-sm text-muted-foreground">{category?.description ?? ''}</p>
           <div className="mt-4 flex flex-wrap gap-4 text-xs text-muted-foreground">
-            <span className="inline-flex items-center gap-1.5"><Timer className="h-4 w-4 text-primary" /> {isFF ? 'ส่งไวใน 5-15 นาที' : 'เปิดบริการ 16:30-22:00 น.'}</span>
+            <span className="inline-flex items-center gap-1.5"><Timer className="h-4 w-4 text-primary" /> {isFF ? 'ส่งไวใน 5-10 นาที' : 'เปิดบริการ 16:30-22:00 น.'}</span>
             <span className="inline-flex items-center gap-1.5"><ShieldCheck className="h-4 w-4 text-emerald-400" /> {isFF ? 'ไม่ต้องให้รหัสผ่านไอดี' : 'ไม่ต้องส่งรหัสผ่านหรือ OTP'}</span>
           </div>
         </div>
