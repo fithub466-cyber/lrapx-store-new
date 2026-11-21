@@ -129,7 +129,7 @@ export function GameTopupPage({ slug }: { slug: 'freefire-topup' | 'roblox-topup
 
   const idValid = useMemo(() => {
     if (isFF) return /^[0-9]{6,12}$/.test(playerId.trim());
-    return playerId.trim().length >= 3 && (robloxMethod !== 'GAMEPASS' || /^https:\/\/(www\\.)?roblox\\.com\//i.test(gamepassLink.trim()));
+    return playerId.trim().length >= 3 && (robloxMethod !== 'GAMEPASS' || /^https:\/\/(www\.)?roblox\.com\//i.test(gamepassLink.trim()));
   }, [playerId, isFF, robloxMethod, gamepassLink]);
 
   function openConfirm() {
