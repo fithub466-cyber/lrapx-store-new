@@ -338,11 +338,19 @@ export async function PATCH(req: NextRequest, ctx: { params: Promise<{ slug: str
           // คืนสินค้าไอดีกลับมาพร้อมขาย ถ้ายกเลิกก่อนจัดส่งสำเร็จ
           if (body.status === 'CANCELLED' && order.type === 'GAME_ID' && order.status !== 'COMPLETED') {
             for (const item of order.items) {
-              if (item.productId) {
-                await tx.product.update({
-                  where: { id: item.productId },
-                  data: { stock: { increment: 1 }, status: 'AVAILABLE', soldCount: { decrement: 1 } },
-                });
+              if (!item.productId) continue;
+              const product = await tx.product.findUnique({ where: { id: item.productId }, include: { category: { select: { deliveryMode: true } } } });
+              if (!product) continue;
+              if (product.category.deliveryMode === 'ACCOUNT' && item.deliveryInfo) {
+                const username = item.deliveryInfo.match(/User\\s*:\\s*(.*)/i)?.[1]?.trim();
+                const password = item.deliveryInfo.match(/Pass\\s*:\\s*(.*)/i)?.[1]?.trim();
+                if (username && password) {
+                  const inventory = parseJson<{ username: string; password: string }[]>(product.credentialStock, []);
+                  inventory.push({ username, password });
+                  await tx.product.update({ where: { id: product.id }, data: { credentialStock: JSON.stringify(inventory), stock: inventory.length, status: 'AVAILABLE', soldCount: { decrement: 1 } } });
+                }
+              } else {
+                await tx.product.update({ where: { id: product.id }, data: { stock: 1, status: 'AVAILABLE', soldCount: { decrement: 1 } } });
               }
             }
           }
