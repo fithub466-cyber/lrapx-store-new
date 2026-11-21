@@ -209,10 +209,10 @@ function Hero({ settings }: { settings: Record<string, string> }) {
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Button size="lg" className="h-12 px-7 text-base font-display font-semibold whitespace-nowrap btn-neon bg-gradient-to-r from-[#8f603d] to-[#c89565] text-white hover:from-[#a87349] hover:to-[#d7a879]" onClick={() => navigate('/game-ids')}>
-              <Gamepad2 className="mr-2 h-5 w-5" /> ดูสินค้าไอดีเกม
+              <Gamepad2 className="mr-2 h-5 w-5" /> {settings.hero_button_products || "ดูสินค้าไอดีเกม"}
             </Button>
             <Button size="lg" variant="outline" className="h-12 px-7 text-base font-display font-semibold whitespace-nowrap border-[#f0b429]/50 text-[#f0b429] hover:bg-[#f0b429]/10 hover:text-[#f0b429]" onClick={() => navigate('/topup')}>
-              <Zap className="mr-2 h-5 w-5" /> เติมเกมเลย
+              <Zap className="mr-2 h-5 w-5" /> {settings.hero_button_topup || "เติมเกมเลย"}
             </Button>
           </div>
         </div>
