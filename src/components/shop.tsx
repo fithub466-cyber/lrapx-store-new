@@ -347,8 +347,8 @@ export function ProductDetailPage({ id }: { id: string }) {
       {/* สินค้าที่เกี่ยวข้อง */}
       {related.length > 0 && (
         <section className="mt-14">
-          <SectionHeading icon={Eye} title="ไอดีอื่น ๆ ที่น่าสนใจ" subtitle="จากหมวดเดียวกัน" />
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <SectionHeading icon={Eye} title="สินค้าแนะนำ" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {related.map((p) => <ProductCard key={p.id} product={p} />)}
           </div>
         </section>
