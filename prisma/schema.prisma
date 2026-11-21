@@ -1,0 +1,237 @@
+// LrapX Store — Prisma Schema (SQLite, พร้อมย้ายไป PostgreSQL ได้ทันทีเพียงเปลี่ยน provider)
+// หมายเหตุ: SQLite ไม่รองรับ Enum จึงใช้ String + ตรวจสอบค่าที่ Application layer
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ============ สมาชิกและการยืนยันตัวตน ============
+
+model User {
+  id           String   @id @default(cuid())
+  username     String   @unique
+  email        String   @unique
+  passwordHash String // scrypt: salt:hash (ห้ามเก็บรหัสผ่านเป็นข้อความธรรมดา)
+  role         String   @default("USER") // USER | ADMIN
+  status       String   @default("ACTIVE") // ACTIVE | BANNED
+  avatar       String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  sessions    Session[]
+  resets      PasswordResetToken[]
+  wallet      Wallet?
+  orders      Order[]
+  deposits    Deposit[]
+  reviews     Review[]
+  walletTx    WalletTransaction[]
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  tokenHash String   @unique // sha256 ของ token ใน cookie
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  ip        String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+model PasswordResetToken {
+  id        String    @id @default(cuid())
+  code      String // รหัส 6 หลัก
+  tokenHash String    @unique
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+}
+
+// ============ หมวดหมู่ / สินค้า / แพ็กเกจ ============
+
+model Category {
+  id          String  @id @default(cuid())
+  slug        String  @unique // เช่น freefire-id, roblox-id, freefire-topup
+  name        String
+  type        String // GAME_ID | TOPUP
+  game        String? // freefire | roblox | giftpass
+  image       String?
+  description String?
+  sortOrder   Int     @default(0)
+  active      Boolean @default(true)
+
+  products  Product[]
+  packages  TopupPackage[]
+}
+
+model Product {
+  id          String   @id @default(cuid())
+  code        String   @unique // รหัสสินค้า เช่น FF-ID-0001
+  title       String
+  description String
+  categoryId  String
+  category    Category @relation(fields: [categoryId], references: [id])
+  price       Float
+  images      String   @default("[]") // JSON array ของ url
+  details     String   @default("[]") // JSON array [{label, value}]
+  status      String   @default("AVAILABLE") // AVAILABLE | SOLD | HIDDEN
+  featured    Boolean  @default(false)
+  soldCount   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  orderItems OrderItem[]
+
+  @@index([categoryId])
+}
+
+model TopupPackage {
+  id         String  @id @default(cuid())
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id])
+  name       String // เช่น "70 เพชร"
+  amount     Int? // จำนวนเพชร/robux
+  bonusLabel String? // "+8 โบนัส"
+  price      Float
+  badge      String? // ยอดนิยม | คุ้มสุด
+  active     Boolean @default(true)
+  sortOrder  Int     @default(0)
+
+  @@index([categoryId])
+}
+
+// ============ คำสั่งซื้อ ============
+
+model Order {
+  id            String   @id @default(cuid())
+  orderNo       String   @unique // LX-240001
+  userId        String
+  user          User     @relation(fields: [userId], references: [id])
+  type          String // GAME_ID | TOPUP | GIFT_PASS
+  total         Float
+  paymentMethod String // WALLET | BANK_TRANSFER
+  slipImage     String? // สลิปกรณีโอนเงิน
+  status        String   @default("PENDING_PAYMENT") // PENDING_PAYMENT | REVIEWING | PROCESSING | COMPLETED | CANCELLED | REFUNDED
+  contactInfo   String? // JSON เช่น playerId / อีเมล / หมายเหตุลูกค้า
+  adminNote     String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  items OrderItem[]
+
+  @@index([userId])
+  @@index([status])
+}
+
+model OrderItem {
+  id           String   @id @default(cuid())
+  orderId      String
+  order        Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId    String?
+  product      Product? @relation(fields: [productId], references: [id])
+  packageId    String?
+  name         String
+  price        Float
+  quantity     Int      @default(1)
+  meta         String? // JSON snapshot รายละเอียด
+  deliveryInfo String? // ข้อมูลจัดส่ง/ไอดี (เห็นเฉพาะผู้ซื้อ กรอกโดยแอดมิน)
+
+  @@index([orderId])
+  @@index([productId])
+}
+
+// ============ กระเป๋าเงิน ============
+
+model Wallet {
+  id         String   @id @default(cuid())
+  userId     String   @unique
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  balance    Float    @default(0)
+  updatedAt  DateTime @updatedAt
+
+  transactions WalletTransaction[]
+}
+
+model WalletTransaction {
+  id           String   @id @default(cuid())
+  refCode      String   @unique // WT-XXXXXX
+  walletId     String
+  wallet       Wallet   @relation(fields: [walletId], references: [id])
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+  type         String // TOPUP | PURCHASE | REFUND | ADMIN_ADJUST
+  direction    String // IN | OUT
+  amount       Float
+  balanceAfter Float
+  description  String
+  orderId      String?
+  createdAt    DateTime @default(now())
+
+  @@index([walletId])
+  @@index([userId])
+}
+
+// ============ คำขอเติมเงิน ============
+
+model Deposit {
+  id         String    @id @default(cuid())
+  refNo      String    @unique // DP-XXXXXX
+  userId     String
+  user       User      @relation(fields: [userId], references: [id])
+  method     String // TRUEMONEY_ANGPAO | BANK_TRANSFER
+  amount     Float
+  angpaoLink String?
+  slipImage  String?
+  status     String    @default("PENDING") // PENDING | SUCCESS | REJECTED
+  adminNote  String?
+  reviewedAt DateTime?
+  createdAt  DateTime  @default(now())
+
+  @@index([userId])
+  @@index([status])
+}
+
+// ============ ช่องทางชำระเงิน ============
+
+model PaymentMethod {
+  id            String  @id @default(cuid())
+  type          String // BANK | TRUEMONEY
+  bankName      String?
+  accountName   String?
+  accountNumber String?
+  promptPay     String?
+  qrImage       String?
+  active        Boolean @default(true)
+}
+
+// ============ รีวิว ============
+
+model Review {
+  id        String   @id @default(cuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id])
+  name      String
+  rating    Int // 1-5
+  comment   String
+  gameTag   String? // freefire | roblox | giftpass | general
+  approved  Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
+// ============ ตั้งค่าร้าน (key-value) ============
+
+model Setting {
+  key   String @id
+  value String
+}

@@ -1,0 +1,306 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-noto);
+  --font-display: var(--font-kanit);
+  --font-mono: var(--font-geist-mono);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-gold: var(--gold);
+  --color-gold-foreground: var(--gold-foreground);
+  --color-neon: var(--neon);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+:root {
+  --radius: 0.75rem;
+  /* ธีมมืด Gaming — พื้นหลังดำเข้ม + ม่วงนีออน + ทอง */
+  --background: #07070d;
+  --foreground: #ececf2;
+  --card: #10101a;
+  --card-foreground: #ececf2;
+  --popover: #14141f;
+  --popover-foreground: #ececf2;
+  --primary: #a855f7;
+  --primary-foreground: #ffffff;
+  --secondary: #1a1a28;
+  --secondary-foreground: #d9d9e3;
+  --muted: #16161f;
+  --muted-foreground: #9c9cae;
+  --accent: #2a1a45;
+  --accent-foreground: #d8b4fe;
+  --destructive: #f43f5e;
+  --border: #242433;
+  --input: #2a2a3a;
+  --ring: #a855f7;
+  --chart-1: #a855f7;
+  --chart-2: #f0b429;
+  --chart-3: #22d3ee;
+  --chart-4: #f43f5e;
+  --chart-5: #34d399;
+  --sidebar: #0a0a12;
+  --sidebar-foreground: #ececf2;
+  --sidebar-primary: #a855f7;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #1c1c2a;
+  --sidebar-accent-foreground: #d8b4fe;
+  --sidebar-border: #242433;
+  --sidebar-ring: #a855f7;
+  --gold: #f0b429;
+  --gold-foreground: #1a1205;
+  --neon: #c084fc;
+}
+
+.dark {
+  --background: #07070d;
+  --foreground: #ececf2;
+  --card: #10101a;
+  --card-foreground: #ececf2;
+  --popover: #14141f;
+  --popover-foreground: #ececf2;
+  --primary: #a855f7;
+  --primary-foreground: #ffffff;
+  --secondary: #1a1a28;
+  --secondary-foreground: #d9d9e3;
+  --muted: #16161f;
+  --muted-foreground: #9c9cae;
+  --accent: #2a1a45;
+  --accent-foreground: #d8b4fe;
+  --destructive: #f43f5e;
+  --border: #242433;
+  --input: #2a2a3a;
+  --ring: #a855f7;
+  --sidebar: #0a0a12;
+  --sidebar-foreground: #ececf2;
+  --sidebar-primary: #a855f7;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #1c1c2a;
+  --sidebar-accent-foreground: #d8b4fe;
+  --sidebar-border: #242433;
+  --sidebar-ring: #a855f7;
+  --gold: #f0b429;
+  --gold-foreground: #1a1205;
+  --neon: #c084fc;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+    letter-spacing: 0.01em;
+  }
+  h1, h2, h3 {
+    @apply font-display;
+  }
+  ::selection {
+    background: rgba(168, 85, 247, 0.35);
+    color: #ffffff;
+  }
+}
+
+/* ---------- Scrollbar สไตล์ Gaming ---------- */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #0c0c14;
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #3b2a5e, #a855f7);
+  border-radius: 8px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #a855f7;
+}
+
+/* ---------- เอฟเฟกต์ Glow และการ์ดเกมมิ่ง ---------- */
+
+@utility text-glow {
+  text-shadow: 0 0 18px rgba(168, 85, 247, 0.65), 0 0 42px rgba(168, 85, 247, 0.3);
+}
+
+@utility text-glow-gold {
+  text-shadow: 0 0 16px rgba(240, 180, 41, 0.55), 0 0 36px rgba(240, 180, 41, 0.25);
+}
+
+@utility glow-purple {
+  box-shadow: 0 0 22px rgba(168, 85, 247, 0.35), 0 0 60px rgba(168, 85, 247, 0.12);
+}
+
+@utility gaming-grid {
+  background-image:
+    linear-gradient(rgba(168, 85, 247, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(168, 85, 247, 0.07) 1px, transparent 1px);
+  background-size: 44px 44px;
+}
+
+@utility neon-ring {
+  box-shadow:
+    0 0 0 1px rgba(168, 85, 247, 0.5),
+    0 0 24px rgba(168, 85, 247, 0.25),
+    inset 0 0 18px rgba(168, 85, 247, 0.08);
+}
+
+@utility gaming-card {
+  background: linear-gradient(160deg, #12121c 0%, #0e0e16 100%);
+  border: 1px solid #242433;
+  border-radius: var(--radius-lg);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+@utility gaming-card-hover {
+  transform: translateY(-4px);
+  border-color: rgba(168, 85, 247, 0.6);
+  box-shadow: 0 8px 30px rgba(168, 85, 247, 0.18), 0 0 0 1px rgba(168, 85, 247, 0.3);
+}
+
+.gaming-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(168, 85, 247, 0.6);
+  box-shadow: 0 8px 30px rgba(168, 85, 247, 0.18), 0 0 0 1px rgba(168, 85, 247, 0.3);
+}
+
+/* ---------- ปุ่มเอฟเฟกต์กด ---------- */
+.btn-neon {
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow 0.2s ease, transform 0.12s ease, filter 0.2s ease;
+}
+.btn-neon:active {
+  transform: scale(0.96);
+  filter: brightness(1.15);
+}
+.btn-neon::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent 30%, rgba(255, 255, 255, 0.22) 50%, transparent 70%);
+  transform: translateX(-120%);
+  transition: transform 0.5s ease;
+  pointer-events: none;
+}
+.btn-neon:hover::after {
+  transform: translateX(120%);
+}
+
+/* ---------- แอนิเมชัน ---------- */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-fade-up {
+  animation: fadeUp 0.4s ease both;
+}
+
+@keyframes floaty {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+.animate-floaty {
+  animation: floaty 5s ease-in-out infinite;
+}
+
+@keyframes glowPulse {
+  0%, 100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+.animate-glow-pulse {
+  animation: glowPulse 3.5s ease-in-out infinite;
+}
+
+@keyframes shimmerLine {
+  0% {
+    background-position: -400px 0;
+  }
+  100% {
+    background-position: 400px 0;
+  }
+}
+.animate-shimmer {
+  animation: shimmerLine 1.8s linear infinite;
+}
+
+/* เปลี่ยนหน้าแบบนุ่มนวล */
+.page-enter {
+  animation: fadeUp 0.35s ease both;
+}
+
+/* ตัวเลขราคา */
+.price-gold {
+  color: var(--gold);
+  font-weight: 700;
+}
+
+/* ===== แถบเลื่อนวน (marquee): รีวิว + สินค้าที่มีคนซื้อ บนหน้าหลัก ===== */
+@keyframes marqueeX {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.marquee {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marqueeX 55s linear infinite;
+}
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track { animation: none; }
+  .marquee { overflow-x: auto; }
+}
