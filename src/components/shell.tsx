@@ -117,13 +117,13 @@ export function Header({ currentPath }: { currentPath: string }) {
 }
 
 function AnnouncementBar() {
-  const [text, setText] = useState('');
+  const [announcement, setAnnouncement] = useState<Record<string, string>>({});
   useEffect(() => {
     api<{ settings: Record<string, string> }>('/api/data/settings', { silent: true })
-      .then((d) => setText(d.settings.announcement ?? ''))
+      .then((d) => setAnnouncement(d.settings))
       .catch(() => {});
   }, []);
-  if (!text) return null;
+  if (!announcement.announcement) return null;
   return (
     <div className="flex items-center justify-center gap-2 bg-gradient-to-r from-[#8f603d]/25 via-[#c89565]/20 to-[#8f603d]/25 px-4 py-1.5 text-xs text-[#d9b18d] border-b border-[#c89565]/20">
       <Megaphone className="h-3.5 w-3.5 shrink-0" />
@@ -399,7 +399,7 @@ export function Footer() {
               </div>
             </div>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              เราคัดสรรไอดีเกมคุณภาพและให้บริการเติมเกมราคาดี ส่งไวภายในไม่กี่นาที พร้อมทีมแอดมินดูแลตลอดเวลาทำการ ประกันทุกไอดี 7 วันเต็ม
+              {settings.footer_description || 'เราคัดสรรไอดีเกมคุณภาพและให้บริการเติมเกมราคาดี ส่งไวภายในไม่กี่นาที พร้อมทีมแอดมินดูแลตลอดเวลาทำการ ประกันทุกไอดี 7 วันเต็ม'}
             </p>
           </div>
 
