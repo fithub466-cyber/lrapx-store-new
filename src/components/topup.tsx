@@ -103,8 +103,7 @@ export function GameTopupPage({ slug }: { slug: 'freefire-topup' | 'roblox-topup
   const [selectedRobux, setSelectedRobux] = useState<string[]>([]);
   const [playerId, setPlayerId] = useState('');
   const [robloxMethod, setRobloxMethod] = useState<'GAMEPASS' | 'PAGE'>('GAMEPASS');
-  const [gamepassLink, setGamepassLink] = useState('');
-  const [dialogOpen, setDialogOpen] = useState(false);
+    const [dialogOpen, setDialogOpen] = useState(false);
 
   const isFF = slug === 'freefire-topup';
 
@@ -129,8 +128,8 @@ export function GameTopupPage({ slug }: { slug: 'freefire-topup' | 'roblox-topup
 
   const idValid = useMemo(() => {
     if (isFF) return /^[0-9]{6,12}$/.test(playerId.trim());
-    return robloxMethod === 'PAGE' || (playerId.trim().length >= 3 && /^https:\/\/(www\.)?roblox\.com\//i.test(gamepassLink.trim()));
-  }, [playerId, isFF, robloxMethod, gamepassLink]);
+    return robloxMethod === 'PAGE' || playerId.trim().length >= 3;
+  }, [playerId, isFF, robloxMethod]);
 
   function openConfirm() {
     if (isFF ? !selected : selectedRobuxPackages.length === 0) {
@@ -140,7 +139,7 @@ export function GameTopupPage({ slug }: { slug: 'freefire-topup' | 'roblox-topup
     if (!idValid) {
       toast({
         title: isFF ? 'Player ID ไม่ถูกต้อง' : 'ตรวจสอบข้อมูล Roblox อีกครั้ง',
-        description: isFF ? 'Player ID ต้องเป็นตัวเลข 6-12 หลัก (ดูได้ในโปรไฟล์ของเกม)' : 'กรอก Username และลิงก์ Game Pass ของ Roblox ให้ถูกต้อง (ไม่ต้องส่งรหัสผ่านหรือ OTP)',
+        description: isFF ? 'Player ID ต้องเป็นตัวเลข 6-12 หลัก (ดูได้ในโปรไฟล์ของเกม)' : 'กรอก Username Roblox ให้ถูกต้อง (ไม่ต้องส่งรหัสผ่านหรือ OTP)',
         variant: 'destructive',
       });
       return;
@@ -162,7 +161,7 @@ export function GameTopupPage({ slug }: { slug: 'freefire-topup' | 'roblox-topup
         contact: {
           playerId: isFF ? playerId.trim() : undefined,
           robloxUsername: !isFF && robloxMethod === 'GAMEPASS' ? playerId.trim() : undefined,
-          note: !isFF ? (robloxMethod === 'GAMEPASS' ? `วิธีรับบริการ: เติมผ่าน Game Pass | ลิงก์ Game Pass: ${gamepassLink.trim()}` : 'วิธีรับบริการ: สั่งซื้อแล้วทักเพจ LrapX Store | หลังชำระเงิน กรุณาแคปหน้ารายการสั่งซื้อแล้วส่งให้เพจ พร้อมแจ้ง Username Roblox | เปิดบริการ 16:30-22:00 น.') : undefined,
+          note: !isFF ? (robloxMethod === 'GAMEPASS' ? `วิธีรับบริการ: เติมผ่าน ID Pass | Username Roblox: ${playerId.trim()} | ทางร้านจะติดต่อแจ้งขั้นตอนการเติม (ไม่ต้องส่งรหัสผ่านหรือ OTP)` : 'วิธีรับบริการ: สั่งซื้อแล้วทักเพจ LrapX Store | หลังชำระเงิน กรุณาแคปหน้ารายการสั่งซื้อแล้วส่งให้เพจ พร้อมแจ้ง Username Roblox | เปิดบริการ 16:30-22:00 น.') : undefined,
         },
         requirePlayerId: true,
       }
@@ -252,8 +251,8 @@ export function GameTopupPage({ slug }: { slug: 'freefire-topup' | 'roblox-topup
                 <Label className="text-sm font-medium">เลือกวิธีรับ Robux</Label>
                 <div className="grid gap-2 sm:grid-cols-2">
                   <button type="button" onClick={() => setRobloxMethod('GAMEPASS')} className={`rounded-xl border p-3 text-left transition-colors ${robloxMethod === 'GAMEPASS' ? 'border-primary bg-primary/10' : 'border-border hover:border-primary/50'}`}>
-                    <span className="block text-sm font-semibold">เติมผ่าน ID / Game Pass</span>
-                    <span className="mt-1 block text-xs text-muted-foreground">ใช้ชื่อผู้ใช้และลิงก์ Game Pass ไม่ต้องให้รหัสผ่าน</span>
+                    <span className="block text-sm font-semibold">เติมผ่าน ID Pass</span>
+                    <span className="mt-1 block text-xs text-muted-foreground">กรอก Username Roblox เพื่อให้ร้านดำเนินการต่อ ไม่ต้องกรอกรหัสผ่านในเว็บ</span>
                   </button>
                   <button type="button" onClick={() => setRobloxMethod('PAGE')} className={`rounded-xl border p-3 text-left transition-colors ${robloxMethod === 'PAGE' ? 'border-primary bg-primary/10' : 'border-border hover:border-primary/50'}`}>
                     <span className="block text-sm font-semibold">สั่งซื้อแล้วทักเพจ</span>
@@ -286,25 +285,18 @@ export function GameTopupPage({ slug }: { slug: 'freefire-topup' | 'roblox-topup
                 <p className="mt-1 text-xs text-muted-foreground">กรุณาอ่านคำแนะนำก่อนสั่งซื้อ ทางร้านไม่จำเป็นต้องใช้รหัสผ่านหรือรหัส OTP ของบัญชี</p>
               </div>
             )}
-            {!isFF && robloxMethod === 'GAMEPASS' && (
-              <div className="mt-4">
-                <Label htmlFor="roblox-gamepass" className="text-sm font-medium">ลิงก์ Game Pass ของคุณ</Label>
-                <Input id="roblox-gamepass" value={gamepassLink} onChange={(e) => setGamepassLink(e.target.value)} placeholder="https://www.roblox.com/game-pass/..." className="mt-2 h-11 bg-secondary/60" inputMode="url" />
-                <p className="mt-2 text-xs text-muted-foreground">ตั้งค่า Game Pass และราคาให้ตรงกับยอดที่ร้านแจ้งก่อนสั่งซื้อ</p>
-              </div>
-            )}
             <p className="mt-2 text-xs text-muted-foreground">
               {isFF ? (
                 <>ดู Player ID ได้ที่หน้าโปรไฟล์ในเกม Free Fire ด้านบนของชื่อ หรือดูจากคู่มือ <button className="text-primary underline cursor-pointer" onClick={() => navigate('/how-to')}>วิธีใช้งาน</button></>
               ) : robloxMethod === 'GAMEPASS' ? (
-                <>ร้านใช้ลิงก์ Game Pass เพื่อดำเนินการเติมให้คุณ ไม่ต้องส่งรหัสผ่านหรือ OTP ให้ใคร</>
+                <>กรอก Username Roblox แล้วรอทางร้านติดต่อเพื่อแจ้งขั้นตอนการเติม ไม่ต้องส่งรหัสผ่านหรือ OTP</>
               ) : (
                 <>หลังสร้างคำสั่งซื้อแล้ว ให้เปิดหน้าคำสั่งซื้อและติดต่อเพจร้านเพื่อแจ้งรายละเอียดเพิ่มเติม</>
               )}
             </p>
             {(isFF || robloxMethod === 'GAMEPASS') && playerId.trim() && !idValid && (
               <p className="mt-2 text-xs text-amber-400">
-                {isFF ? 'Player ID ต้องเป็นตัวเลข 6-12 หลัก' : robloxMethod === 'GAMEPASS' ? 'กรุณากรอก Username และลิงก์ Game Pass จาก roblox.com ให้ครบ' : 'ชื่อผู้ใช้ต้องมีอย่างน้อย 3 ตัวอักษร'}
+                {isFF ? 'Player ID ต้องเป็นตัวเลข 6-12 หลัก' : robloxMethod === 'GAMEPASS' ? 'กรุณากรอก Username Roblox อย่างน้อย 3 ตัวอักษร' : 'ชื่อผู้ใช้ต้องมีอย่างน้อย 3 ตัวอักษร'}
               </p>
             )}
           </div>
