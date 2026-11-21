@@ -30,41 +30,46 @@ export function TopupHubPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  const services = [
-    { slug: 'freefire-topup', href: '/topup/freefire', name: 'เติมเกม Free Fire', desc: 'เพชร, สมาชิกรายสัปดาห์/รายเดือน ส่งตรงผ่าน Player ID', image: '/images/cover-freefire.png' },
-    { slug: 'roblox-topup', href: '/topup/roblox', name: 'เติมเกม Roblox', desc: 'Robux และสมาชิก Premium รับเองในเกมผ่านระบบ Gamepass', image: '/images/cover-roblox.png' },
-    { slug: 'giftpass', href: '/topup/gift-pass', name: 'Gift Game Pass', desc: 'บัตรสมาชิกและ Game Pass เด็ด ๆ ส่งโค้ดทางแชท', image: '/images/cover-giftpass.png' },
-  ];
+  const categoryHref = (slug: string) => {
+    if (slug === 'freefire-topup') return '/topup/freefire';
+    if (slug === 'roblox-topup') return '/topup/roblox';
+    if (slug === 'giftpass') return '/topup/gift-pass';
+    return `/topup/${slug}`;
+  };
 
   return (
     <div className="page-enter mx-auto max-w-7xl px-4 py-10 md:px-6">
       <SectionHeading icon={Zap} title="หมวดหมู่เติมเกม" subtitle="เลือกบริการเติมเกมที่ต้องการ ราคาดีกว่าในเกม ส่งไวภายใน 5 นาที" />
-      <div className="grid gap-4 md:grid-cols-3">
-        {services.map((s) => {
-          const cat = cats.find((c) => c.slug === s.slug);
-          const count = loading ? null : cat?._count?.packages ?? 0;
-          return (
-            <button key={s.slug} onClick={() => navigate(s.href)} className="gaming-card group relative overflow-hidden text-left cursor-pointer" aria-label={s.name}>
-              <div className="relative h-40 overflow-hidden">
-                <img src={s.image} alt={s.name} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0e0e16] to-transparent" />
-              </div>
-              <div className="p-5">
-                <h3 className="font-display text-lg font-bold group-hover:text-primary transition-colors">{s.name}</h3>
-                <p className="mt-1 text-sm text-muted-foreground">{s.desc}</p>
+      {loading ? (
+        <div className="grid gap-4 sm:grid-cols-2">{[{}, {}].map((_, i) => <div key={i} className="gaming-card h-56 animate-pulse bg-secondary/40" />)}</div>
+      ) : (
+        <div className="grid gap-4 sm:grid-cols-2">
+          {cats.map((c) => (
+            <button
+              key={c.id}
+              onClick={() => navigate(categoryHref(c.slug))}
+              className="gaming-card group relative h-56 overflow-hidden text-left cursor-pointer"
+              aria-label={`เปิดหมวด ${c.name}`}
+            >
+              {c.image && <img src={c.image} alt={c.name} className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" />}
+              <div className="absolute inset-0 bg-gradient-to-t from-[#07070d] via-[#07070d]/60 to-transparent" />
+              <div className="relative flex h-full flex-col justify-end p-6">
+                <h3 className="font-display text-2xl font-bold group-hover:text-primary transition-colors">{c.name}</h3>
+                <p className="mt-1 text-sm text-muted-foreground line-clamp-2">{c.description}</p>
                 <div className="mt-3 flex items-center justify-between">
-                  <span className="text-xs text-violet-300 border border-primary/30 bg-primary/10 rounded-full px-3 py-1">
-                    {count !== null ? `${count} แพ็กเกจ` : 'กำลังโหลด...'}
+                  <span className="rounded-full border border-primary/40 bg-primary/20 px-3 py-1 text-xs font-medium text-violet-200">
+                    มี {c._count?.packages ?? 0} แพ็กเกจ
                   </span>
-                  <span className="inline-flex items-center text-sm font-semibold text-primary">
-                    เริ่มเติมเลย <ChevronRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  <span className="inline-flex items-center gap-1 rounded-lg bg-gradient-to-r from-violet-600 to-fuchsia-500 px-4 py-2 text-sm font-semibold text-white btn-neon">
+                    ดูแพ็กเกจ <ChevronRight className="h-4 w-4" />
                   </span>
                 </div>
               </div>
             </button>
-          );
-        })}
-      </div>
+          ))}
+          {cats.length === 0 && <EmptyState title="ยังไม่มีหมวดหมู่เติมเกม" description="เพิ่มหมวดหมู่ประเภทเติมเกมได้จากหลังบ้าน" />}
+        </div>
+      )}
 
       <div className="mt-10">
         <SectionHeading icon={ShieldCheck} title="ขั้นตอนการเติมเกม" subtitle="ทำตาม 4 ขั้นตอนง่าย ๆ ใช้เวลาไม่เกิน 2 นาที" />
