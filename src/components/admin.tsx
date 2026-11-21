@@ -253,7 +253,7 @@ function OrdersTab() {
             </thead>
             <tbody className="divide-y divide-border">
               {loading ? (
-                <tr><td colSpan={7} className="px-4 py-8 text-center text-muted-foreground">กำลังโหลด...</td></tr>
+                <tr><td colSpan={8} className="px-4 py-8 text-center text-muted-foreground">กำลังโหลด...</td></tr>
               ) : orders.length === 0 ? (
                 <tr><td colSpan={7} className="px-4 py-8 text-center text-muted-foreground">ไม่พบคำสั่งซื้อ</td></tr>
               ) : (
@@ -448,7 +448,7 @@ function ProductsTab() {
   const [loading, setLoading] = useState(true);
   const [dialog, setDialog] = useState<'new' | 'edit' | null>(null);
   const [form, setForm] = useState({
-    id: '', code: '', title: '', description: '', categoryId: '', price: '',
+    id: '', code: '', title: '', description: '', categoryId: '', price: '', stock: '1',
     images: ['/images/prod-ff-1.png', '/images/prod-ff-2.png'] as string[],
     status: 'AVAILABLE', featured: false,
     detailsText: 'เลเวล: 60\nสกินทั้งหมด: 20 สกิน',
@@ -463,12 +463,12 @@ function ProductsTab() {
   }, []);
 
   function openNew() {
-    setForm({ id: '', code: `ID-${Date.now().toString().slice(-6)}`, title: '', description: '', categoryId: cats.find((c) => c.type === 'GAME_ID')?.id ?? '', price: '', images: ['/images/prod-ff-1.png'], status: 'AVAILABLE', featured: false, detailsText: '' });
+    setForm({ id: '', code: `ID-${Date.now().toString().slice(-6)}`, title: '', description: '', categoryId: cats.find((c) => c.type === 'GAME_ID')?.id ?? '', price: '', stock: '1', images: ['/images/prod-ff-1.png'], status: 'AVAILABLE', featured: false, detailsText: '' });
     setDialog('new');
   }
   function openEdit(p: Product) {
     setForm({
-      id: p.id, code: p.code, title: p.title, description: p.description, categoryId: p.categoryId, price: String(p.price),
+      id: p.id, code: p.code, title: p.title, description: p.description, categoryId: p.categoryId, price: String(p.price), stock: String(p.stock ?? 1),
       images: p.images.length > 0 ? p.images : ['/images/prod-ff-1.png'], status: p.status, featured: p.featured,
       detailsText: p.details.map((d) => `${d.label}: ${d.value}`).join('\n'),
     });
@@ -495,7 +495,7 @@ function ProductsTab() {
       });
       const body = JSON.stringify({
         code: form.code, title: form.title, description: form.description, categoryId: form.categoryId,
-        price: parseFloat(form.price), images, details, status: form.status, featured: form.featured,
+        price: parseFloat(form.price), stock: Math.max(0, parseInt(form.stock, 10) || 0), images, details, status: form.status, featured: form.featured,
       });
       if (dialog === 'new') await api('/api/admin/products', { method: 'POST', body });
       else await api(`/api/admin/products/${form.id}`, { method: 'PATCH', body });
@@ -545,6 +545,7 @@ function ProductsTab() {
                 <th className="px-4 py-3 text-left font-medium">ชื่อสินค้า</th>
                 <th className="px-4 py-3 text-left font-medium hidden lg:table-cell">หมวด</th>
                 <th className="px-4 py-3 text-right font-medium">ราคา</th>
+                <th className="px-4 py-3 text-center font-medium">สต็อก</th>
                 <th className="px-4 py-3 text-center font-medium">สถานะ</th>
                 <th className="px-4 py-3 text-right font-medium">จัดการ</th>
               </tr>
@@ -553,7 +554,7 @@ function ProductsTab() {
               {loading ? (
                 <tr><td colSpan={7} className="px-4 py-8 text-center text-muted-foreground">กำลังโหลด...</td></tr>
               ) : products.filter((p) => filterCat === 'ALL' || p.categoryId === filterCat).length === 0 ? (
-                <tr><td colSpan={7} className="px-4 py-8 text-center text-muted-foreground">ยังไม่มีสินค้าในหมวดนี้ — กด "เพิ่มสินค้าใหม่" เพื่อเริ่ม</td></tr>
+                <tr><td colSpan={8} className="px-4 py-8 text-center text-muted-foreground">ยังไม่มีสินค้าในหมวดนี้ — กด "เพิ่มสินค้าใหม่" เพื่อเริ่ม</td></tr>
               ) : (
                 products.filter((p) => filterCat === 'ALL' || p.categoryId === filterCat).map((p) => (
                   <tr key={p.id} className="hover:bg-secondary/30">
@@ -562,6 +563,7 @@ function ProductsTab() {
                     <td className="px-4 py-3 max-w-56"><span className="line-clamp-1">{p.title}</span>{p.featured && <span className="text-[10px] text-[#f0b429]">แนะนำ</span>}</td>
                     <td className="px-4 py-3 hidden lg:table-cell text-muted-foreground">{p.category?.name}</td>
                     <td className="px-4 py-3 text-right price-gold">{formatTHB(p.price)}</td>
+                    <td className="px-4 py-3 text-center font-mono">{p.stock ?? 1}</td>
                     <td className="px-4 py-3 text-center"><StatusBadge status={p.status === 'AVAILABLE' ? 'COMPLETED' : p.status === 'SOLD' ? 'CANCELLED' : 'PENDING_PAYMENT'} /></td>
                     <td className="px-4 py-3 text-right whitespace-nowrap">
                       <Button size="sm" variant="outline" className="mr-1.5" onClick={() => openEdit(p)}><Pencil className="mr-1 h-3.5 w-3.5" /> แก้ไข</Button>
@@ -584,6 +586,7 @@ function ProductsTab() {
           <div className="grid gap-3 sm:grid-cols-2">
             <div className="space-y-1.5"><Label>รหัสสินค้า</Label><Input value={form.code} onChange={(e) => setForm((f) => ({ ...f, code: e.target.value }))} className="bg-secondary/60 font-mono" /></div>
             <div className="space-y-1.5"><Label>ราคา (บาท)</Label><Input value={form.price} onChange={(e) => setForm((f) => ({ ...f, price: e.target.value.replace(/[^\d.]/g, '') }))} inputMode="decimal" className="bg-secondary/60" /></div>
+            <div className="space-y-1.5"><Label>จำนวนสต็อก</Label><Input type="number" min="0" step="1" value={form.stock} onChange={(e) => setForm((f) => ({ ...f, stock: e.target.value.replace(/[^\\d]/g, '') }))} inputMode="numeric" className="bg-secondary/60" /><p className="text-[11px] text-muted-foreground">ตั้ง 0 เพื่อปิดการขายอัตโนมัติ</p></div>
             <div className="space-y-1.5 sm:col-span-2"><Label>ชื่อสินค้า</Label><Input value={form.title} onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))} className="bg-secondary/60" /></div>
             <div className="space-y-1.5 sm:col-span-2"><Label>รายละเอียดสินค้า</Label><Textarea value={form.description} onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))} className="bg-secondary/60 min-h-20" /></div>
             <div className="space-y-1.5">
