@@ -386,7 +386,7 @@ function DepositsTab() {
             </thead>
             <tbody className="divide-y divide-border">
               {loading ? (
-                <tr><td colSpan={7} className="px-4 py-8 text-center text-muted-foreground">กำลังโหลด...</td></tr>
+                <tr><td colSpan={8} className="px-4 py-8 text-center text-muted-foreground">กำลังโหลด...</td></tr>
               ) : deposits.length === 0 ? (
                 <tr><td colSpan={7} className="px-4 py-8 text-center text-muted-foreground">ไม่มีคำขอเติมเงิน</td></tr>
               ) : (
@@ -564,7 +564,7 @@ function ProductsTab() {
                     <td className="px-4 py-3 hidden lg:table-cell text-muted-foreground">{p.category?.name}</td>
                     <td className="px-4 py-3 text-right price-gold">{formatTHB(p.price)}</td>
                     <td className="px-4 py-3 text-center font-mono">{p.stock ?? 1}</td>
-                    <td className="px-4 py-3 text-center"><StatusBadge status={p.status === 'AVAILABLE' ? 'COMPLETED' : p.status === 'SOLD' ? 'CANCELLED' : 'PENDING_PAYMENT'} /></td>
+                    <td className="px-4 py-3 text-center">{p.status === 'SOLD' || p.stock <= 0 ? <span className="rounded-full border border-rose-500/40 bg-rose-500/10 px-2.5 py-1 text-xs text-rose-300">หมดสต็อก</span> : p.status === 'HIDDEN' ? <span className="text-xs text-zinc-400">ซ่อน</span> : <span className="text-xs text-emerald-300">พร้อมขาย</span>}</td>
                     <td className="px-4 py-3 text-right whitespace-nowrap">
                       <Button size="sm" variant="outline" className="mr-1.5" onClick={() => openEdit(p)}><Pencil className="mr-1 h-3.5 w-3.5" /> แก้ไข</Button>
                       <Button size="sm" variant="outline" className="border-destructive/40 text-rose-300 hover:bg-rose-500/10 hover:text-rose-300" onClick={() => remove(p)}><Trash2 className="mr-1 h-3.5 w-3.5" /> ลบ</Button>
