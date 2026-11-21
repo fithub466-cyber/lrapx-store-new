@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 
 function StoreLogoIcon({ className }: { className?: string }) {
-  return <img src="/images/logo-mark.svg" alt="" aria-hidden="true" className={`object-contain ${className ?? ''}`} />;
+  return <img src="/images/logo.png" alt="" aria-hidden="true" className={`object-contain ${className ?? ''}`} />;
 }
 
 export function HomePage() {
