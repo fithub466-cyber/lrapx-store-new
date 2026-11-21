@@ -334,13 +334,18 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ slug: stri
           });
         }
 
-        // สินค้าไอดี: ปิดการขายทันที (กันซื้อซ้ำ)
+        // ตัดสต็อกแบบ atomic ป้องกันลูกค้าสองคนซื้อชิ้นสุดท้ายพร้อมกัน
         for (const l of lines) {
           if (l.productId) {
-            await tx.product.update({
-              where: { id: l.productId },
-              data: { stock: { decrement: 1 }, status: l.productId ? ((await tx.product.findUnique({ where: { id: l.productId } }))?.stock === 1 ? 'SOLD' : 'AVAILABLE') : 'AVAILABLE', soldCount: { increment: 1 } },
+            const changed = await tx.product.updateMany({
+              where: { id: l.productId, status: 'AVAILABLE', stock: { gt: 0 } },
+              data: { stock: { decrement: 1 }, soldCount: { increment: 1 } },
             });
+            if (changed.count !== 1) throw new Error('BAD_REQUEST: สินค้าชิ้นนี้หมดสต็อกแล้ว');
+            const remaining = await tx.product.findUnique({ where: { id: l.productId }, select: { stock: true } });
+            if (remaining?.stock === 0) {
+              await tx.product.update({ where: { id: l.productId }, data: { status: 'SOLD' } });
+            }
           }
         }
 
