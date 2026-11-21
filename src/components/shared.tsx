@@ -53,7 +53,7 @@ export function ProductStatusBadge({ status }: { status: string }) {
   if (status === 'AVAILABLE')
     return <Badge className="bg-emerald-500/15 text-emerald-300 border border-emerald-500/40 hover:bg-emerald-500/15">พร้อมขาย</Badge>;
   if (status === 'SOLD')
-    return <Badge variant="outline" className="bg-rose-500/10 text-rose-300 border-rose-500/40 hover:bg-rose-500/10">ขายแล้ว</Badge>;
+    return <Badge variant="outline" className="bg-rose-500/10 text-rose-300 border-rose-500/40 hover:bg-rose-500/10">หมดสต็อก</Badge>;
   return <Badge variant="outline" className="text-zinc-400 border-zinc-600">ซ่อนอยู่</Badge>;
 }
 
@@ -69,7 +69,7 @@ export function RatingStars({ rating, className = 'h-4 w-4' }: { rating: number;
 
 export function ProductCard({ product, compact = false }: { product: Product; compact?: boolean }) {
   const img = product.images?.[0] ?? '/images/hero-banner.png';
-  const sold = product.status === 'SOLD';
+  const sold = product.status === 'SOLD' || product.stock <= 0;
   return (
     <div className="gaming-card group overflow-hidden flex flex-col h-full">
       <button
@@ -82,7 +82,7 @@ export function ProductCard({ product, compact = false }: { product: Product; co
           <img
             src={img}
             alt={product.title}
-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+            className={`h-full w-full object-cover transition-transform duration-500 group-hover:scale-105 ${sold ? 'grayscale' : ''}`}
             loading="lazy"
           />
           <div className="absolute top-2.5 left-2.5 z-10">
