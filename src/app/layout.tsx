@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Kanit, Noto_Sans_Thai, Chakra_Petch } from "next/font/google";
+import { Kanit, Chakra_Petch } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 
@@ -11,11 +11,6 @@ const kanit = Kanit({
 
 const chakraPetch = Chakra_Petch({ variable: "--font-brand", weight: ["500", "600", "700"], subsets: ["latin"] });
 
-const notoSansThai = Noto_Sans_Thai({
-  variable: "--font-noto",
-  weight: ["400", "500", "600", "700"],
-  subsets: ["thai", "latin"],
-});
 
 export const metadata: Metadata = {
   title: "LrapX Store — ร้านขายไอดีเกมและเติมเกมออนไลน์",
@@ -42,7 +37,7 @@ export default function RootLayout({
   return (
     <html lang="th" suppressHydrationWarning className="dark">
       <body
-        className={`${kanit.variable} ${notoSansThai.variable} ${chakraPetch.variable} antialiased bg-background text-foreground`}
+        className={`${kanit.variable} ${chakraPetch.variable} antialiased bg-background text-foreground`}
       >
         {children}
         <Toaster />
