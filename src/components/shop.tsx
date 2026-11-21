@@ -228,7 +228,7 @@ export function ProductDetailPage({ id }: { id: string }) {
   }
 
   const images = product.images.length > 0 ? product.images : ['/images/hero-banner.png'];
-  const sold = product.status === 'SOLD';
+  const sold = product.status === 'SOLD' || product.stock <= 0;
   const details = product.details;
 
   function buy() {
@@ -265,8 +265,8 @@ export function ProductDetailPage({ id }: { id: string }) {
         {/* แกลเลอรีภาพ */}
         <div>
           <div className="gaming-card overflow-hidden relative">
-            <SafeImage src={images[imgIdx]} alt={product.title} className="aspect-[4/3] w-full object-cover" />
-            {sold && <div className="absolute inset-0 bg-black/55 flex items-center justify-center"><span className="font-display text-2xl font-bold text-rose-300 border border-rose-400/40 bg-black/50 rounded-xl px-6 py-3">ขายแล้ว</span></div>}
+            <SafeImage src={images[imgIdx]} alt={product.title} className={`aspect-[4/3] w-full object-cover ${sold ? 'grayscale' : ''}`} />
+            {sold && <div className="absolute inset-0 bg-black/55 flex items-center justify-center"><span className="font-display text-2xl font-bold text-rose-300 border border-rose-400/40 bg-black/50 rounded-xl px-6 py-3">หมดสต็อก</span></div>}
             <span className="absolute top-3 left-3"><ProductStatusBadge status={product.status} /></span>
             <span className="absolute top-3 right-3 rounded-md bg-black/60 px-2.5 py-1 font-mono text-xs text-[#f0b429] border border-[#f0b429]/30">{product.code}</span>
           </div>
