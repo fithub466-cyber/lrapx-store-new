@@ -1191,6 +1191,33 @@ function SettingsTab() {
     { key: 'policy_warranty', label: 'นโยบายการรับประกัน' },
   ];
 
+  const siteTextFields = [
+    { key: 'hero_badge_text', label: 'ข้อความป้ายเหนือหัวข้อหน้าแรก' },
+    { key: 'hero_button_products', label: 'ข้อความปุ่มดูสินค้าไอดีเกม' },
+    { key: 'hero_button_topup', label: 'ข้อความปุ่มเติมเกม' },
+    { key: 'trust_1_title', label: 'จุดเด่น 1 — หัวข้อ' },
+    { key: 'trust_1_desc', label: 'จุดเด่น 1 — คำอธิบาย' },
+    { key: 'trust_2_title', label: 'จุดเด่น 2 — หัวข้อ' },
+    { key: 'trust_2_desc', label: 'จุดเด่น 2 — คำอธิบาย' },
+    { key: 'trust_3_title', label: 'จุดเด่น 3 — หัวข้อ' },
+    { key: 'trust_3_desc', label: 'จุดเด่น 3 — คำอธิบาย' },
+    { key: 'trust_4_title', label: 'จุดเด่น 4 — หัวข้อ' },
+    { key: 'trust_4_desc', label: 'จุดเด่น 4 — คำอธิบาย' },
+    { key: 'footer_description', label: 'คำอธิบายร้านส่วนท้ายเว็บ' },
+    { key: 'loading_title', label: 'ข้อความหน้าโหลด' },
+    { key: 'loading_subtitle', label: 'ข้อความรองหน้าโหลด' },
+  ];
+  const siteImageFields = [
+    { key: 'hero_background_image', label: 'ภาพพื้นหลังหน้าแรก (Hero)' },
+    { key: 'loader_logo', label: 'โลโก้หน้าโหลด' },
+    { key: 'loader_background_image', label: 'ภาพพื้นหลังหน้าโหลด' },
+    { key: 'robux_package_logo', label: 'โลโก้ Robux บนการ์ดแพ็กเกจ' },
+    { key: 'trust_1_image', label: 'ภาพจุดเด่น 1' },
+    { key: 'trust_2_image', label: 'ภาพจุดเด่น 2' },
+    { key: 'trust_3_image', label: 'ภาพจุดเด่น 3' },
+    { key: 'trust_4_image', label: 'ภาพจุดเด่น 4' },
+  ];
+
   const bankFields: { key: string; label: string; placeholder?: string }[] = [
     { key: 'bank_name', label: 'ชื่อธนาคาร', placeholder: 'เช่น ธนาคารกสิกรไทย (KBank)' },
     { key: 'bank_account_name', label: 'ชื่อบัญชีร้าน' },
@@ -1249,6 +1276,34 @@ function SettingsTab() {
         </div>
       </div>
 
+      <div className="gaming-card p-6 space-y-4">
+        <div>
+          <h3 className="font-display font-semibold mb-1">แก้ไขข้อความในเว็บไซต์</h3>
+          <p className="text-xs text-muted-foreground">แก้หัวข้อ ป้ายประกาศ ปุ่ม จุดเด่นหน้าแรก และข้อความส่วนท้ายเว็บไซต์</p>
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2">
+          {siteTextFields.map((f) => (
+            <div key={f.key} className="space-y-1.5">
+              <Label htmlFor={`st-${f.key}`}>{f.label}</Label>
+              <Input id={`st-${f.key}`} value={settings[f.key] ?? ''} onChange={(e) => setSettings((s) => ({ ...s, [f.key]: e.target.value }))} className="bg-secondary/60" />
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="gaming-card p-6 space-y-4">
+        <div>
+          <h3 className="font-display font-semibold mb-1">จัดการภาพในเว็บไซต์</h3>
+          <p className="text-xs text-muted-foreground">อัปโหลดหรือเปลี่ยนภาพได้จากตรงนี้ รองรับ PNG, JPG และ WEBP สูงสุด 4MB ต่อภาพ</p>
+        </div>
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {siteImageFields.map((f) => (
+            <div key={f.key} className="space-y-1.5">
+              <Label>{f.label}</Label>
+              <SingleImageUpload value={settings[f.key] ?? ''} onChange={(url) => setSettings((s) => ({ ...s, [f.key]: url }))} label={`อัปโหลด${f.label}`} aspect="aspect-video" />
+            </div>
+          ))}
+        </div>
+      </div>
       {/* ช่องทางรับเงิน — โลโก้แสดงหน้าชื่อช่องทางในหน้าเติมเงิน */}
       <div className="gaming-card p-6 space-y-5">
         <div>
