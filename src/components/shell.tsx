@@ -126,8 +126,8 @@ function AnnouncementBar() {
   if (!announcement.announcement) return null;
   return (
     <div className="flex items-center justify-center gap-2 bg-gradient-to-r from-[#8f603d]/25 via-[#c89565]/20 to-[#8f603d]/25 px-4 py-1.5 text-xs text-[#d9b18d] border-b border-[#c89565]/20">
-      <Megaphone className="h-3.5 w-3.5 shrink-0" />
-      <span className="truncate">{text}</span>
+      {announcement.announcement_image ? <img src={announcement.announcement_image} alt="" className="h-5 w-5 object-contain" /> : <Megaphone className="h-3.5 w-3.5 shrink-0" />}
+      <span className="truncate">{announcement.announcement}</span>
     </div>
   );
 }
