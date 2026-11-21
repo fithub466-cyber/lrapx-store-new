@@ -26,6 +26,7 @@ const productBody = z.object({
   description: z.string().trim().min(10, 'รายละเอียดต้องมีอย่างน้อย 10 ตัวอักษร').max(3000),
   categoryId: z.string(),
   price: z.number().min(1, 'ราคาต้องมากกว่า 0').max(1000000),
+  stock: z.number().int().min(0).max(100000).default(1),
   images: z.array(z.string().max(300)).max(8),
   details: z.array(z.object({ label: z.string().max(60), value: z.string().max(200) })).max(15),
   status: z.enum(['AVAILABLE', 'SOLD', 'HIDDEN']),
@@ -331,7 +332,7 @@ export async function PATCH(req: NextRequest, ctx: { params: Promise<{ slug: str
               if (item.productId) {
                 await tx.product.update({
                   where: { id: item.productId },
-                  data: { status: 'AVAILABLE', soldCount: { decrement: 1 } },
+                  data: { stock: { increment: 1 }, status: 'AVAILABLE', soldCount: { decrement: 1 } },
                 });
               }
             }
@@ -358,6 +359,7 @@ export async function PATCH(req: NextRequest, ctx: { params: Promise<{ slug: str
     if (head === 'products' && second) {
       const body = productBody.partial().parse(await req.json());
       const data: Record<string, unknown> = { ...body };
+      if (body.stock !== undefined) data.status = body.stock === 0 ? 'SOLD' : (body.status === 'HIDDEN' ? 'HIDDEN' : 'AVAILABLE');
       if (body.images) data.images = JSON.stringify(body.images);
       if (body.details) data.details = JSON.stringify(body.details);
       const product = await db.product.update({ where: { id: second }, data });
