@@ -10,6 +10,7 @@ export type Product = {
   price: number;
   stock: number;
   privateDelivery?: string | null;
+  credentials?: { username: string; password: string }[];
   images: string[];
   details: { label: string; value: string }[];
   status: 'AVAILABLE' | 'SOLD' | 'HIDDEN';
@@ -25,6 +26,7 @@ export type Category = {
   name: string;
   type: 'GAME_ID' | 'TOPUP';
   game: string | null;
+  deliveryMode?: 'PAGE' | 'ACCOUNT';
   image: string | null;
   description: string | null;
   sortOrder?: number;
