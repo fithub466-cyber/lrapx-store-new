@@ -324,3 +324,6 @@
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }
+
+/* Admin-controlled icon appearance */
+svg.lucide { stroke-width: var(--icon-stroke-width, 2); }
