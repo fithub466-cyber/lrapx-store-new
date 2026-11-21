@@ -382,7 +382,7 @@ export async function PATCH(req: NextRequest, ctx: { params: Promise<{ slug: str
       if (!category || category.type !== 'GAME_ID') return err('กรุณาเลือกหมวดไอดีเกมที่ถูกต้อง');
       const credentials = category.deliveryMode === 'ACCOUNT'
         ? (body.credentials ?? parseJson<{ username: string; password: string }[]>(existing.credentialStock, []))
-        : [];
+        : parseJson<{ username: string; password: string }[]>(existing.credentialStock, []);
       const stock = category.deliveryMode === 'ACCOUNT' ? credentials.length : 1;
       const { credentials: _credentials, stock: _stock, ...fields } = body;
       const data: Record<string, unknown> = { ...fields, categoryId, stock, credentialStock: JSON.stringify(credentials), status: stock === 0 ? 'SOLD' : (body.status === 'HIDDEN' ? 'HIDDEN' : 'AVAILABLE') };
@@ -416,7 +416,7 @@ export async function PATCH(req: NextRequest, ctx: { params: Promise<{ slug: str
       if (body.deliveryMode) {
         const products = await db.product.findMany({ where: { categoryId: second } });
         await db.$transaction(products.map((p) => {
-          const credentials = body.deliveryMode === 'ACCOUNT' ? parseJson<{ username: string; password: string }[]>(p.credentialStock, []) : [];
+          const credentials = parseJson<{ username: string; password: string }[]>(p.credentialStock, []);
           const stock = body.deliveryMode === 'ACCOUNT' ? credentials.length : 1;
           return db.product.update({ where: { id: p.id }, data: { stock, credentialStock: JSON.stringify(credentials), status: stock === 0 ? 'SOLD' : (p.status === 'HIDDEN' ? 'HIDDEN' : 'AVAILABLE') } });
         }));
