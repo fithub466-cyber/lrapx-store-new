@@ -3,7 +3,7 @@
  * POST: register | login | logout | forgot | reset
  * GET (me): ดูผู้ใช้ปัจจุบัน + ยอดกระเป๋า
  */
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse, after } from 'next/server';
 import { z } from 'zod';
 import { db } from '@/lib/db';
 import {
@@ -102,9 +102,22 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ action: st
 
     if (action === 'logout') {
       const token = req.cookies.get(SESSION_COOKIE)?.value;
-      if (token) await destroySession(token);
+      // ตอบกลับและล้าง cookie ทันที ไม่รอการลบ Session ในฐานข้อมูล
+      // งานลบ Session ทำหลังส่ง response เพื่อลดเวลาที่ผู้ใช้ต้องรอ
       const res = ok({ success: true });
-      res.cookies.set(SESSION_COOKIE, '', { httpOnly: true, path: '/', maxAge: 0 });
+      res.cookies.set(SESSION_COOKIE, '', {
+        httpOnly: true,
+        sameSite: 'lax',
+        secure: process.env.NODE_ENV === 'production',
+        path: '/',
+        maxAge: 0,
+        expires: new Date(0),
+      });
+      if (token) after(async () => {
+        await destroySession(token).catch((error) => {
+          console.error('Failed to clean up logged-out session');
+        });
+      });
       return res;
     }
 
