@@ -1215,6 +1215,22 @@ function SettingsTab() {
 
   return (
     <div className="space-y-5">
+      <div className="gaming-card p-6 space-y-4">
+        <div>
+          <h3 className="font-display font-semibold mb-1">แบรนด์ร้านค้า</h3>
+          <p className="text-xs text-muted-foreground">ตั้งชื่อร้านและอัปโหลดโลโก้ที่จะแสดงบนหัวเว็บ เมนูด้านข้าง และท้ายเว็บ</p>
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="space-y-1.5">
+            <Label htmlFor="st-store_name">ชื่อร้าน</Label>
+            <Input id="st-store_name" value={settings.store_name ?? 'LrapX Store'} onChange={(e) => setSettings((s) => ({ ...s, store_name: e.target.value }))} placeholder="ชื่อร้าน" className="bg-secondary/60" />
+          </div>
+          <div className="space-y-1.5">
+            <Label>โลโก้ร้าน (แนะนำ PNG พื้นหลังโปร่งใส)</Label>
+            <SingleImageUpload value={settings.store_logo ?? ''} onChange={(url) => setSettings((s) => ({ ...s, store_logo: url }))} label="อัปโหลดโลโก้ร้าน" aspect="aspect-square max-w-40" />
+          </div>
+        </div>
+      </div>
       <div className="gaming-card p-6">
         <h3 className="font-display font-semibold mb-4">ข้อมูลร้านและช่องทางติดต่อ</h3>
         <div className="grid gap-3 sm:grid-cols-2">
@@ -1300,7 +1316,7 @@ function SettingsTab() {
         </Button>
       </div>
       <p className="text-xs text-muted-foreground">
-        ชื่อร้าน โลโก้ และสี สามารถเปลี่ยนภายหลังได้ — โลโก้แทนที่ไฟล์ /public/images/logo.png สีธีมแก้ได้ที่ CSS Variables ใน globals.css
+        ชื่อร้านและโลโก้เปลี่ยนได้จากส่วน «แบรนด์ร้านค้า» ด้านบน แล้วกดบันทึกตั้งค่าทั้งหมด
       </p>
     </div>
   );
