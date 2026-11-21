@@ -448,7 +448,7 @@ function ProductsTab() {
   const [loading, setLoading] = useState(true);
   const [dialog, setDialog] = useState<'new' | 'edit' | null>(null);
   const [form, setForm] = useState({
-    id: '', code: '', title: '', description: '', categoryId: '', price: '', stock: '1',
+    id: '', code: '', title: '', description: '', categoryId: '', price: '', stock: '1', privateDelivery: '',
     images: ['/images/prod-ff-1.png', '/images/prod-ff-2.png'] as string[],
     status: 'AVAILABLE', featured: false,
     detailsText: 'เลเวล: 60\nสกินทั้งหมด: 20 สกิน',
@@ -463,12 +463,12 @@ function ProductsTab() {
   }, []);
 
   function openNew() {
-    setForm({ id: '', code: `ID-${Date.now().toString().slice(-6)}`, title: '', description: '', categoryId: cats.find((c) => c.type === 'GAME_ID')?.id ?? '', price: '', stock: '1', images: ['/images/prod-ff-1.png'], status: 'AVAILABLE', featured: false, detailsText: '' });
+    setForm({ id: '', code: `ID-${Date.now().toString().slice(-6)}`, title: '', description: '', categoryId: cats.find((c) => c.type === 'GAME_ID')?.id ?? '', price: '', stock: '1', privateDelivery: '', images: ['/images/prod-ff-1.png'], status: 'AVAILABLE', featured: false, detailsText: '' });
     setDialog('new');
   }
   function openEdit(p: Product) {
     setForm({
-      id: p.id, code: p.code, title: p.title, description: p.description, categoryId: p.categoryId, price: String(p.price), stock: String(p.stock ?? 1),
+      id: p.id, code: p.code, title: p.title, description: p.description, categoryId: p.categoryId, price: String(p.price), stock: String(p.status === 'SOLD' ? 0 : (p.stock ?? 1)), privateDelivery: p.privateDelivery ?? '',
       images: p.images.length > 0 ? p.images : ['/images/prod-ff-1.png'], status: p.status, featured: p.featured,
       detailsText: p.details.map((d) => `${d.label}: ${d.value}`).join('\n'),
     });
@@ -495,7 +495,7 @@ function ProductsTab() {
       });
       const body = JSON.stringify({
         code: form.code, title: form.title, description: form.description, categoryId: form.categoryId,
-        price: parseFloat(form.price), stock: Math.max(0, parseInt(form.stock, 10) || 0), images, details, status: form.status, featured: form.featured,
+        price: parseFloat(form.price), stock: Math.max(0, parseInt(form.stock, 10) || 0), privateDelivery: form.privateDelivery.trim() || null, images, details, status: form.status, featured: form.featured,
       });
       if (dialog === 'new') await api('/api/admin/products', { method: 'POST', body });
       else await api(`/api/admin/products/${form.id}`, { method: 'PATCH', body });
@@ -613,6 +613,7 @@ function ProductsTab() {
               <Label>รูปสินค้า (อัปโหลดจากเครื่อง หรือวางลิงก์)</Label>
               <MultiImageUpload images={form.images} onChange={(urls) => setForm((f) => ({ ...f, images: urls }))} />
             </div>
+            {cats.find((c) => c.id === form.categoryId)?.game === 'roblox' && <div className="space-y-1.5 sm:col-span-2 rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-3"><Label>ข้อมูลส่งมอบ Roblox (ส่วนตัว — ลูกค้าเห็นหลังชำระสำเร็จ)</Label><Textarea value={form.privateDelivery} onChange={(e) => setForm((f) => ({ ...f, privateDelivery: e.target.value }))} placeholder="กรอกข้อมูลบัญชี/โค้ดที่ต้องส่งมอบให้ผู้ซื้อ" className="bg-secondary/60 min-h-24 font-mono text-xs" /><p className="text-[11px] text-muted-foreground">ข้อมูลนี้จะไม่แสดงในหน้าสินค้าสาธารณะ และจะแสดงเฉพาะเจ้าของคำสั่งซื้อเมื่อชำระสำเร็จ</p></div>}
             <div className="space-y-1.5 sm:col-span-2">
               <Label>รายละเอียดไอดี (บรรทัดละรายการ รูปแบบ "หัวข้อ: ค่า")</Label>
               <Textarea value={form.detailsText} onChange={(e) => setForm((f) => ({ ...f, detailsText: e.target.value }))} className="bg-secondary/60 min-h-24 font-mono text-xs" />
