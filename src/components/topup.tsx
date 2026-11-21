@@ -20,7 +20,7 @@ import {
 // ================= Hub รวมบริการเติมเกม =================
 
 export function TopupHubPage() {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);\n  const [settings, setSettings] = useState<Record<string, string>>({});
   const [cats, setCats] = useState<Category[]>([]);
 
   useEffect(() => {
@@ -177,7 +177,7 @@ export function GameTopupPage({ slug }: { slug: 'freefire-topup' | 'roblox-topup
 
       {/* Banner */}
       <div className="gaming-card relative overflow-hidden mb-8 p-6 md:p-8">
-        <img src={isFF ? '/images/cover-freefire.png' : '/images/cover-roblox.png'} alt="" className="absolute inset-0 h-full w-full object-cover opacity-25" aria-hidden="true" />
+        <img src={category?.image || (isFF ? '/images/cover-freefire.png' : '/images/cover-roblox.png')} alt="" className="absolute inset-0 h-full w-full object-cover opacity-25" aria-hidden="true" />
         <div className="absolute inset-0 bg-gradient-to-r from-[#07070d]/95 via-[#07070d]/80 to-[#07070d]/40" />
         <div className="relative">
           <h1 className="font-display text-3xl font-bold">{isFF ? 'เติมเพชร Free Fire' : 'เติม Robux Roblox'}</h1>
