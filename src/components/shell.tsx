@@ -34,7 +34,30 @@ export function Header({ currentPath }: { currentPath: string }) {
 
   useEffect(() => {
     api<{ settings: Record<string, string> }>('/api/data/settings', { silent: true })
-      .then((d) => setBrandSettings(d.settings))
+      .then((d) => {
+        setBrandSettings(d.settings);
+        const root = document.documentElement;
+        const colors: Record<string, string> = {
+          '--primary': d.settings.theme_primary || '#c89565',
+          '--ring': d.settings.theme_primary || '#c89565',
+          '--accent-foreground': d.settings.theme_primary || '#c89565',
+          '--sidebar-primary': d.settings.theme_primary || '#c89565',
+          '--gold': d.settings.theme_primary || '#c89565',
+          '--neon': d.settings.theme_primary || '#c89565',
+          '--background': d.settings.theme_background || '#000000',
+          '--card': d.settings.theme_surface || '#0a0a0a',
+          '--popover': d.settings.theme_surface || '#0a0a0a',
+          '--foreground': d.settings.theme_text || '#ffffff',
+          '--card-foreground': d.settings.theme_text || '#ffffff',
+          '--popover-foreground': d.settings.theme_text || '#ffffff',
+          '--muted-foreground': d.settings.theme_muted || '#9e9e9e',
+          '--border': d.settings.theme_border || '#242424',
+          '--input': d.settings.theme_border || '#282828',
+          '--radius': (d.settings.theme_radius || '12') + 'px',
+        };
+        Object.entries(colors).forEach(([key, value]) => root.style.setProperty(key, value));
+        root.dataset.cardStyle = d.settings.theme_card_style || 'gradient';
+      })
       .catch(() => {});
   }, []);
 
