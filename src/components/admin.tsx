@@ -463,7 +463,7 @@ function ProductsTab() {
   }, []);
 
   function openNew() {
-    setForm({ id: '', code: `ID-${Date.now().toString().slice(-6)}`, title: '', description: '', categoryId: cats[0]?.id ?? '', price: '', images: ['/images/prod-ff-1.png'], status: 'AVAILABLE', featured: false, detailsText: '' });
+    setForm({ id: '', code: `ID-${Date.now().toString().slice(-6)}`, title: '', description: '', categoryId: cats.find((c) => c.type === 'GAME_ID')?.id ?? '', price: '', images: ['/images/prod-ff-1.png'], status: 'AVAILABLE', featured: false, detailsText: '' });
     setDialog('new');
   }
   function openEdit(p: Product) {
@@ -476,6 +476,11 @@ function ProductsTab() {
   }
 
   async function save() {
+    const selectedCategory = cats.find((c) => c.id === form.categoryId && c.type === 'GAME_ID');
+    if (!selectedCategory) {
+      toast({ title: 'กรุณาเลือกหมวดไอดีเกมให้ถูกต้อง', description: 'เลือกหมวด Free Fire หรือหมวดไอดีเกมที่ต้องการก่อนบันทึก', variant: 'destructive' });
+      return;
+    }
     setSaving(true);
     try {
       const images = form.images.map((s) => s.trim()).filter(Boolean);
