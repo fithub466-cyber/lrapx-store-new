@@ -27,6 +27,7 @@ const productBody = z.object({
   categoryId: z.string(),
   price: z.number().min(1, 'ราคาต้องมากกว่า 0').max(1000000),
   stock: z.number().int().min(0).max(100000).default(1),
+  privateDelivery: z.string().max(2000).nullable().optional(),
   images: z.array(z.string().max(300)).max(8),
   details: z.array(z.object({ label: z.string().max(60), value: z.string().max(200) })).max(15),
   status: z.enum(['AVAILABLE', 'SOLD', 'HIDDEN']),
