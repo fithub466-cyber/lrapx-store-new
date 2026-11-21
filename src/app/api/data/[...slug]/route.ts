@@ -211,7 +211,7 @@ const orderSchema = z.object({
       })
     )
     .min(1, 'กรุณาเลือกสินค้า')
-    .max(3),
+    .max(50),
   contact: z
     .object({
       playerId: z.string().trim().max(30, 'Player ID ยาวเกินไป').optional(),
