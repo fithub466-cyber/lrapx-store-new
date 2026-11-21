@@ -180,9 +180,9 @@
 }
 
 @utility gaming-card {
-  background: linear-gradient(160deg, #0d0d0d 0%, #0a0a0a 100%);
-  border: 1px solid #1c1c1c;
-  border-radius: var(--radius-lg);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
   transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
 }
 @utility gaming-card-hover {
@@ -193,9 +193,12 @@
 
 .gaming-card:hover {
   transform: translateY(-4px);
-  border-color: rgba(200, 149, 101, 0.5);
-  box-shadow: 0 8px 30px rgba(200, 149, 101, 0.12), 0 0 0 1px rgba(200, 149, 101, 0.2);
+  border-color: color-mix(in srgb, var(--primary) 55%, transparent);
+  box-shadow: 0 8px 30px color-mix(in srgb, var(--primary) 14%, transparent);
 }
+:root[data-card-style="flat"] .gaming-card { background: var(--card); box-shadow: none; }
+:root[data-card-style="glass"] .gaming-card { background: color-mix(in srgb, var(--card) 78%, transparent); backdrop-filter: blur(14px); }
+:root[data-card-style="gradient"] .gaming-card { background: linear-gradient(160deg, color-mix(in srgb, var(--card) 88%, var(--primary) 3%), var(--card)); }
 
 /* ---------- ปุ่มเอฟเฟกต์กด ---------- */
 .btn-neon {
