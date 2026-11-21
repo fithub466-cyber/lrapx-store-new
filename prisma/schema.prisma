@@ -66,6 +66,7 @@ model Category {
   name        String
   type        String // GAME_ID | TOPUP
   game        String? // freefire | roblox | giftpass
+  deliveryMode String @default("PAGE") // PAGE | ACCOUNT
   image       String?
   description String?
   sortOrder   Int     @default(0)
@@ -84,7 +85,8 @@ model Product {
   category    Category @relation(fields: [categoryId], references: [id])
   price       Float
   stock       Int      @default(1) // จำนวนสต็อกที่พร้อมขาย
-  privateDelivery String? // ข้อมูลส่งมอบลับ แสดงให้ผู้ซื้อหลังชำระสำเร็จเท่านั้น
+  privateDelivery String? // legacy private delivery
+  credentialStock String @default("[]") // JSON [{username,password}] คงเหลือสำหรับหมวด ACCOUNT
   images      String   @default("[]") // JSON array ของ url
   details     String   @default("[]") // JSON array [{label, value}]
   status      String   @default("AVAILABLE") // AVAILABLE | SOLD | HIDDEN
