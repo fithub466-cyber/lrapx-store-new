@@ -22,7 +22,6 @@ import {
 export function TopupHubPage() {
   const [loading, setLoading] = useState(true);
   const [settings, setSettings] = useState<Record<string, string>>({});
-  const [settings, setSettings] = useState<Record<string, string>>({});
   const [cats, setCats] = useState<Category[]>([]);
 
   useEffect(() => {
@@ -99,6 +98,7 @@ export function TopupHubPage() {
 export function GameTopupPage({ slug }: { slug: 'freefire-topup' | 'roblox-topup' | 'robux' }) {
   const { user, setPopup } = useApp();
   const [loading, setLoading] = useState(true);
+  const [settings, setSettings] = useState<Record<string, string>>({});
   const [category, setCategory] = useState<Category | null>(null);
   const [packages, setPackages] = useState<TopupPackage[]>([]);
   const [selected, setSelected] = useState<TopupPackage | null>(null);
