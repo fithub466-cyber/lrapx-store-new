@@ -304,3 +304,20 @@
   .marquee-track { animation: none; }
   .marquee { overflow-x: auto; }
 }
+
+
+/* ---------- Responsive touch targets: phone / tablet / desktop ---------- */
+@media (max-width: 767px) {
+  button[data-slot="button"] { min-height: 44px; }
+  button[data-slot="button"][data-size="sm"] { min-height: 42px; }
+  input, select, textarea { font-size: 16px; }
+  [role="tablist"] { max-width: 100%; overflow-x: auto; flex-wrap: nowrap; -webkit-overflow-scrolling: touch; }
+  [role="tab"] { min-height: 44px; flex: 0 0 auto; }
+  .gaming-card:hover { transform: none; }
+}
+@media (min-width: 768px) and (max-width: 1023px) {
+  button[data-slot="button"] { min-height: 42px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
