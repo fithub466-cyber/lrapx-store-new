@@ -586,7 +586,7 @@ function ProductsTab() {
           <div className="grid gap-3 sm:grid-cols-2">
             <div className="space-y-1.5"><Label>รหัสสินค้า</Label><Input value={form.code} onChange={(e) => setForm((f) => ({ ...f, code: e.target.value }))} className="bg-secondary/60 font-mono" /></div>
             <div className="space-y-1.5"><Label>ราคา (บาท)</Label><Input value={form.price} onChange={(e) => setForm((f) => ({ ...f, price: e.target.value.replace(/[^\d.]/g, '') }))} inputMode="decimal" className="bg-secondary/60" /></div>
-            <div className="space-y-1.5"><Label>จำนวนสต็อก</Label><Input type="number" min="0" step="1" value={form.stock} onChange={(e) => setForm((f) => ({ ...f, stock: e.target.value.replace(/[^\\d]/g, '') }))} inputMode="numeric" className="bg-secondary/60" /><p className="text-[11px] text-muted-foreground">ตั้ง 0 เพื่อปิดการขายอัตโนมัติ</p></div>
+            <div className="space-y-1.5"><Label>จำนวนสต็อก</Label><Input type="number" min="0" step="1" value={form.stock} onChange={(e) => setForm((f) => ({ ...f, stock: e.target.value.replace(/[^\d]/g, '') }))} inputMode="numeric" className="bg-secondary/60" /><p className="text-[11px] text-muted-foreground">ตั้ง 0 เพื่อปิดการขายอัตโนมัติ</p></div>
             <div className="space-y-1.5 sm:col-span-2"><Label>ชื่อสินค้า</Label><Input value={form.title} onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))} className="bg-secondary/60" /></div>
             <div className="space-y-1.5 sm:col-span-2"><Label>รายละเอียดสินค้า</Label><Textarea value={form.description} onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))} className="bg-secondary/60 min-h-20" /></div>
             <div className="space-y-1.5">
