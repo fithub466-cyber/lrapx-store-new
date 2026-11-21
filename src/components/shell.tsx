@@ -97,7 +97,7 @@ export function Header({ currentPath }: { currentPath: string }) {
                 <Button size="sm" variant="ghost" className="h-10" onClick={() => setPopup('login')}>
                   <LogIn className="mr-1 h-4 w-4" /> เข้าสู่ระบบ
                 </Button>
-                <Button size="sm" className="h-10 btn-neon bg-gradient-to-r from-violet-600 to-fuchsia-500 text-white hover:from-violet-500 hover:to-fuchsia-400" onClick={() => setPopup('register')}>
+                <Button size="sm" className="h-10 btn-neon bg-gradient-to-r from-[#8f603d] to-[#c89565] text-white hover:from-violet-500 hover:to-fuchsia-400" onClick={() => setPopup('register')}>
                   <UserPlus className="mr-1 h-4 w-4" /> สมัครสมาชิก
                 </Button>
               </div>
@@ -119,7 +119,7 @@ function AnnouncementBar() {
   }, []);
   if (!text) return null;
   return (
-    <div className="flex items-center justify-center gap-2 bg-gradient-to-r from-violet-700/30 via-fuchsia-600/25 to-violet-700/30 px-4 py-1.5 text-xs text-violet-200 border-b border-violet-500/20">
+    <div className="flex items-center justify-center gap-2 bg-gradient-to-r from-[#8f603d]/25 via-[#c89565]/20 to-[#8f603d]/25 px-4 py-1.5 text-xs text-[#d9b18d] border-b border-[#c89565]/20">
       <Megaphone className="h-3.5 w-3.5 shrink-0" />
       <span className="truncate">{text}</span>
     </div>
@@ -153,7 +153,7 @@ function UserMenu() {
         {user.avatar ? (
           <img src={user.avatar} alt={`รูปโปรไฟล์ของ ${user.username}`} className="h-7 w-7 rounded-full object-cover border border-primary/40" />
         ) : (
-          <span className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-violet-600 to-fuchsia-500 text-white text-sm font-bold">
+          <span className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-[#8f603d] to-[#c89565] text-white text-sm font-bold">
             {user.username.charAt(0).toUpperCase()}
           </span>
         )}
@@ -340,12 +340,12 @@ function SidebarDrawer({ currentPath }: { currentPath: string }) {
         {/* กล่องโปรไฟล์ด้านล่างซ้ายของ Sidebar */}
         <div className="border-t border-border p-3">
           {user ? (
-            <div className="rounded-xl bg-gradient-to-br from-violet-600/20 to-fuchsia-600/10 border border-primary/30 p-3.5">
+            <div className="rounded-xl bg-gradient-to-br from-[#8f603d]/20 to-[#c89565]/10 border border-primary/30 p-3.5">
               <div className="flex items-center gap-3">
                 {user.avatar ? (
                   <img src={user.avatar} alt={`รูปโปรไฟล์ของ ${user.username}`} className="h-11 w-11 rounded-full object-cover border-2 border-primary/50 shadow-lg" />
                 ) : (
-                  <span className="flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-br from-violet-600 to-fuchsia-500 text-white text-lg font-bold shadow-lg">
+                  <span className="flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-br from-[#8f603d] to-[#c89565] text-white text-lg font-bold shadow-lg">
                     {user.username.charAt(0).toUpperCase()}
                   </span>
                 )}
@@ -361,7 +361,7 @@ function SidebarDrawer({ currentPath }: { currentPath: string }) {
           ) : (
             <div className="rounded-xl border border-border bg-secondary/50 p-3.5 text-center">
               <p className="text-xs text-muted-foreground mb-2.5">สมัครสมาชิกเพื่อรับสิทธิพิเศษและบันทึกประวัติการซื้อ</p>
-              <Button size="sm" className="w-full h-9 btn-neon bg-gradient-to-r from-violet-600 to-fuchsia-500 text-white" onClick={() => openPopup('register')}>
+              <Button size="sm" className="w-full h-9 btn-neon bg-gradient-to-r from-[#8f603d] to-[#c89565] text-white" onClick={() => openPopup('register')}>
                 สมัครสมาชิกฟรี
               </Button>
             </div>
@@ -381,7 +381,7 @@ export function Footer() {
   }, []);
 
   return (
-    <footer className="mt-auto border-t border-border bg-[#0a0a12]">
+    <footer className="mt-auto border-t border-border bg-[#000000]">
       <div className="mx-auto max-w-7xl px-4 py-12 md:px-6">
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
           <div>
