@@ -41,9 +41,9 @@ function Router({ path }: { path: string }) {
   switch (segments[0]) {
     case 'game-ids': {
       if (segments.length === 1) return <GameIdsPage />;
-      if (segments[1] === 'freefire') return <ProductListPage slug="freefire-id" gameName="ไอดี Free Fire" />;
-      if (segments[1] === 'roblox') return <ProductListPage slug="roblox-id" gameName="ไอดี Roblox" />;
-      return <NotFound />;
+      // รองรับหมวดไอดีที่เพิ่มจากหลังบ้าน โดยใช้ slug ของหมวดโดยตรง
+      const categorySlug = segments[1] === 'freefire' ? 'freefire-id' : segments[1] === 'roblox' ? 'roblox-id' : segments[1];
+      return <ProductListPage slug={categorySlug} />;
     }
     case 'product':
       return segments[1] ? <ProductDetailPage id={segments[1]} /> : <NotFound />;
