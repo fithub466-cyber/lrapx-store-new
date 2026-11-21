@@ -23,7 +23,7 @@ import {
 // ================= โปรไฟล์ =================
 
 export function ProfilePage() {
-  const { user, setUser } = useApp();
+  const { user, setUser, refresh } = useApp();
   const [deposits, setDeposits] = useState<Deposit[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
