@@ -219,11 +219,7 @@ export function GameTopupPage({ slug }: { slug: 'freefire-topup' | 'roblox-topup
                     return <button key={p.id} type="button" onClick={() => setSelectedRobux((current) => active ? current.filter((id) => id !== p.id) : [...current, p.id])} aria-pressed={active}
                       className={'relative flex min-h-[104px] flex-col items-center justify-center gap-1.5 rounded-xl border p-3 text-center transition-all ' + (active ? 'border-[#d6b65d] bg-[#d6b65d]/15 shadow-[0_0_0_1px_rgba(214,182,93,.45)]' : 'border-border bg-card/80 hover:border-[#d6b65d]/70 hover:bg-[#d6b65d]/5')}>
                       {active && <span className="absolute right-2 top-2 text-[10px] font-bold text-[#e7ca79]">เลือกแล้ว ✓</span>}
-                      <span className="mt-2 flex items-center gap-2 font-display text-lg font-bold"><svg viewBox="0 0 100 100" className="h-10 w-10 shrink-0" aria-label="Robux" role="img">
-                        <path fill="#DCC47E" fillRule="evenodd" d="M50 0 C37 0 29 6 19 12 L12 17 C4 23 0 34 0 47 V54 C0 67 4 77 14 83 L39 97 C46 101 54 101 61 97 L86 83 C96 77 100 67 100 54 V47 C100 34 96 23 88 17 L81 12 C71 6 63 0 50 0 Z M50 9 C60 9 66 14 76 20 L83 24 C89 28 92 36 92 47 V54 C92 64 89 71 82 75 L57 90 C53 92 47 92 43 90 L18 75 C11 71 8 64 8 54 V47 C8 36 11 28 17 24 L24 20 C34 14 40 9 50 9 Z"/>
-                        <path fill="#DCC47E" d="M50 18 C40 18 33 24 25 29 L22 31 C15 35 13 42 13 51 V55 C13 64 16 71 23 75 L42 86 C47 89 53 89 58 86 L77 75 C84 71 87 64 87 55 V51 C87 42 85 35 78 31 L75 29 C67 24 60 18 50 18 Z"/>
-                        <rect x="37.5" y="38" width="25" height="25" fill="#050505"/>
-                      </svg>{p.amount?.toLocaleString('th-TH') ?? p.name} <span className="text-xs font-medium text-muted-foreground">Robux</span></span>
+                      <span className="mt-2 flex items-center gap-2 font-display text-lg font-bold"><img src="/images/logo-mark.svg" alt="Robux" className="h-10 w-10 shrink-0 object-contain" />{p.amount?.toLocaleString('th-TH') ?? p.name} <span className="text-xs font-medium text-muted-foreground">Robux</span></span>
                       <span className="text-sm font-semibold text-[#f0b429]">{formatTHB(p.price)}</span>
                     </button>;
                   })}
