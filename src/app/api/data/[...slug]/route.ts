@@ -12,8 +12,9 @@ import { parseJson } from '@/lib/api-helpers';
 
 /** แปลงสินค้า: images/details เป็น array ก่อนส่งให้ client */
 function mapProduct<T extends { images?: string; details?: string }>(p: T) {
+  const { privateDelivery: _privateDelivery, ...safeProduct } = p as T & { privateDelivery?: string | null };
   return {
-    ...p,
+    ...safeProduct,
     images: parseJson<string[]>(p.images ?? '[]', []),
     details: parseJson<{ label: string; value: string }[]>(p.details ?? '[]', []),
   };
@@ -136,7 +137,7 @@ export async function GET(req: NextRequest, ctx: { params: Promise<{ slug: strin
         take: 12,
         include: { category: { select: { slug: true, name: true, game: true } } },
       });
-      return ok({ products, packages });
+      return ok({ products: products.map(mapProduct), packages });
     }
 
     // ===== ส่วนที่ต้องล็อกอิน =====
@@ -244,7 +245,7 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ slug: stri
       }
 
       const result = await db.$transaction(async (tx) => {
-        const lines: { name: string; price: number; productId?: string; packageId?: string; meta?: string }[] = [];
+        const lines: { name: string; price: number; productId?: string; packageId?: string; meta?: string; deliveryInfo?: string | null }[] = [];
         let total = 0;
 
         for (const item of body.items) {
@@ -261,6 +262,7 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ slug: stri
             lines.push({
               name: product.title, price: product.price, productId: product.id,
               meta: JSON.stringify({ code: product.code, game: product.category.game }),
+              deliveryInfo: product.category.game === 'roblox' ? product.privateDelivery : null,
             });
           } else {
             if (!item.packageId) throw new Error('BAD_REQUEST: รายการเติมเกมต้องระบุแพ็กเกจ');
@@ -289,7 +291,7 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ slug: stri
           });
           walletBalanceAfter = updated.balance;
           paidWalletId = wallet.id;
-          orderStatus = 'PROCESSING';
+          orderStatus = body.type === 'GAME_ID' && lines.every((line) => line.deliveryInfo) ? 'COMPLETED' : 'PROCESSING';
         } else {
           orderStatus = 'REVIEWING';
         }
@@ -313,6 +315,7 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ slug: stri
                 price: l.price,
                 quantity: 1,
                 meta: l.meta ?? null,
+                deliveryInfo: l.deliveryInfo ?? null,
               })),
             },
           },
