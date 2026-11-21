@@ -1175,7 +1175,8 @@ function SettingsTab() {
 
   const fields: { key: string; label: string; icon?: React.ComponentType<{ className?: string }>; placeholder?: string }[] = [
     { key: 'store_tagline', label: 'คำโปรยร้าน' },
-    { key: 'hero_badge_text', label: 'ข้อความป้ายเหนือหัวข้อหน้าแรก' },\n    { key: 'hero_title', label: 'หัวข้อ Hero Banner' },
+    { key: 'hero_badge_text', label: 'ข้อความป้ายเหนือหัวข้อหน้าแรก' },
+    { key: 'hero_title', label: 'หัวข้อ Hero Banner' },
     { key: 'hero_subtitle', label: 'ข้อความรอง Hero Banner' },
     { key: 'home_id_title', label: 'หัวข้อหมวดหมู่ไอดีเกม (หน้าแรก)' },
     { key: 'home_id_subtitle', label: 'คำอธิบายหมวดหมู่ไอดีเกม (หน้าแรก)' },
@@ -1211,7 +1212,8 @@ function SettingsTab() {
     { key: 'hero_background_image', label: 'ภาพพื้นหลังหน้าแรก (Hero)' },
     { key: 'loader_logo', label: 'โลโก้หน้าโหลด' },
     { key: 'loader_background_image', label: 'ภาพพื้นหลังหน้าโหลด' },
-    { key: 'robux_package_logo', label: 'โลโก้ Robux บนการ์ดแพ็กเกจ' },\n    { key: 'announcement_image', label: 'ไอคอนภาพแถบประกาศ' },
+    { key: 'robux_package_logo', label: 'โลโก้ Robux บนการ์ดแพ็กเกจ' },
+    { key: 'announcement_image', label: 'ไอคอนภาพแถบประกาศ' },
     { key: 'trust_1_image', label: 'ภาพจุดเด่น 1' },
     { key: 'trust_2_image', label: 'ภาพจุดเด่น 2' },
     { key: 'trust_3_image', label: 'ภาพจุดเด่น 3' },
