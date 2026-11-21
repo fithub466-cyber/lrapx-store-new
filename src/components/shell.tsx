@@ -28,7 +28,7 @@ export const MAIN_MENU: MenuLink[] = [
 ];
 
 export function Header({ currentPath }: { currentPath: string }) {
-  const { user, sidebarOpen, setSidebarOpen, refresh, setPopup } = useApp();
+  const { user, sidebarOpen, setSidebarOpen, setUser, setPopup } = useApp();
   const [q, setQ] = useState('');
 
   function submitSearch(e: React.FormEvent) {
@@ -127,14 +127,14 @@ function AnnouncementBar() {
 }
 
 function UserMenu() {
-  const { user, refresh, setPopup } = useApp();
+  const { user, setUser, setPopup } = useApp();
   if (!user) return null;
   const isAdmin = user.role === 'ADMIN';
 
   async function logout() {
     try {
       await api('/api/auth/logout', { method: 'POST', silent: true });
-      await refresh();
+      setUser(null);
       setPopup(null);
       toast({ title: 'ออกจากระบบสำเร็จ', description: 'แล้วพบกันใหม่ครับ' });
       navigate('/');
@@ -192,7 +192,7 @@ function SidebarDrawer({ currentPath }: { currentPath: string }) {
   async function logout() {
     try {
       await api('/api/auth/logout', { method: 'POST', silent: true });
-      await refresh();
+      setUser(null);
       toast({ title: 'ออกจากระบบสำเร็จ' });
       setSidebarOpen(false);
       setPopup(null);
