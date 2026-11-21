@@ -129,7 +129,7 @@ export function GameTopupPage({ slug }: { slug: 'freefire-topup' | 'roblox-topup
 
   const idValid = useMemo(() => {
     if (isFF) return /^[0-9]{6,12}$/.test(playerId.trim());
-    return playerId.trim().length >= 3 && (robloxMethod !== 'GAMEPASS' || /^https:\/\/(www\.)?roblox\.com\//i.test(gamepassLink.trim()));
+    return robloxMethod === 'PAGE' || (playerId.trim().length >= 3 && /^https:\/\/(www\.)?roblox\.com\//i.test(gamepassLink.trim()));
   }, [playerId, isFF, robloxMethod, gamepassLink]);
 
   function openConfirm() {
@@ -140,7 +140,7 @@ export function GameTopupPage({ slug }: { slug: 'freefire-topup' | 'roblox-topup
     if (!idValid) {
       toast({
         title: isFF ? 'Player ID ไม่ถูกต้อง' : 'ตรวจสอบข้อมูล Roblox อีกครั้ง',
-        description: isFF ? 'Player ID ต้องเป็นตัวเลข 6-12 หลัก (ดูได้ในโปรไฟล์ของเกม)' : robloxMethod === 'GAMEPASS' ? 'กรอกชื่อผู้ใช้และลิงก์ Game Pass ของ Roblox ให้ถูกต้อง (ลิงก์ต้องขึ้นต้นด้วย https://www.roblox.com/)' : 'กรอกชื่อผู้ใช้ Roblox อย่างน้อย 3 ตัวอักษร',
+        description: isFF ? 'Player ID ต้องเป็นตัวเลข 6-12 หลัก (ดูได้ในโปรไฟล์ของเกม)' : 'กรอก Username และลิงก์ Game Pass ของ Roblox ให้ถูกต้อง (ไม่ต้องส่งรหัสผ่านหรือ OTP)',
         variant: 'destructive',
       });
       return;
@@ -161,8 +161,8 @@ export function GameTopupPage({ slug }: { slug: 'freefire-topup' | 'roblox-topup
         price: isFF ? selected!.price : robuxTotal,
         contact: {
           playerId: isFF ? playerId.trim() : undefined,
-          robloxUsername: !isFF ? playerId.trim() : undefined,
-          note: !isFF ? `วิธีรับบริการ: ${robloxMethod === 'GAMEPASS' ? 'เติมผ่าน Game Pass' : 'สั่งซื้อแล้วติดต่อเพจร้าน'}${robloxMethod === 'GAMEPASS' ? ` | ลิงก์ Game Pass: ${gamepassLink.trim()}` : ''}` : undefined,
+          robloxUsername: !isFF && robloxMethod === 'GAMEPASS' ? playerId.trim() : undefined,
+          note: !isFF ? (robloxMethod === 'GAMEPASS' ? `วิธีรับบริการ: เติมผ่าน Game Pass | ลิงก์ Game Pass: ${gamepassLink.trim()}` : 'วิธีรับบริการ: สั่งซื้อแล้วทักเพจ LrapX Store | หลังชำระเงิน กรุณาแคปหน้ารายการสั่งซื้อแล้วส่งให้เพจ พร้อมแจ้ง Username Roblox | เปิดบริการ 16:30-22:00 น.') : undefined,
         },
         requirePlayerId: true,
       }
@@ -186,8 +186,8 @@ export function GameTopupPage({ slug }: { slug: 'freefire-topup' | 'roblox-topup
           <h1 className="font-display text-3xl font-bold">{isFF ? 'เติมเพชร Free Fire' : 'เติม Robux Roblox'}</h1>
           <p className="mt-2 max-w-2xl text-sm text-muted-foreground">{category?.description ?? ''}</p>
           <div className="mt-4 flex flex-wrap gap-4 text-xs text-muted-foreground">
-            <span className="inline-flex items-center gap-1.5"><Timer className="h-4 w-4 text-primary" /> ส่งไวใน 5-15 นาที</span>
-            <span className="inline-flex items-center gap-1.5"><ShieldCheck className="h-4 w-4 text-emerald-400" /> ไม่ต้องให้รหัสผ่านไอดี ปลอดภัย 100%</span>
+            <span className="inline-flex items-center gap-1.5"><Timer className="h-4 w-4 text-primary" /> {isFF ? 'ส่งไวใน 5-15 นาที' : 'เปิดบริการ 16:30-22:00 น.'}</span>
+            <span className="inline-flex items-center gap-1.5"><ShieldCheck className="h-4 w-4 text-emerald-400" /> {isFF ? 'ไม่ต้องให้รหัสผ่านไอดี' : 'ไม่ต้องส่งรหัสผ่านหรือ OTP'}</span>
           </div>
         </div>
       </div>
@@ -222,11 +222,10 @@ export function GameTopupPage({ slug }: { slug: 'freefire-topup' | 'roblox-topup
                     return <button key={p.id} type="button" onClick={() => setSelectedRobux((current) => active ? current.filter((id) => id !== p.id) : [...current, p.id])} aria-pressed={active}
                       className={'relative flex min-h-[104px] flex-col items-center justify-center gap-1.5 rounded-xl border p-3 text-center transition-all ' + (active ? 'border-[#d6b65d] bg-[#d6b65d]/15 shadow-[0_0_0_1px_rgba(214,182,93,.45)]' : 'border-border bg-card/80 hover:border-[#d6b65d]/70 hover:bg-[#d6b65d]/5')}>
                       {active && <span className="absolute right-2 top-2 text-[10px] font-bold text-[#e7ca79]">เลือกแล้ว ✓</span>}
-                      <span className="mt-2 flex items-center gap-2 font-display text-lg font-bold"><svg viewBox="0 0 100 112" className="h-9 w-9 shrink-0 drop-shadow-[0_2px_5px_rgba(214,182,93,.2)]" aria-label="Robux" role="img">
-                        <defs><linearGradient id="robuxGold" x1="0" y1="0" x2="0.8" y2="1"><stop offset="0%" stopColor="#f4e3a0"/><stop offset="55%" stopColor="#c9ad60"/><stop offset="100%" stopColor="#f7dda0"/></linearGradient></defs>
-                        <path fill="url(#robuxGold)" fillRule="evenodd" d="M50 1 C40 1 33 6 25 11 L12 19 C4 24 0 34 0 45 V72 C0 84 5 93 15 99 L39 109 C46 113 54 113 61 109 L85 99 C95 93 100 84 100 72 V45 C100 34 96 24 88 19 L75 11 C67 6 60 1 50 1 Z M50 10 C58 10 64 14 71 18 L83 25 C89 29 92 36 92 45 V72 C92 80 89 86 82 90 L57 103 C53 105 47 105 43 103 L18 90 C11 86 8 80 8 72 V45 C8 36 11 29 17 25 L29 18 C36 14 42 10 50 10 Z"/>
-                        <path fill="url(#robuxGold)" d="M50 20 C42 20 36 24 29 28 L22 33 C16 37 14 44 14 51 V69 C14 77 17 83 24 87 L42 98 C47 101 53 101 58 98 L76 87 C83 83 86 77 86 69 V51 C86 44 84 37 78 33 L71 28 C64 24 58 20 50 20 Z"/>
-                        <rect x="37" y="44" width="26" height="26" fill="#050505"/>
+                      <span className="mt-2 flex items-center gap-2 font-display text-lg font-bold"><svg viewBox="0 0 100 100" className="h-10 w-10 shrink-0" aria-label="Robux" role="img">
+                        <path fill="#DCC47E" fillRule="evenodd" d="M50 0 C37 0 29 6 19 12 L12 17 C4 23 0 34 0 47 V54 C0 67 4 77 14 83 L39 97 C46 101 54 101 61 97 L86 83 C96 77 100 67 100 54 V47 C100 34 96 23 88 17 L81 12 C71 6 63 0 50 0 Z M50 9 C60 9 66 14 76 20 L83 24 C89 28 92 36 92 47 V54 C92 64 89 71 82 75 L57 90 C53 92 47 92 43 90 L18 75 C11 71 8 64 8 54 V47 C8 36 11 28 17 24 L24 20 C34 14 40 9 50 9 Z"/>
+                        <path fill="#DCC47E" d="M50 18 C40 18 33 24 25 29 L22 31 C15 35 13 42 13 51 V55 C13 64 16 71 23 75 L42 86 C47 89 53 89 58 86 L77 75 C84 71 87 64 87 55 V51 C87 42 85 35 78 31 L75 29 C67 24 60 18 50 18 Z"/>
+                        <rect x="37.5" y="38" width="25" height="25" fill="#050505"/>
                       </svg>{p.amount?.toLocaleString('th-TH') ?? p.name} <span className="text-xs font-medium text-muted-foreground">Robux</span></span>
                       <span className="text-sm font-semibold text-[#f0b429]">{formatTHB(p.price)}</span>
                     </button>;
@@ -263,17 +262,30 @@ export function GameTopupPage({ slug }: { slug: 'freefire-topup' | 'roblox-topup
                 </div>
               </div>
             )}
-            <Label htmlFor="tpid" className="text-sm font-medium">
-              {isFF ? 'Player ID (ตัวเลข 6-12 หลัก)' : 'ชื่อผู้ใช้ Roblox (Username)'}
-            </Label>
-            <Input
-              id="tpid"
-              value={playerId}
-              onChange={(e) => setPlayerId(e.target.value)}
-              placeholder={isFF ? 'เช่น 1234567890' : 'เช่น lrapx_gamer'}
-              className="mt-2 h-12 bg-secondary/60 font-mono text-lg tracking-wide"
-              inputMode={isFF ? 'numeric' : 'text'}
-            />
+            {(isFF || robloxMethod === 'GAMEPASS') ? (
+              <>
+                <Label htmlFor="tpid" className="text-sm font-medium">
+                  {isFF ? 'Player ID (ตัวเลข 6-12 หลัก)' : 'ชื่อผู้ใช้ Roblox (Username)'}
+                </Label>
+                <Input
+                  id="tpid"
+                  value={playerId}
+                  onChange={(e) => setPlayerId(e.target.value)}
+                  placeholder={isFF ? 'เช่น 1234567890' : 'เช่น lrapx_gamer'}
+                  className="mt-2 h-12 bg-secondary/60 font-mono text-lg tracking-wide"
+                  inputMode={isFF ? 'numeric' : 'text'}
+                />
+              </>
+            ) : (
+              <div className="rounded-xl border border-[#d6b65d]/40 bg-[#d6b65d]/10 p-4 text-sm leading-6">
+                <p className="font-semibold text-[#e7ca79]">คำแนะนำสำหรับการสั่งซื้อแบบทักเพจ</p>
+                <p className="mt-2">1. สั่งซื้อและชำระเงินให้เรียบร้อย</p>
+                <p>2. แคปหน้ารายการสั่งซื้อ แล้วส่งให้เพจ <strong>LrapX Store</strong></p>
+                <p>3. แจ้ง Username Roblox ให้ทางร้านในแชต</p>
+                <p className="mt-2 font-semibold">เวลาเปิดบริการ 16:30-22:00 น.</p>
+                <p className="mt-1 text-xs text-muted-foreground">กรุณาอ่านคำแนะนำก่อนสั่งซื้อ ทางร้านไม่จำเป็นต้องใช้รหัสผ่านหรือรหัส OTP ของบัญชี</p>
+              </div>
+            )}
             {!isFF && robloxMethod === 'GAMEPASS' && (
               <div className="mt-4">
                 <Label htmlFor="roblox-gamepass" className="text-sm font-medium">ลิงก์ Game Pass ของคุณ</Label>
@@ -290,9 +302,9 @@ export function GameTopupPage({ slug }: { slug: 'freefire-topup' | 'roblox-topup
                 <>หลังสร้างคำสั่งซื้อแล้ว ให้เปิดหน้าคำสั่งซื้อและติดต่อเพจร้านเพื่อแจ้งรายละเอียดเพิ่มเติม</>
               )}
             </p>
-            {playerId.trim() && !idValid && (
+            {(isFF || robloxMethod === 'GAMEPASS') && playerId.trim() && !idValid && (
               <p className="mt-2 text-xs text-amber-400">
-                {isFF ? 'Player ID ต้องเป็นตัวเลข 6-12 หลัก' : robloxMethod === 'GAMEPASS' ? 'กรุณากรอกชื่อผู้ใช้และลิงก์ Game Pass จาก roblox.com ให้ครบ' : 'ชื่อผู้ใช้ต้องมีอย่างน้อย 3 ตัวอักษร'}
+                {isFF ? 'Player ID ต้องเป็นตัวเลข 6-12 หลัก' : robloxMethod === 'GAMEPASS' ? 'กรุณากรอก Username และลิงก์ Game Pass จาก roblox.com ให้ครบ' : 'ชื่อผู้ใช้ต้องมีอย่างน้อย 3 ตัวอักษร'}
               </p>
             )}
           </div>
@@ -311,8 +323,8 @@ export function GameTopupPage({ slug }: { slug: 'freefire-topup' | 'roblox-topup
                 <span className="font-medium text-right">{isFF ? (selected?.name ?? <span className="text-muted-foreground">ยังไม่ได้เลือก</span>) : (selectedRobuxPackages.length ? selectedRobuxPackages.map((p) => (p.amount ?? p.name) + ' Robux').join(', ') : <span className="text-muted-foreground">ยังไม่ได้เลือก</span>)}</span>
               </div>
               <div className="flex justify-between gap-2">
-                <span className="text-muted-foreground">{isFF ? 'Player ID' : 'ชื่อผู้ใช้ Roblox'}</span>
-                <span className="font-mono font-medium">{playerId.trim() || <span className="text-muted-foreground">ยังไม่ได้กรอก</span>}</span>
+                <span className="text-muted-foreground">{isFF ? 'Player ID' : robloxMethod === 'GAMEPASS' ? 'Username Roblox' : 'วิธีรับบริการ'}</span>
+                <span className="font-mono font-medium">{(isFF || robloxMethod === 'GAMEPASS') ? (playerId.trim() || <span className="text-muted-foreground">ยังไม่ได้กรอก</span>) : <span className="text-[#e7ca79]">ทักเพจ LrapX Store</span>}</span>
               </div>
               <div className="flex justify-between gap-2 border-t border-border pt-3">
                 <span className="font-medium">ยอดที่ต้องชำระ</span>
