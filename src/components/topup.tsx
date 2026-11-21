@@ -20,7 +20,8 @@ import {
 // ================= Hub รวมบริการเติมเกม =================
 
 export function TopupHubPage() {
-  const [loading, setLoading] = useState(true);\n  const [settings, setSettings] = useState<Record<string, string>>({});
+  const [loading, setLoading] = useState(true);
+  const [settings, setSettings] = useState<Record<string, string>>({});
   const [cats, setCats] = useState<Category[]>([]);
 
   useEffect(() => {
