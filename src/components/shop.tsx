@@ -330,7 +330,7 @@ export function ProductDetailPage({ id }: { id: string }) {
           </div>
 
           <div className="mt-6 grid grid-cols-1 gap-3">
-            <Button type="button" size="lg" className="h-auto min-h-12 w-full min-w-0 justify-center gap-2 whitespace-normal px-3 py-3 text-sm leading-snug sm:text-base btn-neon bg-gradient-to-r from-violet-600 to-fuchsia-500 text-white [&>svg]:mr-0 [&>svg]:h-5 [&>svg]:w-5 [&>svg]:shrink-0" disabled={sold} onClick={buy}>
+            <Button type="button" size="lg" className="h-16 min-h-16 w-full min-w-0 flex-col justify-center gap-1 whitespace-normal px-2 py-2 text-sm leading-tight btn-neon bg-gradient-to-r from-violet-600 to-fuchsia-500 text-white [&>svg]:mr-0 [&>svg]:h-5 [&>svg]:w-5 [&>svg]:shrink-0" disabled={sold} onClick={buy}>
               <ShoppingBag aria-hidden="true" /> <span className="min-w-0 break-words text-center">{sold ? 'สินค้าขายแล้ว' : 'ซื้อสินค้าตอนนี้'}</span>
             </Button>
             <Button type="button" size="lg" variant="outline" className="h-auto min-h-12 w-full min-w-0 justify-center gap-2 whitespace-normal px-3 py-3 text-sm leading-snug sm:text-base border-[#f0b429]/40 text-[#f0b429] hover:bg-[#f0b429]/10 hover:text-[#f0b429] [&>svg]:mr-0 [&>svg]:h-5 [&>svg]:w-5 [&>svg]:shrink-0" onClick={() => navigate('/contact')}>
