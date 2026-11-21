@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
 import { randomBytes } from 'crypto';
-import { err, handleError, ok, requireAdmin } from '@/lib/api-helpers';
+import { err, handleError, ok, requireUser } from '@/lib/api-helpers';
 import { rateLimit } from '@/lib/auth';
 
 export const runtime = 'nodejs';
@@ -39,8 +39,8 @@ function detectImageType(buffer: Buffer): { extension: string; contentType: stri
 
 export async function POST(req: NextRequest) {
   try {
-    const admin = await requireAdmin(req);
-    const limited = rateLimit(`image-upload:${admin.id}`, 30, 30 * 60 * 1000);
+    const user = await requireUser(req);
+    const limited = rateLimit(`image-upload:${user.id}`, 30, 30 * 60 * 1000);
     if (!limited.ok) return err('อัปโหลดรูปถี่เกินไป กรุณารอสักครู่', 429);
 
     const form = await req.formData();
@@ -56,7 +56,9 @@ export async function POST(req: NextRequest) {
     const token = process.env.BLOB_READ_WRITE_TOKEN;
     if (!token) return err('ระบบจัดเก็บรูปยังตั้งค่าไม่เสร็จ กรุณาลองใหม่ภายหลัง', 503);
 
-    const pathname = `categories/${Date.now()}-${randomBytes(8).toString('hex')}.${image.extension}`;
+    // แอดมินอัปโหลดรูปสินค้า/หมวด/QR ส่วนสมาชิกอัปโหลดได้เฉพาะไฟล์แนบสลิป
+    const folder = user.role === 'ADMIN' ? 'categories' : `deposits/slips/${user.id}`;
+    const pathname = `${folder}/${Date.now()}-${randomBytes(8).toString('hex')}.${image.extension}`;
     const url = new URL('https://vercel.com/api/blob/');
     url.searchParams.set('pathname', pathname);
 
