@@ -202,7 +202,7 @@ function Hero({ settings }: { settings: Record<string, string> }) {
           <h1 className="mt-5 font-display text-3xl font-extrabold leading-[1.2] sm:text-4xl md:text-6xl">
             <span className="text-glow text-primary">{settings.hero_title || 'พร้อมลุยแล้วหรือยัง?'}</span>
             <br />
-            <span className="text-white">LrapX Store จัดให้ครบ</span>
+            <span className="text-white">{settings.store_name || "LrapX Store"} จัดให้ครบ</span>
           </h1>
           <p className="mt-4 max-w-xl text-base md:text-lg text-muted-foreground leading-relaxed">
             {settings.hero_subtitle || 'ไอดีเกมคุณภาพ เติมเกมราคาดี มีประกัน พร้อมทีมงานดูแล'}
