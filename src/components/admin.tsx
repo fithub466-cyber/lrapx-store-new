@@ -935,6 +935,7 @@ function CategoriesTab() {
           <div className="grid gap-3 sm:grid-cols-2">
             <div className="space-y-1.5"><Label>Slug (a-z 0-9 -)</Label><Input value={form.slug} onChange={(e) => setForm((f) => ({ ...f, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '') }))} className="bg-secondary/60 font-mono" /></div>
             <div className="space-y-1.5"><Label>ชื่อหมวด *</Label><Input value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))} placeholder="เช่น ไอดี Valorant" className="bg-secondary/60" /></div>
+            <div className="space-y-1.5"><Label>ลำดับการแสดงผล</Label><Input type="number" min="0" max="99" value={form.sortOrder} onChange={(e) => setForm((f) => ({ ...f, sortOrder: e.target.value }))} className="bg-secondary/60" /><p className="text-[11px] text-muted-foreground">เลขน้อยจะแสดงก่อน</p></div>
             <div className="space-y-1.5">
               <Label>ประเภท</Label>
               <Select value={form.type} onValueChange={(v) => setForm((f) => ({ ...f, type: v }))}>
@@ -1151,6 +1152,10 @@ function SettingsTab() {
     { key: 'store_tagline', label: 'คำโปรยร้าน' },
     { key: 'hero_title', label: 'หัวข้อ Hero Banner' },
     { key: 'hero_subtitle', label: 'ข้อความรอง Hero Banner' },
+    { key: 'home_id_title', label: 'หัวข้อหมวดหมู่ไอดีเกม (หน้าแรก)' },
+    { key: 'home_id_subtitle', label: 'คำอธิบายหมวดหมู่ไอดีเกม (หน้าแรก)' },
+    { key: 'home_topup_title', label: 'หัวข้อหมวดหมู่เติมเกม (หน้าแรก)' },
+    { key: 'home_topup_subtitle', label: 'คำอธิบายหมวดหมู่เติมเกม (หน้าแรก)' },
     { key: 'announcement', label: 'ข้อความประกาศ (แถบบนหัวเว็บ)', icon: Megaphone },
     { key: 'contact_line', label: 'LINE ID', icon: MessageCircle },
     { key: 'contact_facebook', label: 'Facebook', icon: MessageCircle },
