@@ -1,0 +1,58 @@
+name: Import original LrapX Store source
+
+on:
+  push:
+    paths:
+      - "lrapx-store-source.zip"
+
+permissions:
+  contents: write
+
+jobs:
+  import-source:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Extract project into repository root
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from zipfile import ZipFile
+          import shutil
+
+          archive = Path("lrapx-store-source.zip")
+          staging = Path("/tmp/lrapx-import")
+          staging.mkdir(parents=True, exist_ok=True)
+
+          with ZipFile(archive) as z:
+              for item in z.infolist():
+                  name = Path(item.filename)
+                  if name.is_absolute() or ".." in name.parts:
+                      raise SystemExit(f"Unsafe archive path: {item.filename}")
+                  if any(part in {".git", "node_modules", ".next", ".vercel"} for part in name.parts):
+                      continue
+                  z.extract(item, staging)
+
+          for item in staging.iterdir():
+              target = Path(".") / item.name
+              if target.exists():
+                  if target.is_dir():
+                      shutil.rmtree(target)
+                  else:
+                      target.unlink()
+              if item.is_dir():
+                  shutil.copytree(item, target)
+              else:
+                  shutil.copy2(item, target)
+
+          archive.unlink()
+          PY
+      - name: Commit imported project
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Import original LrapX Store project" || echo "No changes to commit"
+          git push
