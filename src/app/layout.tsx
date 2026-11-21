@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   keywords: ["LrapX Store", "ไอดีเกม", "เติมเกม", "Free Fire", "Roblox", "Robux", "เพชร Free Fire", "Gift Game Pass"],
   authors: [{ name: "LrapX Store" }],
   icons: {
-    icon: "/images/logo-mark.svg",
+    icon: "/images/logo.png",
   },
   openGraph: {
     title: "LrapX Store — ร้านขายไอดีเกมและเติมเกมออนไลน์",
