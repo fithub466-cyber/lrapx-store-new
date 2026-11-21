@@ -208,7 +208,7 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ slug: stri
       const exists = await db.product.findUnique({ where: { code: body.code } });
       if (exists) return err('รหัสสินค้านี้มีอยู่แล้วในระบบ');
       const product = await db.product.create({
-        data: { ...body, images: JSON.stringify(body.images), details: JSON.stringify(body.details) },
+        data: { ...body, status: body.stock === 0 ? 'SOLD' : body.status, images: JSON.stringify(body.images), details: JSON.stringify(body.details) },
       });
       return ok({ product }, { status: 201 });
     }
