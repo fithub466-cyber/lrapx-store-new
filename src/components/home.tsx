@@ -8,9 +8,13 @@ import { formatTHB } from '@/lib/format';
 import { SectionHeading, RatingStars, SafeImage, ProductCard } from '@/components/shared';
 import { Button } from '@/components/ui/button';
 import {
-  Gamepad2, Zap, Sparkles, ShieldCheck, Timer, BadgeCheck,
+  Gamepad2, Zap, ShieldCheck, Timer, BadgeCheck,
   ChevronRight, Gift, Star, ShoppingBag,
 } from 'lucide-react';
+
+function StoreLogoIcon({ className }: { className?: string }) {
+  return <img src="/images/logo.png" alt="" aria-hidden="true" className={`object-contain ${className ?? ''}`} />;
+}
 
 export function HomePage() {
   const [loading, setLoading] = useState(true);
@@ -114,7 +118,7 @@ export function HomePage() {
       {/* สินค้าแนะนำ: แสดงสินค้าเด่นที่แอดมินเลือก ไม่ใช่หมวดหมู่ */}
       <section className="mx-auto max-w-7xl px-4 py-12 md:px-6">
         <SectionHeading
-          icon={Sparkles}
+          icon={StoreLogoIcon}
           title="สินค้าแนะนำ"
           subtitle="สินค้าที่คัดเลือกมาแนะนำจากร้าน LrapX Store"
         />
