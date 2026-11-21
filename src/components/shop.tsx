@@ -39,7 +39,7 @@ export function GameIdsPage() {
           {cats.map((c) => (
             <button
               key={c.id}
-              onClick={() => navigate(c.slug === 'freefire-id' ? '/game-ids/freefire' : '/game-ids/roblox')}
+              onClick={() => navigate(`/game-ids/${c.slug}`)}
               className="gaming-card group relative overflow-hidden text-left cursor-pointer h-56"
               aria-label={`ดูไอดีทั้งหมดของ ${c.name}`}
             >
