@@ -93,7 +93,7 @@ export async function GET(req: NextRequest, ctx: { params: Promise<{ slug: strin
       const cat = await db.category.findUnique({ where: { slug: catSlug } });
       if (!cat) return err('NOT_FOUND: ไม่พบหมวดหมู่นี้', 404);
       // ติดตั้งเรทราคา Roblox จากรายการอ้างอิงครั้งแรกเท่านั้น (ไม่เขียนทับราคาเมื่อมีรายการครบแล้ว)
-      if (catSlug === 'roblox-topup') {
+      if (catSlug === 'roblox-topup' || catSlug === 'robux') {
         const robloxRates: [number, number][] = [
           [80,37],[120,58],[150,71],[160,71],[200,92],[240,103],[250,124],[280,124],
           [320,130],[350,154],[400,159],[500,161],[520,191],[540,191],[550,191],[560,191],
