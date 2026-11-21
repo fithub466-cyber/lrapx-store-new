@@ -291,6 +291,32 @@ function OrdersTab() {
                 <div className="flex justify-between border-t border-border pt-1.5 font-semibold"><span>รวม</span><span className="price-gold">{formatTHB(edit.total)}</span></div>
                 {edit.paymentMethod === 'WALLET' && <p className="text-xs text-muted-foreground">* ยกเลิก/คืนเงินระบบจะคืนยอดเข้ากระเป๋าลูกค้าอัตโนมัติ</p>}
               </div>
+              {edit.contactInfo && (
+                <div className="rounded-xl border border-border bg-secondary/30 p-4 space-y-2">
+                  <Label>ข้อมูลลูกค้าสำหรับดำเนินการเติมเกม</Label>
+                  <div className="space-y-1 text-sm">
+                    {(() => {
+                      try {
+                        const info = JSON.parse(edit.contactInfo) as Record<string, unknown>;
+                        const labels: Record<string, string> = { playerId: 'Player ID', robloxUsername: 'Username Roblox', note: 'หมายเหตุ / วิธีรับบริการ' };
+                        const rows = Object.entries(info).filter(([key, value]) => value != null && value !== '' && !/pass(word)?|otp|token|secret/i.test(key));
+                        return rows.map(([key, value]) => (
+                          <div key={key} className="break-words">
+                            <span className="text-muted-foreground">{labels[key] ?? key}: </span>
+                            <span className="whitespace-pre-wrap">{String(value)}</span>
+                          </div>
+                        ));
+                      } catch {
+                        return <p className="whitespace-pre-wrap break-words">{edit.contactInfo}</p>;
+                      }
+                    })()}
+                  </div>
+                  <p className="text-xs text-muted-foreground">ข้อมูลส่วนนี้แสดงเฉพาะในหลังบ้านแอดมินที่ได้รับอนุญาต</p>
+                </div>
+              )}
+              <div className="space-y-1.5">
+                <Label>เปลี่ยนสถานะ</Label>
+              </div>
               <div className="space-y-1.5">
                 <Label>เปลี่ยนสถานะ</Label>
                 <Select value={newStatus} onValueChange={setNewStatus}>
