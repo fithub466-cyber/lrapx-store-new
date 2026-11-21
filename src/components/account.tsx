@@ -38,9 +38,17 @@ export function ProfilePage() {
     try {
       const form = new FormData();
       form.append('file', file);
-      const res = await fetch('/api/avatar', { method: 'POST', body: form });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'อัปโหลดไม่สำเร็จ');
+      const res = await fetch('/api/avatar', {
+        method: 'POST',
+        body: form,
+        credentials: 'same-origin',
+        cache: 'no-store',
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || data.message || `อัปโหลดไม่สำเร็จ (รหัส ${res.status})`);
+      if (!data.url) throw new Error('อัปโหลดสำเร็จแต่ไม่พบที่อยู่รูปภาพ กรุณาลองอีกครั้ง');
+      // อัปเดตภาพทันที ไม่ต้องรอการโหลดข้อมูลบัญชีรอบถัดไป
+      setUser({ ...user, avatar: data.url });
       await refresh();
       toast({ title: 'อัปโหลดรูปโปรไฟล์สำเร็จ', description: 'รูปของคุณจะแสดงในหน้าโปรไฟล์และเมนูทันที' });
     } catch (e) {
