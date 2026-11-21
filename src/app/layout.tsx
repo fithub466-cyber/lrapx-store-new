@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Kanit, Noto_Sans_Thai } from "next/font/google";
+import { Kanit, Noto_Sans_Thai, Chakra_Petch } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 
@@ -8,6 +8,8 @@ const kanit = Kanit({
   weight: ["400", "500", "600", "700", "800"],
   subsets: ["thai", "latin"],
 });
+
+const chakraPetch = Chakra_Petch({ variable: "--font-brand", weight: ["500", "600", "700"], subsets: ["latin"] });
 
 const notoSansThai = Noto_Sans_Thai({
   variable: "--font-noto",
@@ -40,7 +42,7 @@ export default function RootLayout({
   return (
     <html lang="th" suppressHydrationWarning className="dark">
       <body
-        className={`${kanit.variable} ${notoSansThai.variable} antialiased bg-background text-foreground`}
+        className={`${kanit.variable} ${notoSansThai.variable} ${chakraPetch.variable} antialiased bg-background text-foreground`}
       >
         {children}
         <Toaster />
