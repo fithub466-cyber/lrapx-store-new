@@ -32,7 +32,7 @@ export function TopupHubPage() {
 
   const categoryHref = (slug: string) => {
     if (slug === 'freefire-topup') return '/topup/freefire';
-    if (slug === 'roblox-topup') return '/topup/roblox';
+    if (slug === 'roblox-topup' || slug === 'robux') return '/topup/roblox';
     if (slug === 'giftpass') return '/topup/gift-pass';
     return `/topup/${slug}`;
   };
@@ -94,7 +94,7 @@ export function TopupHubPage() {
 
 // ================= หน้าเติมเกมเฉพาะเกม (Free Fire / Roblox) =================
 
-export function GameTopupPage({ slug }: { slug: 'freefire-topup' | 'roblox-topup' }) {
+export function GameTopupPage({ slug }: { slug: 'freefire-topup' | 'roblox-topup' | 'robux' }) {
   const { user, setPopup } = useApp();
   const [loading, setLoading] = useState(true);
   const [category, setCategory] = useState<Category | null>(null);
