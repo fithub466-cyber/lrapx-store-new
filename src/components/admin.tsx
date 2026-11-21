@@ -881,7 +881,7 @@ function CategoriesTab() {
           </thead>
           <tbody className="divide-y divide-border">
             {loading ? (
-              <tr><td colSpan={8} className="px-4 py-8 text-center text-muted-foreground">กำลังโหลด...</td></tr>
+              <tr><td colSpan={9} className="px-4 py-8 text-center text-muted-foreground">กำลังโหลด...</td></tr>
             ) : (
               cats.map((c) => (
                 <tr key={c.id} className="hover:bg-secondary/30">
