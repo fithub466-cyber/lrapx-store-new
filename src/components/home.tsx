@@ -191,12 +191,9 @@ function MarqueeProductCard({ p }: { p: Product }) {
 
 function Hero({ settings }: { settings: Record<string, string> }) {
   return (
-    <section className="relative overflow-hidden">
-      <div className="absolute inset-0">
-        <img src="/images/hero-banner.png" alt="" className="h-full w-full object-cover" aria-hidden="true" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#000000] via-[#000000]/75 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#000000] via-transparent to-[#000000]/40" />
-      </div>
+    <section className="relative overflow-hidden bg-black">
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_72%_42%,rgba(200,149,101,0.16),transparent_48%),radial-gradient(ellipse_at_12%_90%,rgba(143,96,61,0.10),transparent_42%)]" />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/70" />
       <div className="relative mx-auto max-w-7xl px-4 py-20 md:px-6 md:py-28">
         <div className="max-w-2xl animate-fade-up">
           <span className="inline-flex items-center gap-2 rounded-full border border-[#f0b429]/40 bg-[#f0b429]/10 px-4 py-1.5 text-sm text-[#f0b429] font-medium">
@@ -211,7 +208,7 @@ function Hero({ settings }: { settings: Record<string, string> }) {
             {settings.hero_subtitle || 'ไอดีเกมคุณภาพ เติมเกมราคาดี ส่งไวปลอดภัย มีประกัน เปิดให้บริการ 24 ชั่วโมง'}
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <Button size="lg" className="h-12 px-7 text-base btn-neon bg-gradient-to-r from-[#8f603d] to-[#c89565] text-white hover:from-violet-500 hover:to-fuchsia-400" onClick={() => navigate('/game-ids')}>
+            <Button size="lg" className="h-12 px-7 text-base btn-neon bg-gradient-to-r from-[#8f603d] to-[#c89565] text-white hover:from-[#a87349] hover:to-[#d7a879]" onClick={() => navigate('/game-ids')}>
               <Gamepad2 className="mr-2 h-5 w-5" /> ดูสินค้าไอดีเกม
             </Button>
             <Button size="lg" variant="outline" className="h-12 px-7 text-base border-[#f0b429]/50 text-[#f0b429] hover:bg-[#f0b429]/10 hover:text-[#f0b429]" onClick={() => navigate('/topup')}>
