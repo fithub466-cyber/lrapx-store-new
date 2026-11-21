@@ -102,26 +102,25 @@ export async function GET(req: NextRequest, ctx: { params: Promise<{ slug: strin
           [1040,333],[1080,347],[1160,376],[1200,406],[1500,464],[1580,492],[1660,520],
           [1700,549],[1740,560],[2000,618],[3000,907],[3400,1062],[3500,1062],[4000,1206],
           [4500,1370],[5000,1515],[5500,1660],[6000,1804],[6200,1901],[6500,1959],
-          [7000,2103],[7500,2248],[8000,2412],[8500,2557],[9000,2701],[9500,2846],
+          [7000,2103],[7500,2248],[7900,2392],[8000,2412],[8500,2557],[9000,2701],[9500,2846],
           [10000,3009],[14000,4196],[14500,4361],[15000,4505],[16200,4891],[45000,12813],
         ];
-        const existingRobux = await db.topupPackage.count({ where: { categoryId: cat.id, active: true } });
-        if (existingRobux < robloxRates.length) {
-          for (let index = 0; index < robloxRates.length; index++) {
-            const [amount, price] = robloxRates[index];
-            const name = amount.toLocaleString('en-US') + ' Robux';
-            const current = await db.topupPackage.findFirst({ where: { categoryId: cat.id, name } });
-            if (current) {
-              await db.topupPackage.update({ where: { id: current.id }, data: { amount, price, active: true, sortOrder: index + 1 } });
-            } else {
-              await db.topupPackage.create({ data: { categoryId: cat.id, name, amount, price, active: true, sortOrder: index + 1 } });
-            }
+        // Reconcile the Roblox catalog against the reference rates. This repairs
+        // missing/stale entries even when the active package count happens to match.
+        for (let index = 0; index < robloxRates.length; index++) {
+          const [amount, price] = robloxRates[index];
+          const name = amount.toLocaleString('en-US') + ' Robux';
+          const current = await db.topupPackage.findFirst({ where: { categoryId: cat.id, name } });
+          if (!current) {
+            await db.topupPackage.create({ data: { categoryId: cat.id, name, amount, price, active: true, sortOrder: index + 1 } });
+          } else if (current.amount !== amount || current.price !== price || !current.active || current.sortOrder !== index + 1) {
+            await db.topupPackage.update({ where: { id: current.id }, data: { amount, price, active: true, sortOrder: index + 1 } });
           }
-          await db.topupPackage.updateMany({
-            where: { categoryId: cat.id, active: true, NOT: { name: { in: robloxRates.map(([amount]) => amount.toLocaleString('en-US') + ' Robux') } } },
-            data: { active: false },
-          });
         }
+        await db.topupPackage.updateMany({
+          where: { categoryId: cat.id, active: true, NOT: { name: { in: robloxRates.map(([amount]) => amount.toLocaleString('en-US') + ' Robux') } } },
+          data: { active: false },
+        });
       }
       const packages = await db.topupPackage.findMany({
         where: { categoryId: cat.id, active: true },
