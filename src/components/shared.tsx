@@ -259,7 +259,7 @@ export function DepositChannelChip({ method, bankName }: { method: string; bankN
 // ================= อัปโหลดรูปภาพ (หลังบ้าน) =================
 
 const ACCEPT = 'image/png,image/jpeg,image/webp';
-const MAX_MB = 5;
+const MAX_MB = 4;
 
 /** ยิงไฟล์ไป /api/upload แล้วคืน URL ของรูป */
 export async function uploadImageFile(file: File): Promise<string> {
