@@ -220,9 +220,14 @@ export function GameTopupPage({ slug }: { slug: 'freefire-topup' | 'roblox-topup
                   {packages.map((p) => {
                     const active = selectedRobux.includes(p.id);
                     return <button key={p.id} type="button" onClick={() => setSelectedRobux((current) => active ? current.filter((id) => id !== p.id) : [...current, p.id])} aria-pressed={active}
-                      className={'relative flex min-h-[104px] flex-col items-center justify-center gap-1.5 rounded-xl border p-3 text-center transition-all ' + (active ? 'border-fuchsia-500 bg-fuchsia-500/15 shadow-[0_0_0_1px_rgba(217,70,239,.35)]' : 'border-border bg-card/80 hover:border-primary/50 hover:bg-primary/5')}>
-                      {active && <span className="absolute right-2 top-2 text-[10px] font-bold text-fuchsia-300">เลือกแล้ว ✓</span>}
-                      <span className="mt-2 flex items-center gap-2 font-display text-lg font-bold"><span className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-[#ffe9a6] to-[#b58a32] shadow-[0_2px_12px_rgba(240,180,41,.25)]"><svg viewBox="0 0 32 32" className="h-6 w-6" aria-label="Robux" role="img"><path d="M16 2.5 27.7 9.2v13.6L16 29.5 4.3 22.8V9.2L16 2.5Z" fill="#171717"/><path d="M16 6.5 24.2 11.2v9.6L16 25.5 7.8 20.8v-9.6L16 6.5Z" fill="#f0c96b"/><path d="M12 12h8v8h-8z" fill="#171717"/></svg></span>{p.amount?.toLocaleString('th-TH') ?? p.name} <span className="text-xs font-medium text-muted-foreground">Robux</span></span>
+                      className={'relative flex min-h-[104px] flex-col items-center justify-center gap-1.5 rounded-xl border p-3 text-center transition-all ' + (active ? 'border-[#d6b65d] bg-[#d6b65d]/15 shadow-[0_0_0_1px_rgba(214,182,93,.45)]' : 'border-border bg-card/80 hover:border-[#d6b65d]/70 hover:bg-[#d6b65d]/5')}>
+                      {active && <span className="absolute right-2 top-2 text-[10px] font-bold text-[#e7ca79]">เลือกแล้ว ✓</span>}
+                      <span className="mt-2 flex items-center gap-2 font-display text-lg font-bold"><svg viewBox="0 0 100 112" className="h-9 w-9 shrink-0 drop-shadow-[0_2px_5px_rgba(214,182,93,.2)]" aria-label="Robux" role="img">
+                        <defs><linearGradient id="robuxGold" x1="0" y1="0" x2="0.8" y2="1"><stop offset="0%" stopColor="#f4e3a0"/><stop offset="55%" stopColor="#c9ad60"/><stop offset="100%" stopColor="#f7dda0"/></linearGradient></defs>
+                        <path fill="url(#robuxGold)" fillRule="evenodd" d="M50 1 C40 1 33 6 25 11 L12 19 C4 24 0 34 0 45 V72 C0 84 5 93 15 99 L39 109 C46 113 54 113 61 109 L85 99 C95 93 100 84 100 72 V45 C100 34 96 24 88 19 L75 11 C67 6 60 1 50 1 Z M50 10 C58 10 64 14 71 18 L83 25 C89 29 92 36 92 45 V72 C92 80 89 86 82 90 L57 103 C53 105 47 105 43 103 L18 90 C11 86 8 80 8 72 V45 C8 36 11 29 17 25 L29 18 C36 14 42 10 50 10 Z"/>
+                        <path fill="url(#robuxGold)" d="M50 20 C42 20 36 24 29 28 L22 33 C16 37 14 44 14 51 V69 C14 77 17 83 24 87 L42 98 C47 101 53 101 58 98 L76 87 C83 83 86 77 86 69 V51 C86 44 84 37 78 33 L71 28 C64 24 58 20 50 20 Z"/>
+                        <rect x="37" y="44" width="26" height="26" fill="#050505"/>
+                      </svg>{p.amount?.toLocaleString('th-TH') ?? p.name} <span className="text-xs font-medium text-muted-foreground">Robux</span></span>
                       <span className="text-sm font-semibold text-[#f0b429]">{formatTHB(p.price)}</span>
                     </button>;
                   })}
