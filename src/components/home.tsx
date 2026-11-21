@@ -199,7 +199,7 @@ function Hero({ settings }: { settings: Record<string, string> }) {
           <span className="inline-flex items-center gap-2 rounded-full border border-[#f0b429]/40 bg-[#f0b429]/10 px-4 py-1.5 text-sm text-[#f0b429] font-medium">
             <BadgeCheck className="h-4 w-4" /> ร้านเกมมิ่งอันดับต้นของคนไทย
           </span>
-          <h1 className="mt-5 font-display text-4xl font-extrabold leading-tight md:text-6xl">
+          <h1 className="mt-5 font-display text-3xl font-extrabold leading-[1.2] sm:text-4xl md:text-6xl">
             <span className="text-glow text-primary">{settings.hero_title || 'พร้อมลุยแล้วหรือยัง?'}</span>
             <br />
             <span className="text-white">LrapX Store จัดให้ครบ</span>
@@ -208,10 +208,10 @@ function Hero({ settings }: { settings: Record<string, string> }) {
             {settings.hero_subtitle || 'ไอดีเกมคุณภาพ เติมเกมราคาดี มีประกัน พร้อมทีมงานดูแล'}
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <Button size="lg" className="h-12 px-7 text-base font-display btn-neon bg-gradient-to-r from-[#8f603d] to-[#c89565] text-white hover:from-[#a87349] hover:to-[#d7a879]" onClick={() => navigate('/game-ids')}>
+            <Button size="lg" className="h-12 px-7 text-base font-display font-semibold whitespace-nowrap btn-neon bg-gradient-to-r from-[#8f603d] to-[#c89565] text-white hover:from-[#a87349] hover:to-[#d7a879]" onClick={() => navigate('/game-ids')}>
               <Gamepad2 className="mr-2 h-5 w-5" /> ดูสินค้าไอดีเกม
             </Button>
-            <Button size="lg" variant="outline" className="h-12 px-7 text-base font-display border-[#f0b429]/50 text-[#f0b429] hover:bg-[#f0b429]/10 hover:text-[#f0b429]" onClick={() => navigate('/topup')}>
+            <Button size="lg" variant="outline" className="h-12 px-7 text-base font-display font-semibold whitespace-nowrap border-[#f0b429]/50 text-[#f0b429] hover:bg-[#f0b429]/10 hover:text-[#f0b429]" onClick={() => navigate('/topup')}>
               <Zap className="mr-2 h-5 w-5" /> เติมเกมเลย
             </Button>
           </div>
@@ -232,13 +232,13 @@ function TrustBar() {
     <div className="border-b border-border bg-card/50">
       <div className="mx-auto grid max-w-7xl grid-cols-2 gap-4 px-4 py-6 md:grid-cols-4 md:px-6">
         {items.map((it, i) => (
-          <div key={i} className="flex items-center gap-3">
+          <div key={i} className="flex min-w-0 items-center gap-3">
             <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/15 text-primary">
               <it.icon className="h-5 w-5" />
             </span>
-            <div>
-              <div className="font-display text-sm font-semibold">{it.title}</div>
-              {it.desc && <div className="text-xs text-muted-foreground">{it.desc}</div>}
+            <div className="min-w-0">
+              <div className="font-display text-sm font-semibold leading-snug">{it.title}</div>
+              <p className="mt-1 block text-xs leading-relaxed text-muted-foreground">{it.desc}</p>
             </div>
           </div>
         ))}
