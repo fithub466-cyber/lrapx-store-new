@@ -23,7 +23,7 @@ import {
 // ================= โปรไฟล์ =================
 
 export function ProfilePage() {
-  const { user, refresh } = useApp();
+  const { user, setUser } = useApp();
   const [deposits, setDeposits] = useState<Deposit[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
@@ -108,7 +108,7 @@ export function ProfilePage() {
 
   async function logout() {
     await api('/api/auth/logout', { method: 'POST', silent: true }).catch(() => {});
-    await refresh();
+    setUser(null);
     toast({ title: 'ออกจากระบบสำเร็จ' });
     navigate('/');
   }
