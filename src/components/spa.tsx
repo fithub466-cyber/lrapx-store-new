@@ -4,9 +4,10 @@
  */
 'use client';
 
-import { useEffect, useSyncExternalStore } from 'react';
+import { useEffect, useState, useSyncExternalStore } from 'react';
 import { useHashRoute, navigate } from '@/lib/router';
-import { useApp } from '@/lib/store';\nimport { api } from '@/lib/client';
+import { useApp } from '@/lib/store';
+import { api } from '@/lib/client';
 import { Header, Footer } from '@/components/shell';
 import { PopupOverlay } from '@/components/popup';
 import { HomePage } from '@/components/home';
@@ -84,7 +85,16 @@ function Router({ path }: { path: string }) {
 
 export default function App() {
   const path = useHashRoute();
-  const { refresh, setSidebarOpen } = useApp();\n  const [loaderSettings, setLoaderSettings] = useState<Record<string, string>>({});\n  const [settingsLoaded, setSettingsLoaded] = useState(false);\n\n  useEffect(() => {\n    api<{ settings: Record<string, string> }>('/api/data/settings', { silent: true })\n      .then((d) => setLoaderSettings(d.settings))\n      .catch(() => {})\n      .finally(() => setSettingsLoaded(true));\n  }, []);
+  const { refresh, setSidebarOpen } = useApp();
+  const [loaderSettings, setLoaderSettings] = useState<Record<string, string>>({});
+  const [settingsLoaded, setSettingsLoaded] = useState(false);
+
+  useEffect(() => {
+    api<{ settings: Record<string, string> }>('/api/data/settings', { silent: true })
+      .then((d) => setLoaderSettings(d.settings))
+      .catch(() => {})
+      .finally(() => setSettingsLoaded(true));
+  }, []);
   // true เฉพาะหลัง hydration บน client — ใช้กัน SSR/client render ไม่ตรงกัน
   const mounted = useSyncExternalStore(
     () => () => {},
@@ -109,7 +119,9 @@ export default function App() {
         <div className="flex flex-1 items-center justify-center">
           <div className="flex flex-col items-center gap-4">
             <img src={loaderSettings.loader_logo || loaderSettings.store_logo || "/images/logo.png"} alt="โลโก้ร้าน" className="h-20 w-20 object-contain animate-floaty" />
-            <div className="text-center text-sm font-semibold text-[#d9b18d]">{loaderSettings.loading_title || loaderSettings.store_name || "LrapX Store"}</div>\n            {loaderSettings.loading_subtitle && <div className="text-xs text-muted-foreground">{loaderSettings.loading_subtitle}</div>}\n            <div className="h-1.5 w-40 overflow-hidden rounded-full bg-secondary">
+            <div className="text-center text-sm font-semibold text-[#d9b18d]">{loaderSettings.loading_title || loaderSettings.store_name || "LrapX Store"}</div>
+            {loaderSettings.loading_subtitle && <div className="text-xs text-muted-foreground">{loaderSettings.loading_subtitle}</div>}
+            <div className="h-1.5 w-40 overflow-hidden rounded-full bg-secondary">
               <div className="h-full w-1/2 animate-shimmer rounded-full bg-gradient-to-r from-[#8f603d] to-[#c89565]" />
             </div>
           </div>
