@@ -153,10 +153,20 @@ function AnnouncementBar() {
       .catch(() => {});
   }, []);
   if (!announcement.announcement) return null;
+  const AnnouncementContent = () => (
+    <span className="flex shrink-0 items-center gap-2 whitespace-nowrap px-8">
+      {announcement.announcement_image ? <img src={announcement.announcement_image} alt="" aria-hidden="true" className="h-5 w-5 shrink-0 object-contain" /> : <Megaphone className="h-3.5 w-3.5 shrink-0" />}
+      <span>{announcement.announcement}</span>
+    </span>
+  );
   return (
-    <div className="flex items-center justify-center gap-2 bg-gradient-to-r from-[#8f603d]/25 via-[#c89565]/20 to-[#8f603d]/25 px-4 py-1.5 text-xs text-[#d9b18d] border-b border-[#c89565]/20">
-      {announcement.announcement_image ? <img src={announcement.announcement_image} alt="" className="h-5 w-5 object-contain" /> : <Megaphone className="h-3.5 w-3.5 shrink-0" />}
-      <span className="truncate">{announcement.announcement}</span>
+    <div className="border-b border-[#c89565]/20 bg-gradient-to-r from-[#8f603d]/25 via-[#c89565]/20 to-[#8f603d]/25 text-xs text-[#d9b18d]">
+      <div className="marquee py-1.5" role="marquee" aria-label="ประกาศจากร้านค้า">
+        <div className="marquee-track">
+          <AnnouncementContent />
+          <span aria-hidden="true"><AnnouncementContent /></span>
+        </div>
+      </div>
     </div>
   );
 }
