@@ -12,10 +12,6 @@ import {
   ChevronRight, Gift, Star, ShoppingBag, Sparkles,
 } from 'lucide-react';
 
-function StoreLogoIcon({ className }: { className?: string }) {
-  return <img src="/logo.svg" alt="" aria-hidden="true" className={`object-contain ${className ?? ''}`} />;
-}
-
 export function HomePage() {
   const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -118,7 +114,7 @@ export function HomePage() {
       {/* สินค้าแนะนำ: แสดงสินค้าเด่นที่แอดมินเลือก ไม่ใช่หมวดหมู่ */}
       <section className="mx-auto max-w-7xl px-4 py-12 md:px-6">
         <SectionHeading
-          icon={StoreLogoIcon}
+          icon={ShoppingBag}
           title="สินค้าแนะนำ"
         />
         {loading ? (
@@ -193,16 +189,14 @@ function Hero({ settings }: { settings: Record<string, string> }) {
   const image = settings.hero_background_image || '/images/hero-banner.png';
 
   return (
-    <section className="relative overflow-hidden bg-black">
-      <div className="mx-auto max-w-7xl px-4 py-5 md:px-6 md:py-8">
-        <div className="relative aspect-[16/7] min-h-[150px] max-h-[430px] w-full overflow-hidden rounded-2xl border border-[#c89565]/30 bg-[#080808] shadow-[0_12px_45px_rgba(0,0,0,0.45)] sm:aspect-[16/6] md:aspect-[16/5]">
-          <img
-            src={image}
-            alt="LrapX Store"
-            className="absolute inset-0 h-full w-full object-cover"
-            fetchPriority="high"
-          />
-        </div>
+    <section className="relative w-full overflow-hidden bg-black">
+      <div className="relative h-[230px] w-full bg-[#080808] sm:h-[340px] lg:h-[480px]">
+        <img
+          src={image}
+          alt="LrapX Store"
+          className="absolute inset-0 h-full w-full object-cover object-center"
+          fetchPriority="high"
+        />
       </div>
     </section>
   );
