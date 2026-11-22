@@ -1209,7 +1209,7 @@ function SettingsTab() {
     { key: 'loading_subtitle', label: 'ข้อความรองหน้าโหลด' },
   ];
   const siteImageFields = [
-    { key: 'hero_background_image', label: 'ภาพพื้นหลังหน้าแรก (Hero)' },
+    { key: 'hero_background_image', label: 'รูปภาพ Hero Banner (แสดงแทนข้อความหน้าแรก)' },
     { key: 'loader_logo', label: 'โลโก้หน้าโหลด' },
     { key: 'loader_background_image', label: 'ภาพพื้นหลังหน้าโหลด' },
     { key: 'robux_package_logo', label: 'โลโก้ Robux บนการ์ดแพ็กเกจ' },

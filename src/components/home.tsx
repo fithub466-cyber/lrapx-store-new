@@ -190,32 +190,18 @@ function MarqueeProductCard({ p }: { p: Product }) {
 }
 
 function Hero({ settings }: { settings: Record<string, string> }) {
+  const image = settings.hero_background_image || '/images/hero-banner.png';
+
   return (
     <section className="relative overflow-hidden bg-black">
-      {settings.hero_background_image && <img src={settings.hero_background_image} alt="" aria-hidden="true" className="absolute inset-0 h-full w-full object-cover opacity-35" />}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_72%_42%,rgba(200,149,101,0.16),transparent_48%),radial-gradient(ellipse_at_12%_90%,rgba(143,96,61,0.10),transparent_42%)]" />
-      <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/70" />
-      <div className="relative mx-auto max-w-7xl px-4 py-20 md:px-6 md:py-28">
-        <div className="max-w-2xl animate-fade-up">
-          <span className="inline-flex items-center gap-2 rounded-full border border-[#f0b429]/40 bg-[#f0b429]/10 px-4 py-1.5 text-sm text-[#f0b429] font-medium">
-            <BadgeCheck className="h-4 w-4" /> {settings.hero_badge_text || 'ร้านเกมมิ่งอันดับต้นของคนไทย'}
-          </span>
-          <h1 className="mt-5 font-display text-3xl font-extrabold leading-[1.2] sm:text-4xl md:text-6xl">
-            <span className="text-glow text-primary">{settings.hero_title || 'พร้อมลุยแล้วหรือยัง?'}</span>
-            <br />
-            <span className="text-white">{settings.hero_white_text || `${settings.store_name || "LrapX Store"} จัดให้ครบ`}</span>
-          </h1>
-          <p className="mt-4 max-w-xl text-base md:text-lg text-muted-foreground leading-relaxed">
-            {settings.hero_subtitle || 'ไอดีเกมคุณภาพ เติมเกมราคาดี มีประกัน พร้อมทีมงานดูแล'}
-          </p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Button size="lg" className="h-12 px-7 text-base font-display font-semibold whitespace-nowrap btn-neon bg-gradient-to-r from-[#8f603d] to-[#c89565] text-white hover:from-[#a87349] hover:to-[#d7a879]" onClick={() => navigate('/game-ids')}>
-              <Gamepad2 className="mr-2 h-5 w-5" /> {settings.hero_button_products || "ดูสินค้าไอดีเกม"}
-            </Button>
-            <Button size="lg" variant="outline" className="h-12 px-7 text-base font-display font-semibold whitespace-nowrap border-[#f0b429]/50 text-[#f0b429] hover:bg-[#f0b429]/10 hover:text-[#f0b429]" onClick={() => navigate('/topup')}>
-              <Zap className="mr-2 h-5 w-5" /> {settings.hero_button_topup || "เติมเกมเลย"}
-            </Button>
-          </div>
+      <div className="mx-auto max-w-7xl px-4 py-5 md:px-6 md:py-8">
+        <div className="relative aspect-[16/7] min-h-[150px] max-h-[430px] w-full overflow-hidden rounded-2xl border border-[#c89565]/30 bg-[#080808] shadow-[0_12px_45px_rgba(0,0,0,0.45)] sm:aspect-[16/6] md:aspect-[16/5]">
+          <img
+            src={image}
+            alt="LrapX Store"
+            className="absolute inset-0 h-full w-full object-cover"
+            fetchPriority="high"
+          />
         </div>
       </div>
     </section>
