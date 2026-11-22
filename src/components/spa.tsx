@@ -88,10 +88,15 @@ export default function App() {
   const { refresh, setSidebarOpen } = useApp();
   const [loaderSettings, setLoaderSettings] = useState<Record<string, string>>({});
   const [settingsLoaded, setSettingsLoaded] = useState(false);
+  const [loaderLogoVersion, setLoaderLogoVersion] = useState(0);
 
   useEffect(() => {
     api<{ settings: Record<string, string> }>('/api/data/settings', { silent: true })
-      .then((d) => setLoaderSettings(d.settings))
+      .then((d) => {
+        setLoaderSettings(d.settings);
+        // เปลี่ยน query ทุกครั้งที่โหลดหน้า เพื่อไม่ให้ CDN/เบราว์เซอร์แสดงไฟล์โลโก้เก่าที่ URL เดิม
+        setLoaderLogoVersion(Date.now());
+      })
       .catch(() => {})
       .finally(() => setSettingsLoaded(true));
   }, []);
@@ -112,13 +117,17 @@ export default function App() {
   }, [path, setSidebarOpen]);
 
   // ป้องกัน hydration mismatch: SSR เรนเดอร์ skeleton เดียวกับ client เฟรมแรก
+  const loaderLogo = loaderSettings.loader_logo || loaderSettings.store_logo || "/images/logo.png";
+  const loaderLogoSrc = /^https?:\\/\\//.test(loaderLogo)
+    ? `${loaderLogo}${loaderLogo.includes('?') ? '&' : '?'}v=${loaderLogoVersion}`
+    : loaderLogo;
   if (!mounted || !settingsLoaded) {
     return (
       <div className="flex min-h-screen flex-col bg-background" style={loaderSettings.loader_background_image ? { backgroundImage: `linear-gradient(rgba(0,0,0,.72), rgba(0,0,0,.88)), url(${loaderSettings.loader_background_image})`, backgroundSize: "cover", backgroundPosition: "center" } : undefined}>
         <div className="h-[104px] w-full border-b border-border bg-[#000000]" />
         <div className="flex flex-1 items-center justify-center">
           <div className="flex flex-col items-center gap-4">
-            <img src={loaderSettings.loader_logo || loaderSettings.store_logo || "/images/logo.png"} alt="โลโก้ร้าน" className="h-20 w-20 object-contain animate-floaty" />
+            <img src={loaderLogoSrc} alt="โลโก้ร้าน" className="h-20 w-20 object-contain animate-floaty" />
             <div className="text-center text-sm font-semibold text-[#d9b18d]">{loaderSettings.loading_title || loaderSettings.store_name || "LrapX Store"}</div>
             {loaderSettings.loading_subtitle && <div className="text-xs text-muted-foreground">{loaderSettings.loading_subtitle}</div>}
             <div className="h-1.5 w-40 overflow-hidden rounded-full bg-secondary">
