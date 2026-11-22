@@ -31,11 +31,14 @@ export function Header({ currentPath }: { currentPath: string }) {
   const { user, sidebarOpen, setSidebarOpen, setUser, setPopup } = useApp();
   const [q, setQ] = useState('');
   const [brandSettings, setBrandSettings] = useState<Record<string, string>>({});
+  const [brandSettingsLoaded, setBrandSettingsLoaded] = useState(false);
+  const [brandLogoVersion, setBrandLogoVersion] = useState(0);
 
   useEffect(() => {
     api<{ settings: Record<string, string> }>('/api/data/settings', { silent: true })
       .then((d) => {
         setBrandSettings(d.settings);
+        setBrandLogoVersion(Date.now());
         const root = document.documentElement;
         const colors: Record<string, string> = {
           '--primary': d.settings.theme_primary || '#c89565',
@@ -60,7 +63,8 @@ export function Header({ currentPath }: { currentPath: string }) {
         Object.entries(colors).forEach(([key, value]) => root.style.setProperty(key, value));
         root.dataset.cardStyle = d.settings.theme_card_style || 'gradient';
       })
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => setBrandSettingsLoaded(true));
   }, []);
 
   function submitSearch(e: React.FormEvent) {
@@ -84,7 +88,7 @@ export function Header({ currentPath }: { currentPath: string }) {
 
           <button onClick={() => navigate('/')} className="flex shrink-0 items-center gap-2 cursor-pointer" aria-label="ไปหน้าหลัก">
             {/* โลโก้พื้นหลังโปร่งใส ไม่มีกรอบ */}
-            <img src={brandSettings.store_logo || "/images/logo.png"} alt="โลโก้ร้าน" className="h-10 w-10 object-contain drop-shadow-[0_0_8px_rgba(240,180,41,0.45)]" />
+            {brandSettingsLoaded && <img src={brandSettings.store_logo ? `${brandSettings.store_logo}${brandSettings.store_logo.includes("?") ? "&" : "?"}v=${brandLogoVersion}` : "/images/logo.png"} alt="โลโก้ร้าน" className="h-10 w-10 object-contain drop-shadow-[0_0_8px_rgba(240,180,41,0.45)]" />}
             <span className="text-left leading-tight">
               <span className="font-brand text-lg sm:text-xl font-bold not-italic normal-case tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-[#f7dfbd] via-[#c89565] to-[#a56b42] drop-shadow-[0_0_12px_rgba(200,149,101,0.38)]">{brandSettings.store_name || "LrapX Store"}</span>
               <span className="hidden sm:block text-[10px] text-muted-foreground tracking-widest uppercase">Game ID &amp; Top-Up Center</span>
