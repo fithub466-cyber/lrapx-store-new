@@ -1193,6 +1193,7 @@ function SettingsTab() {
 
   const siteTextFields = [
     { key: 'hero_badge_text', label: 'ข้อความป้ายเหนือหัวข้อหน้าแรก' },
+    { key: 'hero_white_text', label: 'ข้อความสีขาวของ Hero Banner' },
     { key: 'hero_button_products', label: 'ข้อความปุ่มดูสินค้าไอดีเกม' },
     { key: 'hero_button_topup', label: 'ข้อความปุ่มเติมเกม' },
     { key: 'trust_1_title', label: 'จุดเด่น 1 — หัวข้อ' },
