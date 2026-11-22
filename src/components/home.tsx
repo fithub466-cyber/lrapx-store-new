@@ -260,21 +260,28 @@ function CategoryBanner({ cat, loading, href }: { cat?: Category; loading: boole
 
 function TopupServiceCard({ cat, loading }: { cat?: Category; loading: boolean }) {
   const href = cat?.slug === 'giftpass' ? '/topup/gift-pass' : `/topup/${cat?.slug ?? ''}`;
-  const icon = cat?.slug === 'giftpass' ? Gift : Zap;
-  const Icon = icon;
-  if (loading || !cat) return <div className="gaming-card h-40 animate-pulse bg-secondary/40" />;
+  if (loading || !cat) return <div className="gaming-card h-48 animate-pulse bg-secondary/40" />;
   return (
-    <button onClick={() => navigate(href)} className="gaming-card group p-5 text-left cursor-pointer" aria-label={`เข้าบริการ ${cat.name}`}>
-      <div className="flex items-start justify-between">
-        <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-[#8f603d]/30 to-[#c89565]/20 border border-primary/30 text-primary">
-          <Icon className="h-6 w-6" />
-        </span>
-        {cat.image && <SafeImage src={cat.image} alt={cat.name} className="h-16 w-28 rounded-lg object-cover opacity-80" />}
-      </div>
-      <h3 className="mt-4 font-display text-lg font-bold group-hover:text-primary transition-colors">{cat.name}</h3>
-      <p className="mt-1 text-sm text-muted-foreground line-clamp-2">{cat.description}</p>
-      <div className="mt-3 inline-flex items-center text-sm font-semibold text-primary">
-        เลือกแพ็กเกจ ({cat._count?.packages ?? 0} แพ็ก) <ChevronRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
+    <button
+      onClick={() => navigate(href)}
+      className="gaming-card group relative h-48 overflow-hidden text-left cursor-pointer"
+      aria-label={`เข้าบริการ ${cat.name}`}
+    >
+      {cat.image && (
+        <img
+          src={cat.image}
+          alt={cat.name}
+          className="absolute inset-0 h-full w-full object-cover object-center transition-transform duration-700 group-hover:scale-110"
+          loading="lazy"
+        />
+      )}
+      <div className="absolute inset-0 bg-gradient-to-t from-[#07070d]/95 via-[#07070d]/55 to-[#07070d]/10" />
+      <div className="relative flex h-full flex-col justify-end p-6">
+        <h3 className="font-display text-2xl font-bold text-white group-hover:text-primary transition-colors">{cat.name}</h3>
+        <p className="mt-1 text-sm text-white/80 line-clamp-2">{cat.description}</p>
+        <div className="mt-3 inline-flex items-center text-sm font-semibold text-[#d9b18d]">
+          เลือกแพ็กเกจ ({cat._count?.packages ?? 0} แพ็ก) <ChevronRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
+        </div>
       </div>
     </button>
   );
