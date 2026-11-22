@@ -181,14 +181,19 @@ export function GameTopupPage({ slug }: { slug: 'freefire-topup' | 'roblox-topup
         <span className="text-foreground font-medium">{isFF ? 'เติมเกม Free Fire' : 'เติมเกม Roblox'}</span>
       </nav>
 
-      {/* Banner */}
-      <div className="gaming-card relative overflow-hidden mb-8 p-6 md:p-8">
-        <img src={category?.image || (isFF ? '/images/cover-freefire.png' : '/images/cover-roblox.png')} alt="" className="absolute inset-0 h-full w-full object-cover opacity-25" aria-hidden="true" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#07070d]/95 via-[#07070d]/80 to-[#07070d]/40" />
-        <div className="relative">
+      {/* Banner: ใช้รูปหมวดที่อัปโหลดเต็มพื้นที่เหมือนการ์ดหมวดไอดีเกม */}
+      <div className="gaming-card relative mb-8 min-h-[220px] overflow-hidden p-6 md:min-h-[280px] md:p-8">
+        <img
+          src={category?.image || (isFF ? '/images/cover-freefire.png' : '/images/cover-roblox.png')}
+          alt=""
+          className="absolute inset-0 h-full w-full object-cover object-center"
+          aria-hidden="true"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#07070d]/90 via-[#07070d]/55 to-[#07070d]/20" />
+        <div className="relative flex min-h-[172px] flex-col justify-end md:min-h-[216px]">
           <h1 className="font-display text-3xl font-bold">{isFF ? 'เติมเพชร Free Fire' : 'เติม Robux Roblox'}</h1>
-          <p className="mt-2 max-w-2xl text-sm text-muted-foreground">{category?.description ?? ''}</p>
-          <div className="mt-4 flex flex-wrap gap-4 text-xs text-muted-foreground">
+          <p className="mt-2 max-w-2xl text-sm text-white/80">{category?.description ?? ''}</p>
+          <div className="mt-4 flex flex-wrap gap-4 text-xs text-white/80">
             <span className="inline-flex items-center gap-1.5"><Timer className="h-4 w-4 text-primary" /> {isFF ? 'ส่งไวใน 5-10 นาที' : 'เปิดบริการ 16:30-22:00 น.'}</span>
             <span className="inline-flex items-center gap-1.5"><ShieldCheck className="h-4 w-4 text-emerald-400" /> {isFF ? 'ไม่ต้องให้รหัสผ่านไอดี' : 'ไม่ต้องส่งรหัสผ่านหรือ OTP'}</span>
           </div>

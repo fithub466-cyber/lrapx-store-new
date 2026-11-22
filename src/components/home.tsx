@@ -44,7 +44,7 @@ export function HomePage() {
 
   return (
     <div className="page-enter">
-      <Hero settings={settings} />
+      <Hero settings={settings} loading={loading} />
       <TrustBar settings={settings} />
 
       {/* หมวดหมู่ที่ 1: ไอดีเกม */}
@@ -185,18 +185,22 @@ function MarqueeProductCard({ p }: { p: Product }) {
   );
 }
 
-function Hero({ settings }: { settings: Record<string, string> }) {
+function Hero({ settings, loading }: { settings: Record<string, string>; loading: boolean }) {
   const image = settings.hero_background_image || '/images/hero-banner.png';
 
   return (
     <section className="relative w-full overflow-hidden bg-black">
       <div className="relative h-[230px] w-full bg-[#080808] sm:h-[340px] lg:h-[480px]">
-        <img
-          src={image}
-          alt="LrapX Store"
-          className="absolute inset-0 h-full w-full object-cover object-center"
-          fetchPriority="high"
-        />
+        {!loading && (
+          <img
+            key={image}
+            src={image}
+            alt="LrapX Store"
+            className="absolute inset-0 h-full w-full object-cover object-center"
+            fetchPriority="high"
+            decoding="async"
+          />
+        )}
       </div>
     </section>
   );
