@@ -142,7 +142,7 @@ export default function App() {
         <div className="h-[104px] w-full border-b border-border bg-[#000000]" />
         <div className="flex flex-1 items-center justify-center">
           <div className="flex flex-col items-center gap-4">
-            <img src={loaderLogoSrc} alt="โลโก้ร้าน" className="h-20 w-20 object-contain animate-floaty" />
+            {settingsLoaded && <img src={loaderLogoSrc} alt="โลโก้ร้าน" className="h-20 w-20 object-contain animate-floaty" />}
             <div className="text-center text-sm font-semibold text-[#d9b18d]">{loaderSettings.loading_title || loaderSettings.store_name || "LrapX Store"}</div>
             {loaderSettings.loading_subtitle && <div className="text-xs text-muted-foreground">{loaderSettings.loading_subtitle}</div>}
             <div className="h-1.5 w-40 overflow-hidden rounded-full bg-secondary">
