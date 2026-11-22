@@ -89,6 +89,13 @@ export default function App() {
   const [loaderSettings, setLoaderSettings] = useState<Record<string, string>>({});
   const [settingsLoaded, setSettingsLoaded] = useState(false);
   const [loaderLogoVersion, setLoaderLogoVersion] = useState(0);
+  const [minimumLoaderElapsed, setMinimumLoaderElapsed] = useState(false);
+
+  // แสดงหน้าโหลดอย่างน้อย 1.2 วินาที เพื่อให้ภาพที่ตั้งค่าไว้แสดงผลจริง ไม่หายไปทันทีหลัง API ตอบกลับ
+  useEffect(() => {
+    const timer = window.setTimeout(() => setMinimumLoaderElapsed(true), 1200);
+    return () => window.clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     api<{ settings: Record<string, string> }>('/api/data/settings', { silent: true })
@@ -118,12 +125,20 @@ export default function App() {
 
   // ป้องกัน hydration mismatch: SSR เรนเดอร์ skeleton เดียวกับ client เฟรมแรก
   const loaderLogo = loaderSettings.loader_logo || loaderSettings.store_logo || "/images/logo.png";
-  const loaderLogoSrc = loaderLogo.startsWith('http://') || loaderLogo.startsWith('https://')
-    ? `${loaderLogo}${loaderLogo.includes('?') ? '&' : '?'}v=${loaderLogoVersion}`
-    : loaderLogo;
-  if (!mounted || !settingsLoaded) {
+  const withLoaderCacheBuster = (src: string) => {
+    if (!src || src.startsWith('data:') || src.startsWith('blob:')) return src;
+    const hashIndex = src.indexOf('#');
+    const base = hashIndex >= 0 ? src.slice(0, hashIndex) : src;
+    const hash = hashIndex >= 0 ? src.slice(hashIndex) : '';
+    return `${base}${base.includes('?') ? '&' : '?'}v=${loaderLogoVersion}${hash}`;
+  };
+  const loaderLogoSrc = withLoaderCacheBuster(loaderLogo);
+  const loaderBackground = loaderSettings.loader_background_image
+    ? withLoaderCacheBuster(loaderSettings.loader_background_image)
+    : '';
+  if (!mounted || !settingsLoaded || !minimumLoaderElapsed) {
     return (
-      <div className="flex min-h-screen flex-col bg-background" style={loaderSettings.loader_background_image ? { backgroundImage: `linear-gradient(rgba(0,0,0,.72), rgba(0,0,0,.88)), url(${loaderSettings.loader_background_image})`, backgroundSize: "cover", backgroundPosition: "center" } : undefined}>
+      <div className="flex min-h-screen flex-col bg-background" style={loaderBackground ? { backgroundImage: `linear-gradient(rgba(0,0,0,.58), rgba(0,0,0,.78)), url("${loaderBackground}")`, backgroundSize: "cover", backgroundPosition: "center" } : undefined}>
         <div className="h-[104px] w-full border-b border-border bg-[#000000]" />
         <div className="flex flex-1 items-center justify-center">
           <div className="flex flex-col items-center gap-4">
