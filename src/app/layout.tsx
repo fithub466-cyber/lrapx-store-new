@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Kanit, Chakra_Petch } from "next/font/google";
+import { Kanit, Oxanium } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 
@@ -9,7 +9,7 @@ const kanit = Kanit({
   subsets: ["thai", "latin"],
 });
 
-const chakraPetch = Chakra_Petch({ variable: "--font-brand", weight: ["500", "600", "700"], subsets: ["latin"] });
+const oxanium = Oxanium({ variable: "--font-brand", weight: ["600", "700", "800"], subsets: ["latin"] });
 
 
 export const metadata: Metadata = {
@@ -37,7 +37,7 @@ export default function RootLayout({
   return (
     <html lang="th" suppressHydrationWarning className="dark">
       <body
-        className={`${kanit.variable} ${chakraPetch.variable} antialiased bg-background text-foreground`}
+        className={`${kanit.variable} ${oxanium.variable} antialiased bg-background text-foreground`}
       >
         {children}
         <Toaster />

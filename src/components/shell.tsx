@@ -90,7 +90,7 @@ export function Header({ currentPath }: { currentPath: string }) {
             {/* โลโก้พื้นหลังโปร่งใส ไม่มีกรอบ */}
             {brandSettingsLoaded && <img src={brandSettings.store_logo ? `${brandSettings.store_logo}${brandSettings.store_logo.includes("?") ? "&" : "?"}v=${brandLogoVersion}` : "/images/logo.png"} alt="โลโก้ร้าน" className="h-10 w-10 object-contain drop-shadow-[0_0_8px_rgba(240,180,41,0.45)]" />}
             <span className="text-left leading-tight">
-              <span className="font-brand text-lg sm:text-xl font-bold not-italic normal-case tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-[#f7dfbd] via-[#c89565] to-[#a56b42] drop-shadow-[0_0_12px_rgba(200,149,101,0.38)]">{brandSettings.store_name || "LrapX Store"}</span>
+              <span className="font-brand text-lg sm:text-xl font-extrabold not-italic uppercase tracking-[0.09em] text-transparent bg-clip-text bg-gradient-to-b from-[#fff0c2] via-[#e2ad52] to-[#9b5b24] drop-shadow-[0_0_12px_rgba(200,149,101,0.48)]">{brandSettings.store_name || "LrapX Store"}</span>
               <span className="hidden sm:block text-[10px] text-muted-foreground tracking-widest uppercase">Game ID &amp; Top-Up Center</span>
             </span>
           </button>
@@ -278,7 +278,7 @@ function SidebarDrawer({ currentPath }: { currentPath: string }) {
           <div className="flex items-center gap-2.5">
             <img src={settings.store_logo || "/images/logo.png"} alt="โลโก้ร้าน" className="h-10 w-10 object-contain" />
             <div className="leading-tight">
-              <div className="font-brand text-lg font-bold not-italic normal-case tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-[#f7dfbd] via-[#c89565] to-[#a56b42]">{settings.store_name || "LrapX Store"}</div>
+              <div className="font-brand text-lg font-extrabold not-italic uppercase tracking-[0.09em] text-transparent bg-clip-text bg-gradient-to-b from-[#fff0c2] via-[#e2ad52] to-[#9b5b24] drop-shadow-[0_0_10px_rgba(200,149,101,0.4)]">{settings.store_name || "LrapX Store"}</div>
               <div className="text-[10px] text-muted-foreground">Game ID &amp; Top-Up Center</div>
             </div>
           </div>
