@@ -118,7 +118,7 @@ export default function App() {
 
   // ป้องกัน hydration mismatch: SSR เรนเดอร์ skeleton เดียวกับ client เฟรมแรก
   const loaderLogo = loaderSettings.loader_logo || loaderSettings.store_logo || "/images/logo.png";
-  const loaderLogoSrc = /^https?:\\/\\//.test(loaderLogo)
+  const loaderLogoSrc = loaderLogo.startsWith('http://') || loaderLogo.startsWith('https://')
     ? `${loaderLogo}${loaderLogo.includes('?') ? '&' : '?'}v=${loaderLogoVersion}`
     : loaderLogo;
   if (!mounted || !settingsLoaded) {
