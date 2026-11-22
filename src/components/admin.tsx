@@ -1278,12 +1278,23 @@ function SettingsTab() {
               <Label htmlFor={`st-${f.key}`} className="flex items-center gap-1.5 text-sm">
                 {f.icon && <f.icon className="h-3.5 w-3.5 text-muted-foreground" />} {f.label}
               </Label>
-              <Input
-                id={`st-${f.key}`}
-                value={settings[f.key] ?? ''}
-                onChange={(e) => setSettings((s) => ({ ...s, [f.key]: e.target.value }))}
-                className="bg-secondary/60"
-              />
+              {f.key === 'hero_subtitle' ? (
+                <Textarea
+                  id={`st-${f.key}`}
+                  rows={4}
+                  value={settings[f.key] ?? ''}
+                  onChange={(e) => setSettings((s) => ({ ...s, [f.key]: e.target.value }))}
+                  placeholder="คำอธิบายที่แสดงใต้หัวข้อ Hero Banner"
+                  className="bg-secondary/60"
+                />
+              ) : (
+                <Input
+                  id={`st-${f.key}`}
+                  value={settings[f.key] ?? ''}
+                  onChange={(e) => setSettings((s) => ({ ...s, [f.key]: e.target.value }))}
+                  className="bg-secondary/60"
+                />
+              )}
             </div>
           ))}
         </div>
