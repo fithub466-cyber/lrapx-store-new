@@ -283,7 +283,7 @@ export async function PATCH(req: NextRequest, ctx: { params: Promise<{ slug: str
               direction: 'IN',
               amount: deposit.amount,
               balanceAfter: updated.balance,
-              description: `เติมเงินสำเร็จ (${deposit.method === 'TRUEMONEY_ANGPAO' ? 'ซองอังเปา' : 'โอนธนาคาร'}) ${deposit.refNo}`,
+              description: `เติมเงินสำเร็จ (${deposit.method === 'TRUEMONEY_WALLET' || deposit.method === 'TRUEMONEY_ANGPAO' ? 'TrueMoney Wallet' : 'โอนธนาคาร'}) ${deposit.refNo}`,
             },
           });
           return tx.deposit.update({
