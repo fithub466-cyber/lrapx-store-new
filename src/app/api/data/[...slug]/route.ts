@@ -401,7 +401,6 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ slug: stri
       const depositSchema = z
         .object({
           method: z.enum(['TRUEMONEY_WALLET', 'BANK_TRANSFER']),
-          amount: z.number().min(20, 'เติมขั้นต่ำ 20 บาท').max(50000, 'เติมได้ไม่เกิน 50,000 บาทต่อครั้ง'),
           slipImage: z.string().max(300).optional(),
         })
         .refine((d) => !!d.slipImage, {
@@ -451,7 +450,6 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ slug: stri
           body: JSON.stringify({
             url: slipUrl.toString(),
             matchAccount: true,
-            matchAmount: body.amount,
             checkDuplicate: true,
           }),
           cache: 'no-store',
@@ -501,8 +499,8 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ slug: stri
       if (verified.isDuplicate === true) {
         return err('สลิปนี้เคยถูกใช้ส่งคำขอแล้ว ไม่สามารถใช้ซ้ำได้', 409);
       }
-      if (verified.isAmountMatched !== true || typeof slipAmount !== 'number' || Math.abs(slipAmount - body.amount) > 0.009) {
-        return err('ยอดเงินในสลิปไม่ตรงกับจำนวนที่กรอก กรุณาตรวจสอบอีกครั้ง', 400);
+      if (typeof slipAmount !== 'number' || !Number.isFinite(slipAmount) || slipAmount < 20 || slipAmount > 50000) {
+        return err('ยอดเงินในสลิปไม่ถูกต้อง หรืออยู่นอกช่วง 20–50,000 บาท', 400);
       }
       if (!transactionRef || !parsedDate || Number.isNaN(parsedDate.getTime())) {
         return err('EasySlip ไม่พบรหัสอ้างอิงหรือวันเวลาโอนที่ตรวจสอบได้', 400);
@@ -536,7 +534,7 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ slug: stri
           refNo: makeRef('DP'),
           userId: user.id,
           method: body.method,
-          amount: body.amount,
+          amount: slipAmount,
           slipImage: slipUrl.toString(),
           status: 'PENDING',
           adminNote: `EasySlip ตรวจผ่าน · ${transactionRef} · ${parsedDate.toISOString()} · บัญชีผู้รับตรงกับร้าน · รอแอดมินอนุมัติ`,
