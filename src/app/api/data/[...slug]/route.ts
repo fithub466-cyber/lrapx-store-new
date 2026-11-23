@@ -398,94 +398,32 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ slug: stri
       const limited = rateLimit(`deposit:${user.id}`, 5, 10 * 60 * 1000);
       if (!limited.ok) return err('ส่งคำขอเติมเงินถี่เกินไป กรุณารอสักครู่', 429);
 
-      const depositSchema = z.object({
-        method: z.enum(['TRUEMONEY_ANGPAO', 'BANK_TRANSFER']),
-        amount: z.number().min(20, 'เติมขั้นต่ำ 20 บาท').max(50000, 'เติมได้ไม่เกิน 50,000 บาทต่อครั้ง'),
-        slipImage: z.string().url().max(500).optional(),
-      }).refine((d) => !!d.slipImage, { message: 'กรุณาแนบสลิปการชำระเงิน' });
+      const depositSchema = z
+        .object({
+          method: z.enum(['TRUEMONEY_ANGPAO', 'BANK_TRANSFER']),
+          amount: z.number().min(20, 'เติมขั้นต่ำ 20 บาท').max(50000, 'เติมได้ไม่เกิน 50,000 บาทต่อครั้ง'),
+          angpaoLink: z.string().trim().max(500).optional(),
+          slipImage: z.string().max(300).optional(),
+        })
+        .refine((d) => d.method !== 'TRUEMONEY_ANGPAO' || (d.angpaoLink && d.angpaoLink.startsWith('https://')), {
+          message: 'กรุณากรอกลิงก์ซองอังเปาที่ขึ้นต้นด้วย https://',
+        })
+        .refine((d) => d.method !== 'BANK_TRANSFER' || !!d.slipImage, {
+          message: 'กรุณาแนบสลิปการโอนเงิน',
+        });
 
       const body = depositSchema.parse(await req.json());
-      const apiKey = process.env.EASYSLIP_API_KEY;
-      if (!apiKey) return err('ระบบตรวจสอบสลิปยังไม่ได้ตั้งค่า กรุณาติดต่อผู้ดูแลร้าน', 503);
-
-      // Only accept this user's own uploaded Vercel Blob slip.
-      const slipUrl = new URL(body.slipImage!);
-      if (slipUrl.protocol !== 'https:' || !slipUrl.hostname.endsWith('.public.blob.vercel-storage.com') ||
-          !slipUrl.pathname.includes(`/deposits/slips/${user.id}/`)) {
-        return err('ไฟล์สลิปไม่ถูกต้อง กรุณาอัปโหลดใหม่');
-      }
-      const imageResponse = await fetch(slipUrl, { cache: 'no-store', redirect: 'error', signal: AbortSignal.timeout(12000) });
-      if (!imageResponse.ok) return err('อ่านไฟล์สลิปไม่สำเร็จ กรุณาแนบใหม่');
-      const contentType = imageResponse.headers.get('content-type')?.split(';')[0] ?? '';
-      if (!['image/jpeg', 'image/png', 'image/webp'].includes(contentType)) return err('ไฟล์สลิปต้องเป็น JPG, PNG หรือ WEBP');
-      const imageBuffer = await imageResponse.arrayBuffer();
-      if (imageBuffer.byteLength < 100 || imageBuffer.byteLength > 4 * 1024 * 1024) return err('ขนาดไฟล์สลิปไม่ถูกต้อง');
-
-      const imageForm = new FormData();
-      imageForm.append('image', new Blob([imageBuffer], { type: contentType }), contentType === 'image/png' ? 'slip.png' : contentType === 'image/webp' ? 'slip.webp' : 'slip.jpg');
-      imageForm.append('matchAmount', String(body.amount));
-      imageForm.append('matchAccount', 'true');
-      imageForm.append('checkDuplicate', 'true');
-      const endpoint = body.method === 'BANK_TRANSFER'
-        ? 'https://api.easyslip.com/v2/verify/bank'
-        : 'https://api.easyslip.com/v2/verify/truewallet';
-      const verifyResponse = await fetch(endpoint, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${apiKey}` },
-        body: imageForm,
-        cache: 'no-store',
-        signal: AbortSignal.timeout(20000),
+      const deposit = await db.deposit.create({
+        data: {
+          refNo: makeRef('DP'),
+          userId: user.id,
+          method: body.method,
+          amount: body.amount,
+          angpaoLink: body.angpaoLink ?? null,
+          slipImage: body.slipImage ?? null,
+        },
       });
-      const verification = await verifyResponse.json().catch(() => null) as any;
-      if (!verifyResponse.ok || !verification?.success || !verification?.data) {
-        return err(verification?.error?.message || 'EasySlip ตรวจสอบสลิปไม่สำเร็จ', 422);
-      }
-
-      const checked = verification.data;
-      if (checked.isDuplicate) return err('สลิปนี้ถูกใช้แล้ว ไม่สามารถเติมเงินซ้ำได้', 409);
-      const slipAmount = body.method === 'BANK_TRANSFER'
-        ? Number(checked.amountInSlip ?? checked.rawSlip?.amount?.amount)
-        : Number(checked.amountInSlip ?? checked.rawSlip?.amount);
-      if (!Number.isFinite(slipAmount) || Math.abs(slipAmount - body.amount) > 0.009) {
-        return err('ยอดเงินในสลิปไม่ตรงกับยอดที่ระบุ', 422);
-      }
-      if (body.method === 'BANK_TRANSFER') {
-        if (checked.isAmountMatched !== true || !checked.matchedAccount) {
-          return err('บัญชีผู้รับหรือยอดเงินไม่ตรงกับบัญชีร้านที่ลงทะเบียนใน EasySlip', 422);
-        }
-      } else {
-        const expectedPhone = (await db.setting.findUnique({ where: { key: 'truemoney_phone' } }))?.value?.replace(/\D/g, '');
-        const receiverPhone = String(checked.rawSlip?.receiver?.phone ?? '').replace(/\D/g, '');
-        if (!expectedPhone || !receiverPhone || expectedPhone.slice(-9) !== receiverPhone.slice(-9)) {
-          return err('เบอร์ TrueMoney Wallet ผู้รับไม่ตรงกับเบอร์ร้านที่ตั้งค่าไว้', 422);
-        }
-      }
-
-      const transactionRef = String(checked.rawSlip?.transRef ?? checked.rawSlip?.transactionId ?? '');
-      if (!transactionRef) return err('ไม่พบเลขอ้างอิงธุรกรรมจาก EasySlip', 422);
-
-      const deposit = await db.$transaction(async (tx) => {
-        const wallet = await tx.wallet.upsert({ where: { userId: user.id }, create: { userId: user.id }, update: {} });
-        const updatedWallet = await tx.wallet.update({ where: { id: wallet.id }, data: { balance: { increment: body.amount } } });
-        const created = await tx.deposit.create({
-          data: {
-            refNo: makeRef('DP'), userId: user.id, method: body.method, amount: body.amount,
-            slipImage: body.slipImage, status: 'SUCCESS',
-            adminNote: `ตรวจสอบอัตโนมัติผ่าน EasySlip แล้ว • Ref: ${transactionRef}`,
-            reviewedAt: new Date(),
-          },
-        });
-        await tx.walletTransaction.create({
-          data: {
-            refCode: makeRef('WT'), walletId: wallet.id, userId: user.id,
-            type: 'TOPUP', direction: 'IN', amount: body.amount,
-            balanceAfter: updatedWallet.balance,
-            description: `เติมเงินผ่าน ${body.method === 'BANK_TRANSFER' ? 'ธนาคารกสิกรไทย' : 'TrueMoney Wallet'} (${created.refNo})`,
-          },
-        });
-        return created;
-      });
-      return ok({ deposit, verified: true, message: 'ตรวจสอบสลิปสำเร็จและเติมเงินเข้ากระเป๋าแล้ว' }, { status: 201 });
+      return ok({ deposit }, { status: 201 });
     }
 
     // ===== เปลี่ยนรหัสผ่านจากหน้าตั้งค่าบัญชี =====
