@@ -215,10 +215,17 @@ export function PurchaseDialog({
                 </label>
                 <label className={`flex items-center gap-3 rounded-xl border p-3.5 cursor-pointer transition-colors ${payment === 'BANK_TRANSFER' ? 'border-primary bg-primary/10' : 'border-border hover:border-primary/50'}`}>
                   <RadioGroupItem value="BANK_TRANSFER" id="pay-bank" />
-                  <CreditCard className="h-5 w-5 text-[#f0b429]" />
-                  <div className="flex-1">
-                    <div className="text-sm font-medium">โอนธนาคาร / TrueMoney</div>
-                    <div className="text-xs text-muted-foreground">แนบสลิป รอแอดมินตรวจสอบ</div>
+                  <div className="flex-1 min-w-0 space-y-2">
+                    <div className="text-sm font-medium">โอนธนาคาร / TrueMoney Wallet</div>
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="rounded-lg bg-white p-1.5 flex items-center justify-center">
+                        <img src="/images/payment-kbank.svg" alt="ธนาคารกสิกรไทย" className="h-10 w-full object-contain" />
+                      </div>
+                      <div className="rounded-lg bg-white p-1.5 flex items-center justify-center">
+                        <img src="/images/payment-truemoney.svg" alt="TrueMoney Wallet" className="h-10 w-full object-contain" />
+                      </div>
+                    </div>
+                    <div className="text-xs text-muted-foreground">แนบสลิปการชำระเงินเพื่อให้แอดมินตรวจสอบ</div>
                   </div>
                 </label>
               </RadioGroup>
