@@ -506,7 +506,7 @@ export function DepositPage() {
             className="gaming-card group p-7 text-left cursor-pointer transition-all hover:neon-ring focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
             aria-label="เลือกช่องทาง TrueMoney Wallet"
           >
-            <TrumoneyLogo className="h-14 w-14 mb-4" />
+            <img src={settings.truemoney_logo || '/images/payment-truemoney.svg'} alt="TrueMoney Wallet" className="h-14 w-14 mb-4 shrink-0 object-contain" />
             <h3 className="font-display text-lg font-bold">TrueMoney Wallet</h3>
             <p className="text-sm font-medium text-[#ff7a1a]">TrueMoney Wallet</p>
             <p className="mt-3 text-xs text-muted-foreground leading-relaxed">
@@ -524,7 +524,7 @@ export function DepositPage() {
             className="gaming-card group p-7 text-left cursor-pointer transition-all hover:neon-ring focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
             aria-label="เลือกช่องทางโอนเงินผ่านธนาคาร"
           >
-            <KbankLogo className="h-14 w-14 mb-4" />
+            <img src={settings.kbank_logo || '/images/payment-kbank.svg'} alt="ธนาคารกสิกรไทย" className="h-14 w-14 mb-4 shrink-0 object-contain" />
             <h3 className="font-display text-lg font-bold">โอนเงินผ่านธนาคาร</h3>
             <p className="text-sm font-medium text-emerald-400">{settings.bank_name || 'ธนาคารกสิกรไทย (KBank)'}</p>
             <p className="mt-3 text-xs text-muted-foreground leading-relaxed">
@@ -542,7 +542,7 @@ export function DepositPage() {
         <div className="gaming-card p-6 mb-8">
           {/* แถบหัว: โลโก้ + ชื่อช่องทางที่เลือก + ปุ่มเปลี่ยน */}
           <div className="flex flex-wrap items-center gap-3 pb-4 mb-5 border-b border-border">
-            {channel === 'TRUEMONEY_WALLET' ? <TrumoneyLogo className="h-12 w-12" /> : <KbankLogo className="h-12 w-12" />}
+            {channel === 'TRUEMONEY_WALLET' ? <img src={settings.truemoney_logo || '/images/payment-truemoney.svg'} alt="TrueMoney Wallet" className="h-12 w-12 shrink-0 object-contain" /> : <img src={settings.kbank_logo || '/images/payment-kbank.svg'} alt="ธนาคารกสิกรไทย" className="h-12 w-12 shrink-0 object-contain" />}
             <div className="min-w-0 flex-1 basis-48">
               <div className="font-display font-semibold">
                 {channel === 'TRUEMONEY_WALLET' ? 'โอนเข้า TrueMoney Wallet' : `โอนเงินผ่านธนาคาร — ${settings.bank_name || 'ธนาคารกสิกรไทย (KBank)'}`}
@@ -594,7 +594,7 @@ export function DepositPage() {
             <div className="max-w-xl mx-auto space-y-2.5 text-sm">
               <div className="flex items-center justify-between rounded-xl bg-secondary/50 border border-border px-4 py-3">
                 <div className="flex items-center gap-3">
-                  <KbankLogo className="h-9 w-9" />
+                  <img src={settings.kbank_logo || '/images/payment-kbank.svg'} alt="ธนาคารกสิกรไทย" className="h-9 w-9 shrink-0 object-contain" />
                   <div>
                     <div className="text-xs text-muted-foreground">ธนาคาร</div>
                     <div className="font-medium">{settings.bank_name || '-'}</div>
