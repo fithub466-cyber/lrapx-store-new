@@ -196,60 +196,23 @@ export function SafeImage({ src, alt, className }: { src?: string | null; alt: s
   return <img src={src} alt={alt} className={className} loading="lazy" />;
 }
 
-// ================= โลโก้ช่องทางชำระเงิน (วาดเองแบบ SVG — ไม่พึ่งไฟล์ภายนอก) =================
+// ================= โลโก้ช่องทางชำระเงิน =================
 
-/** โลโก้ TrueMoney Wallet (ซองอังเปา) — กระเป๋าสตางค์ขาวบนพื้นส้ม */
 export function TrumoneyLogo({ className = 'h-9 w-9' }: { className?: string }) {
-  const gid = `tm-${useId().replace(/:/g, '')}`;
-  return (
-    <svg viewBox="0 0 40 40" role="img" aria-label="โลโก้ TrueMoney Wallet" className={`${className} shrink-0 rounded-xl shadow-[0_2px_10px_rgba(255,92,0,0.35)]`}>
-      <defs>
-        <linearGradient id={gid} x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#ff8a1e" />
-          <stop offset="100%" stopColor="#f04d00" />
-        </linearGradient>
-      </defs>
-      <rect width="40" height="40" rx="10" fill={`url(#${gid})`} />
-      {/* ตัวเครื่องกระเป๋าสตางค์ */}
-      <path d="M9 14.5C9 12.6 10.6 11 12.5 11h15c1.9 0 3.5 1.6 3.5 3.5v11c0 1.9-1.6 3.5-3.5 3.5h-15C10.6 29 9 27.4 9 25.5v-11Z" fill="#fff" />
-      {/* ช่องเหรียญด้านบน (ฝาเปิด) */}
-      <path d="M12.5 11 26 7.5c1.1-.3 2.2.4 2.5 1.5l.5 2H12.5Z" fill="#fff" opacity="0.85" />
-      {/* ช่องการ์ด + จุดเหรียญ */}
-      <rect x="22" y="17.5" width="9" height="6.5" rx="2" fill="#f04d00" />
-      <circle cx="25.5" cy="20.7" r="1.4" fill="#fff" />
-    </svg>
-  );
+  return <img src="/images/payment-truemoney.svg" alt="TrueMoney Wallet" className={className + ' shrink-0 object-contain'} />;
 }
 
-/** โลโก้ธนาคารกสิกรไทย (KBank) — ตัว K ขาวบนพื้นเขียว */
 export function KbankLogo({ className = 'h-9 w-9' }: { className?: string }) {
-  const gid = `kb-${useId().replace(/:/g, '')}`;
-  return (
-    <svg viewBox="0 0 40 40" role="img" aria-label="โลโก้ธนาคารกสิกรไทย" className={`${className} shrink-0 rounded-xl shadow-[0_2px_10px_rgba(74,163,28,0.35)]`}>
-      <defs>
-        <linearGradient id={gid} x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#67b32b" />
-          <stop offset="100%" stopColor="#3e8a0c" />
-        </linearGradient>
-      </defs>
-      <rect width="40" height="40" rx="10" fill={`url(#${gid})`} />
-      {/* ตัว K แบบหนา — วาดด้วย path เพื่อให้คมชัดทุกขนาด */}
-      <path
-        d="M12 10h4.6v8.1l7-8.1h5.6l-7.9 9 8.2 11h-5.6l-6.1-8.6-1.2 1.4V30H12V10Z"
-        fill="#fff"
-      />
-    </svg>
-  );
+  return <img src="/images/payment-kbank.svg" alt="ธนาคารกสิกรไทย" className={className + ' shrink-0 object-contain'} />;
 }
 
-/** โลโก้ + ชื่อช่องทางเติมเงิน ใช้ในตาราง/รายการ */
 export function DepositChannelChip({ method, bankName }: { method: string; bankName?: string }) {
-  const isTM = method === 'TRUEMONEY_ANGPAO';
+  const isTM = method === 'TRUEMONEY_WALLET' || method === 'TRUEMONEY_ANGPAO';
   return (
     <span className="inline-flex items-center gap-2">
-      {isTM ? <TrumoneyLogo className="h-7 w-7" /> : <KbankLogo className="h-7 w-7" />}
+      {isTM ? <TrumoneyLogo className="h-8 w-24" /> : <KbankLogo className="h-8 w-28" />}
       <span className="leading-tight">
-        <span className="block text-sm font-medium">{isTM ? 'ซองอังเปา' : 'โอนธนาคาร'}</span>
+        <span className="block text-sm font-medium">{isTM ? 'TrueMoney Wallet' : 'โอนธนาคาร'}</span>
         <span className="block text-[10px] text-muted-foreground">{isTM ? 'TrueMoney Wallet' : bankName || 'ธนาคารกสิกรไทย (KBank)'}</span>
       </span>
     </span>
