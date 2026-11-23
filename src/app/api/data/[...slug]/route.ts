@@ -468,6 +468,7 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ slug: stri
           amountInSlip?: number;
           matchedAccount?: {
             nameTh?: string;
+            nameEn?: string;
             bank?: { code?: string; shortCode?: string };
             bankNumber?: string;
           } | null;
@@ -509,22 +510,22 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ slug: stri
 
       const normalize = (value: string) => value.toLocaleLowerCase('th').replace(/[\s\p{P}\p{S}]/gu, '');
       const matched = verified.matchedAccount;
-      if (!matched?.nameTh) {
+      if (!matched?.nameTh && !matched?.nameEn) {
         return err('บัญชีผู้รับในสลิปไม่ตรงกับบัญชีร้านที่ลงทะเบียนใน EasySlip', 400);
       }
-      if (normalize(matched.nameTh) !== normalize(expectedName)) {
+      if (normalize(matched.nameTh ?? '') !== normalize(expectedName) && normalize(matched.nameEn ?? '') !== normalize(expectedName)) {
         return err('ชื่อบัญชีผู้รับไม่ตรงกับชื่อบัญชีร้าน', 400);
       }
 
       if (body.method === 'TRUEMONEY_WALLET') {
         const expectedLast4 = expectedAccount.replace(/\D/g, '').slice(-4);
-        const matchedLast4 = (matched.bankNumber ?? '').replace(/\\D/g, '').slice(-4);
+        const matchedLast4 = (matched.bankNumber ?? '').replace(/\D/g, '').slice(-4);
         if (!expectedLast4 || !matchedLast4 || expectedLast4 !== matchedLast4) {
           return err('เบอร์ TrueMoney Wallet ผู้รับไม่ตรงกับบัญชีร้าน', 400);
         }
       } else {
-        const expectedDigits = expectedAccount.replace(/\\D/g, '');
-        const matchedDigits = (matched.bankNumber ?? '').replace(/\\D/g, '');
+        const expectedDigits = expectedAccount.replace(/\D/g, '');
+        const matchedDigits = (matched.bankNumber ?? '').replace(/\D/g, '');
         if (matched.bank?.shortCode !== 'KBANK' || !expectedDigits || matchedDigits !== expectedDigits) {
           return err('ธนาคารหรือเลขบัญชีผู้รับไม่ตรงกับบัญชี KBank ของร้าน', 400);
         }
