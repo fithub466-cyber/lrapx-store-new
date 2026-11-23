@@ -400,15 +400,11 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ slug: stri
 
       const depositSchema = z
         .object({
-          method: z.enum(['TRUEMONEY_ANGPAO', 'BANK_TRANSFER']),
+          method: z.enum(['TRUEMONEY_WALLET', 'BANK_TRANSFER']),
           amount: z.number().min(20, 'เติมขั้นต่ำ 20 บาท').max(50000, 'เติมได้ไม่เกิน 50,000 บาทต่อครั้ง'),
-          angpaoLink: z.string().trim().max(500).optional(),
           slipImage: z.string().max(300).optional(),
         })
-        .refine((d) => d.method !== 'TRUEMONEY_ANGPAO' || (d.angpaoLink && d.angpaoLink.startsWith('https://')), {
-          message: 'กรุณากรอกลิงก์ซองอังเปาที่ขึ้นต้นด้วย https://',
-        })
-        .refine((d) => d.method !== 'BANK_TRANSFER' || !!d.slipImage, {
+        .refine((d) => !!d.slipImage, {
           message: 'กรุณาแนบสลิปการโอนเงิน',
         });
 
@@ -419,7 +415,6 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ slug: stri
           userId: user.id,
           method: body.method,
           amount: body.amount,
-          angpaoLink: body.angpaoLink ?? null,
           slipImage: body.slipImage ?? null,
         },
       });
