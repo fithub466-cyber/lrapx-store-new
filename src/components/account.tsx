@@ -405,7 +405,6 @@ export function DepositPage() {
   const { user, refresh } = useApp();
   const [channel, setChannel] = useState<'TRUEMONEY_WALLET' | 'BANK_TRANSFER' | null>(null); // null = ยังไม่เลือกช่องทาง
   const [trueMoneyAmount, setTrueMoneyAmount] = useState('');
-  const [angpaoAmount, setAngpaoAmount] = useState('');
   const [bankAmount, setBankAmount] = useState('');
   const [slipUrl, setSlipUrl] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -500,7 +499,7 @@ export function DepositPage() {
       {/* ===== ขั้นที่ 1: เลือกช่องทางเติมเงิน (โลโก้อยู่หน้าชื่อช่องทาง) ===== */}
       {channel === null && (
         <div className="grid gap-4 sm:grid-cols-2 mb-8">
-          {/* ช่องทาง 1: ซองอั่งเปา — TrueMoney Wallet */}
+          {/* ช่องทาง 1: TrueMoney Wallet */}
           <button
             type="button"
             onClick={() => setChannel('TRUEMONEY_WALLET')}
@@ -579,7 +578,7 @@ export function DepositPage() {
               <div className="space-y-1.5">
                 <Label>สลิปการโอนเงิน *</Label>
                 <label className="flex items-center justify-center gap-2 rounded-xl border border-dashed border-border bg-secondary/40 p-4 cursor-pointer hover:border-primary/60 transition-colors">
-                  {slipUrl ? <img src={slipUrl} alt="สลิปการโอนเงิน" className="max-h-24 rounded" /> : uploading ? <Loader2 className="h-5 w-5 animate-spin text-primary" /> : <span className="inline-flex items-center gap-1.5 text-sm text-muted-foreground"><ImagePlus className="h-5 w-5" /> แนบสลิป (PNG/JPG/WEBP ≤ 5MB)</span>}
+                  {slipUrl ? <img src={slipUrl} alt="สลิปการโอนเงิน" className="max-h-24 rounded" /> : uploading ? <Loader2 className="h-5 w-5 animate-spin text-primary" /> : <span className="inline-flex items-center gap-1.5 text-sm text-muted-foreground"><ImagePlus className="h-5 w-5" /> แนบสลิป (PNG/JPG/WEBP ≤ 4MB)</span>}
                   <input type="file" accept="image/png,image/jpeg,image/webp" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) uploadSlip(f); e.target.value = ''; }} />
                   {!slipUrl && !uploading && <Upload className="h-4 w-4 text-primary" />}
                 </label>
