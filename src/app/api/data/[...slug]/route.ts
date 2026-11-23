@@ -409,16 +409,88 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ slug: stri
         });
 
       const body = depositSchema.parse(await req.json());
+      const apiKey = process.env.EASYSLIP_API_KEY;
+      if (!apiKey) return err('ระบบตรวจสอบสลิปยังไม่ได้ตั้งค่า กรุณาติดต่อแอดมิน', 503);
+
+      // รับเฉพาะ URL รูปสลิปจาก Vercel Blob ที่ระบบอัปโหลดให้ ป้องกันการส่ง URL ภายนอก
+      let slipUrl: URL;
+      try {
+        slipUrl = new URL(body.slipImage!);
+      } catch {
+        return err('ที่อยู่รูปสลิปไม่ถูกต้อง', 400);
+      }
+      if (slipUrl.protocol !== 'https:' || !slipUrl.hostname.endsWith('.public.blob.vercel-storage.com')) {
+        return err('กรุณาอัปโหลดสลิปผ่านหน้าเว็บอีกครั้ง', 400);
+      }
+
+      // EasySlip ตรวจสอบสลิปและยอดเงินเท่านั้น — ไม่อนุมัติและไม่เพิ่มยอดกระเป๋าอัตโนมัติ
+      const verifyEndpoint = body.method === 'TRUEMONEY_WALLET'
+        ? 'https://api.easyslip.com/v2/verify/truewallet'
+        : 'https://api.easyslip.com/v2/verify/bank';
+      let verifyResponse: Response;
+      try {
+        verifyResponse = await fetch(verifyEndpoint, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${apiKey}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            url: slipUrl.toString(),
+            matchAmount: body.amount,
+            checkDuplicate: true,
+          }),
+          cache: 'no-store',
+        });
+      } catch {
+        return err('ติดต่อระบบตรวจสอบสลิปไม่ได้ กรุณาลองใหม่ภายหลัง', 502);
+      }
+
+      const verifyResult = await verifyResponse.json().catch(() => null) as {
+        success?: boolean;
+        data?: {
+          isDuplicate?: boolean;
+          isAmountMatched?: boolean;
+          amountInSlip?: number;
+          rawSlip?: {
+            amount?: { amount?: number } | number;
+            transRef?: string;
+            transactionId?: string;
+          };
+        };
+      } | null;
+
+      if (!verifyResponse.ok || !verifyResult?.success || !verifyResult.data) {
+        return err('EasySlip ตรวจสอบสลิปไม่ผ่าน กรุณาตรวจสอบรูปสลิปแล้วส่งใหม่', 400);
+      }
+
+      const verified = verifyResult.data;
+      const slipAmount = typeof verified.amountInSlip === 'number'
+        ? verified.amountInSlip
+        : typeof verified.rawSlip?.amount === 'number'
+          ? verified.rawSlip.amount
+          : verified.rawSlip?.amount?.amount;
+
+      if (verified.isDuplicate === true) {
+        return err('สลิปนี้เคยถูกใช้ส่งคำขอแล้ว ไม่สามารถใช้ซ้ำได้', 409);
+      }
+      if (verified.isAmountMatched !== true || typeof slipAmount !== 'number' || Math.abs(slipAmount - body.amount) > 0.009) {
+        return err('ยอดเงินในสลิปไม่ตรงกับจำนวนที่กรอก กรุณาตรวจสอบอีกครั้ง', 400);
+      }
+
+      const transactionRef = verified.rawSlip?.transRef ?? verified.rawSlip?.transactionId ?? 'ตรวจสอบแล้ว';
       const deposit = await db.deposit.create({
         data: {
           refNo: makeRef('DP'),
           userId: user.id,
           method: body.method,
           amount: body.amount,
-          slipImage: body.slipImage ?? null,
+          slipImage: slipUrl.toString(),
+          status: 'PENDING',
+          adminNote: `EasySlip ตรวจสอบผ่าน · อ้างอิง ${transactionRef} · รอแอดมินตรวจสอบผู้รับและอนุมัติ`,
         },
       });
-      return ok({ deposit }, { status: 201 });
+      return ok({ deposit, verification: { verified: true, awaitingAdminApproval: true } }, { status: 201 });
     }
 
     // ===== เปลี่ยนรหัสผ่านจากหน้าตั้งค่าบัญชี =====
