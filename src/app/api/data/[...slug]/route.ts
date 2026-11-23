@@ -507,7 +507,7 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ slug: stri
         return err('EasySlip ไม่พบรหัสอ้างอิงหรือวันเวลาโอนที่ตรวจสอบได้', 400);
       }
 
-      const normalize = (value: string) => value.toLocaleLowerCase('th').replace(/[\\s\\p{P}\\p{S}]/gu, '');
+      const normalize = (value: string) => value.toLocaleLowerCase('th').replace(/[\s\p{P}\p{S}]/gu, '');
       const matched = verified.matchedAccount;
       if (!matched?.nameTh) {
         return err('บัญชีผู้รับในสลิปไม่ตรงกับบัญชีร้านที่ลงทะเบียนใน EasySlip', 400);
@@ -517,7 +517,7 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ slug: stri
       }
 
       if (body.method === 'TRUEMONEY_WALLET') {
-        const expectedLast4 = expectedAccount.replace(/\\D/g, '').slice(-4);
+        const expectedLast4 = expectedAccount.replace(/\D/g, '').slice(-4);
         const matchedLast4 = (matched.bankNumber ?? '').replace(/\\D/g, '').slice(-4);
         if (!expectedLast4 || !matchedLast4 || expectedLast4 !== matchedLast4) {
           return err('เบอร์ TrueMoney Wallet ผู้รับไม่ตรงกับบัญชีร้าน', 400);
