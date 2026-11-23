@@ -560,6 +560,12 @@ export function DepositPage() {
 
           {channel === 'TRUEMONEY_WALLET' ? (
             <div className="max-w-xl mx-auto space-y-3">
+              {settings.truemoney_account_name && (
+                <div className="rounded-xl border border-[#ff7a1a]/30 bg-[#ff7a1a]/10 px-4 py-3 text-sm">
+                  <div className="text-[11px] text-muted-foreground">ชื่อบัญชี TrueMoney Wallet</div>
+                  <div className="font-medium">{settings.truemoney_account_name}</div>
+                </div>
+              )}
               {settings.truemoney_phone && (
                 <div className="flex items-center justify-between rounded-xl border border-[#ff7a1a]/30 bg-[#ff7a1a]/10 px-4 py-3 text-sm">
                   <div>
