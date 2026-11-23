@@ -395,7 +395,7 @@ function DepositsTab() {
 
   return (
     <div className="space-y-4">
-      <p className="text-xs text-muted-foreground">การอนุมัติจะเพิ่มยอดเข้ากระเป๋าลูกค้าทันที (มีการป้องกันการอนุมัติซ้ำจาก Backend) — กรุณาตรวจสอบสลิป/ลิงก์อังเปาจริงก่อนอนุมัติ</p>
+      <p className="text-xs text-muted-foreground">EasySlip ตรวจสลิปและยอดเงินก่อนสร้างคำขอแล้ว แต่แอดมินต้องตรวจสอบผู้รับและหลักฐานอีกครั้งก่อนกดอนุมัติ เงินจะเข้ากระเป๋าหลังอนุมัติเท่านั้น</p>
       <div className="rounded-2xl border border-border overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
