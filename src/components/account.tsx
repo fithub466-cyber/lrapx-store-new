@@ -403,8 +403,8 @@ export function WalletPage() {
 
 export function DepositPage() {
   const { user, refresh } = useApp();
-  const [channel, setChannel] = useState<'TRUEMONEY_ANGPAO' | 'BANK_TRANSFER' | null>(null); // null = ยังไม่เลือกช่องทาง
-  const [angpaoLink, setAngpaoLink] = useState('');
+  const [channel, setChannel] = useState<'TRUEMONEY_WALLET' | 'BANK_TRANSFER' | null>(null); // null = ยังไม่เลือกช่องทาง
+  const [trueMoneyAmount, setTrueMoneyAmount] = useState('');
   const [angpaoAmount, setAngpaoAmount] = useState('');
   const [bankAmount, setBankAmount] = useState('');
   const [slipUrl, setSlipUrl] = useState<string | null>(null);
@@ -449,17 +449,13 @@ export function DepositPage() {
     }
   }
 
-  async function submit(methodType: 'TRUEMONEY_ANGPAO' | 'BANK_TRANSFER') {
-    const amount = methodType === 'TRUEMONEY_ANGPAO' ? parseFloat(angpaoAmount) : parseFloat(bankAmount);
+  async function submit(methodType: 'TRUEMONEY_WALLET' | 'BANK_TRANSFER') {
+    const amount = methodType === 'TRUEMONEY_WALLET' ? parseFloat(trueMoneyAmount) : parseFloat(bankAmount);
     if (!amount || amount < 20) {
       toast({ title: 'กรุณาระบุจำนวนเงิน (ขั้นต่ำ 20 บาท)', variant: 'destructive' });
       return;
     }
-    if (methodType === 'TRUEMONEY_ANGPAO' && !angpaoLink.trim().startsWith('https://')) {
-      toast({ title: 'ลิงก์ซองอังเปาไม่ถูกต้อง', description: 'ต้องขึ้นต้นด้วย https://', variant: 'destructive' });
-      return;
-    }
-    if (methodType === 'BANK_TRANSFER' && !slipUrl) {
+    if (!slipUrl) {
       toast({ title: 'กรุณาแนบสลิปการโอนเงิน', variant: 'destructive' });
       return;
     }
@@ -470,12 +466,11 @@ export function DepositPage() {
         body: JSON.stringify({
           method: methodType,
           amount,
-          ...(methodType === 'TRUEMONEY_ANGPAO' ? { angpaoLink: angpaoLink.trim() } : { slipImage: slipUrl }),
+          slipImage: slipUrl,
         }),
       });
       toast({ title: 'ส่งคำขอเติมเงินแล้ว', description: 'ระบบกำลังตรวจสอบการชำระเงิน จะได้รับเงินหลังแอดมินอนุมัติ' });
-      setAngpaoLink('');
-      setAngpaoAmount('');
+      setTrueMoneyAmount('');
       setBankAmount('');
       setSlipUrl(null);
       const d = await api<{ deposits: Deposit[] }>('/api/data/deposits', { silent: true });
@@ -508,16 +503,15 @@ export function DepositPage() {
           {/* ช่องทาง 1: ซองอั่งเปา — TrueMoney Wallet */}
           <button
             type="button"
-            onClick={() => setChannel('TRUEMONEY_ANGPAO')}
+            onClick={() => setChannel('TRUEMONEY_WALLET')}
             className="gaming-card group p-7 text-left cursor-pointer transition-all hover:neon-ring focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-            aria-label="เลือกช่องทางซองอั่งเปา TrueMoney Wallet"
+            aria-label="เลือกช่องทาง TrueMoney Wallet"
           >
             <TrumoneyLogo className="h-14 w-14 mb-4" />
-            <h3 className="font-display text-lg font-bold">ซองอั่งเปา (อังเปา)</h3>
+            <h3 className="font-display text-lg font-bold">TrueMoney Wallet</h3>
             <p className="text-sm font-medium text-[#ff7a1a]">TrueMoney Wallet</p>
             <p className="mt-3 text-xs text-muted-foreground leading-relaxed">
-              ส่งเงินเป็นซองอังเปาแล้ววางลิงก์ gift.truemoney.com ให้ร้าน — แอดมินกดรับเงินจากลิงก์และตรวจยอดจริง
-              {settings.truemoney_phone ? ` หรือโอนเข้าเบอร์ TrueMoney ร้าน ${settings.truemoney_phone}` : ''}
+              โอนเงินเข้าเบอร์ TrueMoney Wallet ของร้าน แล้วแนบสลิปเพื่อให้ตรวจสอบยอดจริง
             </p>
             <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-primary">
               เลือกช่องทางนี้ <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -549,14 +543,14 @@ export function DepositPage() {
         <div className="gaming-card p-6 mb-8">
           {/* แถบหัว: โลโก้ + ชื่อช่องทางที่เลือก + ปุ่มเปลี่ยน */}
           <div className="flex flex-wrap items-center gap-3 pb-4 mb-5 border-b border-border">
-            {channel === 'TRUEMONEY_ANGPAO' ? <TrumoneyLogo className="h-12 w-12" /> : <KbankLogo className="h-12 w-12" />}
+            {channel === 'TRUEMONEY_WALLET' ? <TrumoneyLogo className="h-12 w-12" /> : <KbankLogo className="h-12 w-12" />}
             <div className="min-w-0 flex-1 basis-48">
               <div className="font-display font-semibold">
-                {channel === 'TRUEMONEY_ANGPAO' ? 'ซองอั่งเปา — TrueMoney Wallet' : `โอนเงินผ่านธนาคาร — ${settings.bank_name || 'ธนาคารกสิกรไทย (KBank)'}`}
+                {channel === 'TRUEMONEY_WALLET' ? 'โอนเข้า TrueMoney Wallet' : `โอนเงินผ่านธนาคาร — ${settings.bank_name || 'ธนาคารกสิกรไทย (KBank)'}`}
               </div>
               <div className="text-xs text-muted-foreground">
-                {channel === 'TRUEMONEY_ANGPAO'
-                  ? 'วางลิงก์ซองอังเปาพร้อมระบุจำนวนเงิน — แอดมินเปิดลิงกรับเงินและตรวจยอดจริงจากผู้ให้บริการ'
+                {channel === 'TRUEMONEY_WALLET'
+                  ? 'โอนเงินเข้าเบอร์วอลเล็ทของร้าน แล้วแนบสลิปเพื่อรอตรวจสอบ'
                   : 'โอนเงินเข้าบัญชีร้านด้านล่าง แล้วแนบสลิปเพื่อให้แอดมินตรวจสอบ'}
               </div>
             </div>
@@ -565,40 +559,36 @@ export function DepositPage() {
             </Button>
           </div>
 
-          {channel === 'TRUEMONEY_ANGPAO' ? (
-            /* ---------- ฟอร์มซองอั่งเปา (TrueMoney Wallet) ---------- */
+          {channel === 'TRUEMONEY_WALLET' ? (
             <div className="max-w-xl mx-auto space-y-3">
               {settings.truemoney_phone && (
                 <div className="flex items-center justify-between rounded-xl border border-[#ff7a1a]/30 bg-[#ff7a1a]/10 px-4 py-3 text-sm">
                   <div>
-                    <div className="text-[11px] text-muted-foreground">เบอร์ TrueMoney Wallet ของร้าน (โอนเงินเข้าเบอร์นี้ได้)</div>
+                    <div className="text-[11px] text-muted-foreground">เบอร์ TrueMoney Wallet ของร้าน</div>
                     <div className="font-mono font-medium tracking-wider">{settings.truemoney_phone}</div>
                   </div>
-                  <button
-                    onClick={() => copy(settings.truemoney_phone, 'tmphone')}
-                    className="flex h-9 w-9 items-center justify-center rounded-lg border border-border hover:border-primary hover:text-primary transition-colors cursor-pointer"
-                    aria-label="คัดลอกเบอร์ TrueMoney"
-                  >
+                  <button onClick={() => copy(settings.truemoney_phone, 'tmphone')} className="flex h-9 w-9 items-center justify-center rounded-lg border border-border hover:border-primary hover:text-primary transition-colors cursor-pointer" aria-label="คัดลอกเบอร์ TrueMoney">
                     {copied === 'tmphone' ? <CheckCircle2 className="h-4 w-4 text-emerald-400" /> : <Copy className="h-4 w-4" />}
                   </button>
                 </div>
               )}
               <div className="space-y-1.5">
-                <Label htmlFor="dp-link">ลิงก์ซองอังเปา *</Label>
-                <Input id="dp-link" value={angpaoLink} onChange={(e) => setAngpaoLink(e.target.value)} placeholder="https://gift.truemoney.com/cash-gift/..." className="bg-secondary/60 font-mono text-xs" />
+                <Label htmlFor="dp-tmamt">จำนวนเงินที่โอน (บาท) *</Label>
+                <Input id="dp-tmamt" value={trueMoneyAmount} onChange={(e) => setTrueMoneyAmount(e.target.value.replace(/[^\d.]/g, ''))} placeholder="เช่น 300" inputMode="decimal" className="bg-secondary/60" />
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="dp-amt">จำนวนเงินที่ส่ง (บาท) *</Label>
-                <Input id="dp-amt" value={angpaoAmount} onChange={(e) => setAngpaoAmount(e.target.value.replace(/[^\d.]/g, ''))} placeholder="เช่น 300" inputMode="decimal" className="bg-secondary/60" />
+                <Label>สลิปการโอนเงิน *</Label>
+                <label className="flex items-center justify-center gap-2 rounded-xl border border-dashed border-border bg-secondary/40 p-4 cursor-pointer hover:border-primary/60 transition-colors">
+                  {slipUrl ? <img src={slipUrl} alt="สลิปการโอนเงิน" className="max-h-24 rounded" /> : uploading ? <Loader2 className="h-5 w-5 animate-spin text-primary" /> : <span className="inline-flex items-center gap-1.5 text-sm text-muted-foreground"><ImagePlus className="h-5 w-5" /> แนบสลิป (PNG/JPG/WEBP ≤ 5MB)</span>}
+                  <input type="file" accept="image/png,image/jpeg,image/webp" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) uploadSlip(f); e.target.value = ''; }} />
+                  {!slipUrl && !uploading && <Upload className="h-4 w-4 text-primary" />}
+                </label>
               </div>
-              <Button className="w-full h-11 btn-neon bg-gradient-to-r from-violet-600 to-fuchsia-500 text-white" onClick={() => submit('TRUEMONEY_ANGPAO')} disabled={submitting}>
+              <Button className="w-full h-11 btn-neon bg-gradient-to-r from-violet-600 to-fuchsia-500 text-white" onClick={() => submit('TRUEMONEY_WALLET')} disabled={submitting || uploading}>
                 {submitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <CircleDollarSign className="mr-2 h-4 w-4" />}
                 ส่งคำขอเติมเงิน
               </Button>
-              <p className="text-[11px] text-muted-foreground flex items-start gap-1.5">
-                <Info className="h-3.5 w-3.5 shrink-0 mt-0.5" />
-                ระบบตรวจสอบยอดจริงกับผู้ให้บริการเท่านั้น — แอดมินจะเปิดลิงก์รับเงินตรงกับจำนวนที่แจ้ง ก่อนกดอนุมัติให้ยอดเข้ากระเป๋า
-              </p>
+              <p className="text-[11px] text-muted-foreground flex items-start gap-1.5"><Info className="h-3.5 w-3.5 shrink-0 mt-0.5" /> แนบสลิปจากรายการโอนเงินจริง ระบบจะรอตรวจสอบก่อนอนุมัติเติมเงิน</p>
             </div>
           ) : (
             /* ---------- ฟอร์มโอนเงินผ่านธนาคาร (KBank) ---------- */
@@ -672,7 +662,7 @@ export function DepositPage() {
                   {!slipUrl && !uploading && <Upload className="h-4 w-4 text-primary" />}
                 </label>
               </div>
-              <Button className="w-full h-11 btn-neon bg-gradient-to-r from-violet-600 to-fuchsia-500 text-white" onClick={() => submit('BANK_TRANSFER')} disabled={submitting}>
+              <Button className="w-full h-11 btn-neon bg-gradient-to-r from-violet-600 to-fuchsia-500 text-white" onClick={() => submit('BANK_TRANSFER')} disabled={submitting || uploading}>
                 {submitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <CircleDollarSign className="mr-2 h-4 w-4" />}
                 ส่งคำขอเติมเงิน
               </Button>
