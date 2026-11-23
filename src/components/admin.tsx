@@ -1350,6 +1350,16 @@ function SettingsTab() {
             <SingleImageUpload value={settings.truemoney_logo ?? ''} onChange={(url) => setSettings((s) => ({ ...s, truemoney_logo: url }))} label="อัปโหลดโลโก้ TrueMoney" aspect="aspect-square max-w-32" />
           </div>
           <div className="space-y-1.5">
+            <Label htmlFor="st-truemoney-name">ชื่อบัญชี TrueMoney Wallet</Label>
+            <Input
+              id="st-truemoney-name"
+              value={settings.truemoney_account_name ?? ''}
+              onChange={(e) => setSettings((s) => ({ ...s, truemoney_account_name: e.target.value }))}
+              placeholder="ชื่อเจ้าของ Wallet ตามที่ EasySlip แสดง"
+              className="bg-secondary/60"
+            />
+          </div>
+          <div className="space-y-1.5">
             <Label htmlFor="st-truemoney" className="flex items-center gap-1.5 text-sm"><Phone className="h-3.5 w-3.5 text-muted-foreground" /> เบอร์ TrueMoney Wallet ของร้าน (ถ้ามี — จะแสดงให้ลูกค้าดูในหน้าเติมเงิน)</Label>
             <Input
               id="st-truemoney"
