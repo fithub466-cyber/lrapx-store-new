@@ -423,7 +423,20 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ slug: stri
         return err('กรุณาอัปโหลดสลิปผ่านหน้าเว็บอีกครั้ง', 400);
       }
 
-      // EasySlip ตรวจสอบสลิปและยอดเงินเท่านั้น — ไม่อนุมัติและไม่เพิ่มยอดกระเป๋าอัตโนมัติ
+      // ตรวจสอบกับ EasySlip API v2 ตามเอกสารทางการ และบังคับจับคู่บัญชีผู้รับ
+      const settingRows = await db.setting.findMany();
+      const storeSettings: Record<string, string> = {};
+      for (const row of settingRows) storeSettings[row.key] = row.value;
+      const expectedName = (body.method === 'TRUEMONEY_WALLET'
+        ? storeSettings.truemoney_account_name
+        : storeSettings.bank_account_name) ?? '';
+      const expectedAccount = (body.method === 'TRUEMONEY_WALLET'
+        ? storeSettings.truemoney_phone
+        : storeSettings.bank_account_number) ?? '';
+      if (!expectedName.trim() || !expectedAccount.trim()) {
+        return err('ร้านยังตั้งค่าชื่อและบัญชีรับเงินไม่ครบ กรุณาติดต่อแอดมิน', 503);
+      }
+
       const verifyEndpoint = body.method === 'TRUEMONEY_WALLET'
         ? 'https://api.easyslip.com/v2/verify/truewallet'
         : 'https://api.easyslip.com/v2/verify/bank';
@@ -437,6 +450,7 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ slug: stri
           },
           body: JSON.stringify({
             url: slipUrl.toString(),
+            matchAccount: true,
             matchAmount: body.amount,
             checkDuplicate: true,
           }),
@@ -452,16 +466,23 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ slug: stri
           isDuplicate?: boolean;
           isAmountMatched?: boolean;
           amountInSlip?: number;
+          matchedAccount?: {
+            nameTh?: string;
+            bank?: { code?: string; shortCode?: string };
+            bankNumber?: string;
+          } | null;
           rawSlip?: {
             amount?: { amount?: number } | number;
             transRef?: string;
             transactionId?: string;
+            date?: string;
+            receiver?: { name?: string; phone?: string };
           };
         };
       } | null;
 
-      if (!verifyResponse.ok || !verifyResult?.success || !verifyResult.data) {
-        return err('EasySlip ตรวจสอบสลิปไม่ผ่าน กรุณาตรวจสอบรูปสลิปแล้วส่งใหม่', 400);
+      if (!verifyResponse.ok || verifyResult?.success !== true || !verifyResult.data) {
+        return err('EasySlip ตรวจสอบสลิปไม่ผ่านหรือไม่พบรายการโอนจริง', 400);
       }
 
       const verified = verifyResult.data;
@@ -470,6 +491,11 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ slug: stri
         : typeof verified.rawSlip?.amount === 'number'
           ? verified.rawSlip.amount
           : verified.rawSlip?.amount?.amount;
+      const transactionRef = body.method === 'TRUEMONEY_WALLET'
+        ? verified.rawSlip?.transactionId
+        : verified.rawSlip?.transRef;
+      const transactionDate = verified.rawSlip?.date;
+      const parsedDate = transactionDate ? new Date(transactionDate) : null;
 
       if (verified.isDuplicate === true) {
         return err('สลิปนี้เคยถูกใช้ส่งคำขอแล้ว ไม่สามารถใช้ซ้ำได้', 409);
@@ -477,8 +503,33 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ slug: stri
       if (verified.isAmountMatched !== true || typeof slipAmount !== 'number' || Math.abs(slipAmount - body.amount) > 0.009) {
         return err('ยอดเงินในสลิปไม่ตรงกับจำนวนที่กรอก กรุณาตรวจสอบอีกครั้ง', 400);
       }
+      if (!transactionRef || !parsedDate || Number.isNaN(parsedDate.getTime())) {
+        return err('EasySlip ไม่พบรหัสอ้างอิงหรือวันเวลาโอนที่ตรวจสอบได้', 400);
+      }
 
-      const transactionRef = verified.rawSlip?.transRef ?? verified.rawSlip?.transactionId ?? 'ตรวจสอบแล้ว';
+      const normalize = (value: string) => value.toLocaleLowerCase('th').replace(/[\\s\\p{P}\\p{S}]/gu, '');
+      const matched = verified.matchedAccount;
+      if (!matched?.nameTh) {
+        return err('บัญชีผู้รับในสลิปไม่ตรงกับบัญชีร้านที่ลงทะเบียนใน EasySlip', 400);
+      }
+      if (normalize(matched.nameTh) !== normalize(expectedName)) {
+        return err('ชื่อบัญชีผู้รับไม่ตรงกับชื่อบัญชีร้าน', 400);
+      }
+
+      if (body.method === 'TRUEMONEY_WALLET') {
+        const expectedLast4 = expectedAccount.replace(/\\D/g, '').slice(-4);
+        const matchedLast4 = (matched.bankNumber ?? '').replace(/\\D/g, '').slice(-4);
+        if (!expectedLast4 || !matchedLast4 || expectedLast4 !== matchedLast4) {
+          return err('เบอร์ TrueMoney Wallet ผู้รับไม่ตรงกับบัญชีร้าน', 400);
+        }
+      } else {
+        const expectedDigits = expectedAccount.replace(/\\D/g, '');
+        const matchedDigits = (matched.bankNumber ?? '').replace(/\\D/g, '');
+        if (matched.bank?.shortCode !== 'KBANK' || !expectedDigits || matchedDigits !== expectedDigits) {
+          return err('ธนาคารหรือเลขบัญชีผู้รับไม่ตรงกับบัญชี KBank ของร้าน', 400);
+        }
+      }
+
       const deposit = await db.deposit.create({
         data: {
           refNo: makeRef('DP'),
@@ -487,7 +538,7 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ slug: stri
           amount: body.amount,
           slipImage: slipUrl.toString(),
           status: 'PENDING',
-          adminNote: `EasySlip ตรวจสอบผ่าน · อ้างอิง ${transactionRef} · รอแอดมินตรวจสอบผู้รับและอนุมัติ`,
+          adminNote: `EasySlip ตรวจผ่าน · ${transactionRef} · ${parsedDate.toISOString()} · บัญชีผู้รับตรงกับร้าน · รอแอดมินอนุมัติ`,
         },
       });
       return ok({ deposit, verification: { verified: true, awaitingAdminApproval: true } }, { status: 201 });
