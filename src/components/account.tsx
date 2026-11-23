@@ -449,11 +449,6 @@ export function DepositPage() {
   }
 
   async function submit(methodType: 'TRUEMONEY_WALLET' | 'BANK_TRANSFER') {
-    const amount = methodType === 'TRUEMONEY_WALLET' ? parseFloat(trueMoneyAmount) : parseFloat(bankAmount);
-    if (!amount || amount < 20) {
-      toast({ title: 'กรุณาระบุจำนวนเงิน (ขั้นต่ำ 20 บาท)', variant: 'destructive' });
-      return;
-    }
     if (!slipUrl) {
       toast({ title: 'กรุณาแนบสลิปการโอนเงิน', variant: 'destructive' });
       return;
@@ -464,13 +459,10 @@ export function DepositPage() {
         method: 'POST',
         body: JSON.stringify({
           method: methodType,
-          amount,
           slipImage: slipUrl,
         }),
       });
       toast({ title: 'ส่งคำขอเติมเงินแล้ว', description: 'ระบบกำลังตรวจสอบการชำระเงิน จะได้รับเงินหลังแอดมินอนุมัติ' });
-      setTrueMoneyAmount('');
-      setBankAmount('');
       setSlipUrl(null);
       const d = await api<{ deposits: Deposit[] }>('/api/data/deposits', { silent: true });
       setDeposits(d.deposits);
@@ -578,10 +570,6 @@ export function DepositPage() {
                 </div>
               )}
               <div className="space-y-1.5">
-                <Label htmlFor="dp-tmamt">จำนวนเงินที่โอน (บาท) *</Label>
-                <Input id="dp-tmamt" value={trueMoneyAmount} onChange={(e) => setTrueMoneyAmount(e.target.value.replace(/[^\d.]/g, ''))} placeholder="เช่น 300" inputMode="decimal" className="bg-secondary/60" />
-              </div>
-              <div className="space-y-1.5">
                 <Label>สลิปการโอนเงิน *</Label>
                 <label className="flex items-center justify-center gap-2 rounded-xl border border-dashed border-border bg-secondary/40 p-4 cursor-pointer hover:border-primary/60 transition-colors">
                   {slipUrl ? <img src={slipUrl} alt="สลิปการโอนเงิน" className="max-h-24 rounded" /> : uploading ? <Loader2 className="h-5 w-5 animate-spin text-primary" /> : <span className="inline-flex items-center gap-1.5 text-sm text-muted-foreground"><ImagePlus className="h-5 w-5" /> แนบสลิป (PNG/JPG/WEBP ≤ 4MB)</span>}
@@ -593,7 +581,7 @@ export function DepositPage() {
                 {submitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <CircleDollarSign className="mr-2 h-4 w-4" />}
                 ส่งคำขอเติมเงิน
               </Button>
-              <p className="text-[11px] text-muted-foreground flex items-start gap-1.5"><Info className="h-3.5 w-3.5 shrink-0 mt-0.5" /> แนบสลิปจากรายการโอนเงินจริง ระบบจะรอตรวจสอบก่อนอนุมัติเติมเงิน</p>
+              <p className="text-[11px] text-muted-foreground flex items-start gap-1.5"><Info className="h-3.5 w-3.5 shrink-0 mt-0.5" /> ระบบจะอ่านยอดจากสลิปและตรวจสอบก่อนส่งคำขอ รอแอดมินอนุมัติจึงจะได้รับเงิน</p>
             </div>
           ) : (
             /* ---------- ฟอร์มโอนเงินผ่านธนาคาร (KBank) ---------- */
@@ -647,10 +635,6 @@ export function DepositPage() {
                   <img src={settings.bank_qr_image} alt="QR รับเงินของร้าน" className="mt-2 mx-auto h-40 w-40 rounded-lg border border-border bg-white object-contain p-1" />
                 </div>
               )}
-              <div className="space-y-1.5 pt-1">
-                <Label htmlFor="dp-bamt">จำนวนเงินที่โอน (บาท) *</Label>
-                <Input id="dp-bamt" value={bankAmount} onChange={(e) => setBankAmount(e.target.value.replace(/[^\d.]/g, ''))} placeholder="เช่น 500" inputMode="decimal" className="bg-secondary/60" />
-              </div>
               <div className="space-y-1.5">
                 <Label>สลิปการโอนเงิน *</Label>
                 <label className="flex items-center justify-center gap-2 rounded-xl border border-dashed border-border bg-secondary/40 p-4 cursor-pointer hover:border-primary/60 transition-colors">
