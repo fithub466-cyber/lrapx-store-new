@@ -1336,14 +1336,18 @@ function SettingsTab() {
           <p className="text-xs text-muted-foreground">ลูกค้าจะเห็นสองช่องทางนี้ในหน้า «เติมเงินเข้ากระเป๋า» — แก้ค่าได้เลยแล้วกดบันทึก หน้าเว็บหลักจะเปลี่ยนตามทันที</p>
         </div>
 
-        {/* ซองอั่งเปา — TrueMoney Wallet */}
+        {/* TrueMoney Wallet */}
         <div className="rounded-2xl border border-border bg-secondary/30 p-4">
           <div className="flex items-center gap-3 mb-3">
-            <TrumoneyLogo className="h-10 w-10" />
+            <img src={settings.truemoney_logo || '/images/payment-truemoney.svg'} alt="TrueMoney Wallet" className="h-10 w-10 object-contain" />
             <div>
-              <div className="font-display font-semibold text-sm">ซองอังเปา — TrueMoney Wallet</div>
-              <div className="text-[11px] text-muted-foreground">ลูกค้าส่งลิงก์ซองอังเปา (gift.truemoney.com) + แอดมินกดรับเงินจากลิงก์แล้วอนุมัติ</div>
+              <div className="font-display font-semibold text-sm">TrueMoney Wallet</div>
+              <div className="text-[11px] text-muted-foreground">ลูกค้าโอนเข้าวอลเล็ทของร้าน แนบสลิป และรอแอดมินตรวจสอบ/อนุมัติ</div>
             </div>
+          </div>
+          <div className="mb-3 space-y-1.5">
+            <Label>โลโก้ TrueMoney Wallet ที่แสดงหน้าเติมเงิน</Label>
+            <SingleImageUpload value={settings.truemoney_logo ?? ''} onChange={(url) => setSettings((s) => ({ ...s, truemoney_logo: url }))} label="อัปโหลดโลโก้ TrueMoney" aspect="aspect-square max-w-32" />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="st-truemoney" className="flex items-center gap-1.5 text-sm"><Phone className="h-3.5 w-3.5 text-muted-foreground" /> เบอร์ TrueMoney Wallet ของร้าน (ถ้ามี — จะแสดงให้ลูกค้าดูในหน้าเติมเงิน)</Label>
@@ -1359,11 +1363,15 @@ function SettingsTab() {
         {/* ธนาคาร — KBank */}
         <div className="rounded-2xl border border-border bg-secondary/30 p-4">
           <div className="flex items-center gap-3 mb-3">
-            <KbankLogo className="h-10 w-10" />
+            <img src={settings.kbank_logo || '/images/payment-kbank.svg'} alt="ธนาคารกสิกรไทย" className="h-10 w-10 object-contain" />
             <div>
               <div className="font-display font-semibold text-sm">โอนเงินผ่านธนาคาร — {settings.bank_name || 'ธนาคารกสิกรไทย (KBank)'}</div>
               <div className="text-[11px] text-muted-foreground">ลูกค้าโอนเข้าบัญชี/สแกน QR แล้วแนบสลิป — แอดมินตรวจสลิปและกดอนุมัติ</div>
             </div>
+          </div>
+          <div className="mb-3 space-y-1.5">
+            <Label>โลโก้ธนาคารกสิกรไทยที่แสดงหน้าเติมเงิน</Label>
+            <SingleImageUpload value={settings.kbank_logo ?? ''} onChange={(url) => setSettings((s) => ({ ...s, kbank_logo: url }))} label="อัปโหลดโลโก้ธนาคารกสิกรไทย" aspect="aspect-square max-w-32" />
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
             {bankFields.map((f) => (
