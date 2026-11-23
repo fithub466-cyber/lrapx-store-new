@@ -440,7 +440,7 @@ export function DepositPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
       setSlipUrl(data.url);
-      toast({ title: 'แนบสลิปสำเร็จ' });
+      toast({ title: 'อัปโหลดรูปสลิปแล้ว', description: 'ยังไม่ได้ตรวจสอบว่าสลิปจริงหรือไม่ กรุณากดส่งคำขอเติมเงินเพื่อให้ระบบตรวจสอบก่อน' });
     } catch (e) {
       toast({ title: (e as Error).message || 'อัปโหลดไม่สำเร็จ', variant: 'destructive' });
     } finally {
