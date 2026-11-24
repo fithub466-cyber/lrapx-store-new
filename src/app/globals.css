@@ -355,22 +355,15 @@ svg.lucide { stroke-width: var(--icon-stroke-width, 2); }
 }
 
 
-/* Homepage-only artwork background: keep it visible and above the document canvas. */
+/* Homepage-only artwork background: paint directly on the page wrapper so it cannot be hidden by a negative stacking layer. */
 .lrapx-home-page {
   position: relative;
-  isolation: isolate;
-}
-.lrapx-home-page::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
   background-color: #080808;
-  background-image: linear-gradient(rgba(0,0,0,.12), rgba(0,0,0,.20)), url("/images/home-background.webp");
-  background-position: center center;
+  background-image: linear-gradient(rgba(0,0,0,.10), rgba(0,0,0,.16)), url("/images/home-background.webp");
+  background-position: center top;
   background-size: cover;
   background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
 /* Keep every icon glyph clean: no box, border, fill panel, or shadow behind the icon itself. */
