@@ -222,7 +222,7 @@ function TrustBar({ settings }: { settings: Record<string, string> }) {
         {items.map((it, i) => (
           <div key={i} className="flex min-w-0 items-center gap-3">
             <span className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-primary/15 text-primary">
-              {it.image ? <img src={it.image} alt="" className="h-full w-full object-contain" /> : <it.icon className="h-5 w-5" />}
+              {it.image ? <span className={`shine-sweep shine-target-trust-${i+1} inline-flex h-full w-full`}><span className="shine-sweep-overlay" aria-hidden="true" /><img src={it.image} alt="" className="h-full w-full object-contain" /></span> : <it.icon className="h-5 w-5" />}
             </span>
             <div className="min-w-0">
               <div className="font-display text-sm font-semibold leading-snug">{it.title}</div>
