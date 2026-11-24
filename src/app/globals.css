@@ -327,3 +327,21 @@
 
 /* Admin-controlled icon appearance */
 svg.lucide { stroke-width: var(--icon-stroke-width, 2); }
+
+
+/* Admin-controlled global image sheen. Respects reduced-motion preferences. */
+@keyframes imageShinePulse {
+  0%, 100% { filter: brightness(1) drop-shadow(0 0 0 transparent); }
+  45% { filter: brightness(1.13) drop-shadow(0 0 7px rgba(200,149,101,.22)); }
+  60% { filter: brightness(1.04) drop-shadow(0 0 2px rgba(255,255,255,.18)); }
+}
+.motion-preview-sheen {
+  background-size: 220% 100%;
+  animation: shimmerLine 2s linear infinite;
+}
+:root[data-motion-shine="on"][data-motion-all-images="on"] img {
+  animation: imageShinePulse var(--image-shine-duration, 3s) ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  :root[data-motion-shine="on"] img, .motion-preview-sheen { animation: none !important; }
+}
