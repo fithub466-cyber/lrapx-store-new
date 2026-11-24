@@ -193,13 +193,14 @@ function Hero({ settings, loading }: { settings: Record<string, string>; loading
       <div className="mx-auto w-full max-w-7xl px-4 sm:px-6">
         <div className="relative aspect-[5/3] w-full overflow-hidden rounded-[18px] bg-transparent sm:aspect-[20/7] sm:rounded-[26px]">
         {!loading && (
-          <div className="shine-sweep shine-target-hero absolute inset-0 overflow-hidden rounded-[18px] sm:rounded-[26px]">
+          <div className="shine-sweep shine-target-hero absolute inset-0 overflow-hidden rounded-[18px] sm:rounded-[26px]" style={{ borderRadius: 18, clipPath: "inset(0 round 18px)" }}>
             <span className="shine-sweep-overlay" aria-hidden="true" />
             <img
               key={image}
               src={image}
               alt="LrapX Store"
               className="absolute inset-0 h-full w-full object-contain object-center"
+              style={{ borderRadius: 18, clipPath: "inset(0 round 18px)" }}
               fetchPriority="high"
               decoding="async"
             />
