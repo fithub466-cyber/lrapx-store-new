@@ -221,13 +221,13 @@ export function DepositChannelChip({ method, bankName }: { method: string; bankN
 
 // ================= อัปโหลดรูปภาพ (หลังบ้าน) =================
 
-const ACCEPT = 'image/png,image/jpeg,image/webp';
-const MAX_MB = 4;
+const ACCEPT = 'image/png,image/jpeg,image/webp,image/gif';
+const MAX_MB = 8;
 
 /** ยิงไฟล์ไป /api/upload แล้วคืน URL ของรูป */
 export async function uploadImageFile(file: File): Promise<string> {
-  if (!['image/png', 'image/jpeg', 'image/webp'].includes(file.type)) {
-    throw new Error('รองรับเฉพาะ PNG, JPG หรือ WEBP');
+  if (!['image/png', 'image/jpeg', 'image/webp', 'image/gif'].includes(file.type)) {
+    throw new Error('รองรับเฉพาะ PNG, JPG, WEBP หรือ GIF เคลื่อนไหว');
   }
   if (file.size > MAX_MB * 1024 * 1024) {
     throw new Error(`ไฟล์ใหญ่เกิน ${MAX_MB}MB กรุณาย่อรูปก่อนอัปโหลด`);
