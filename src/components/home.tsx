@@ -193,12 +193,15 @@ function Hero({ settings, loading }: { settings: Record<string, string>; loading
     <section className="relative w-full bg-transparent pt-8 pb-8 sm:pt-10 sm:pb-10 lg:pt-11 lg:pb-12">
       <div className="mx-auto w-full max-w-7xl px-4 sm:px-6">
         {settings.hero_corner_image && (
-          <div className="relative z-20 mb-[-14px] ml-0 w-[min(82%,620px)] rounded-[18px] border border-white/15 bg-black/70 p-1.5 shadow-[0_0_22px_rgba(255,120,20,0.18)] sm:mb-[-20px] sm:w-[min(48%,620px)]">
+          <div
+            className="relative z-20 mb-[-14px] ml-0 h-auto max-w-full sm:mb-[-20px]"
+            style={{ width: (Math.min(100, Math.max(10, Number(settings.hero_corner_width) || 38))) + '%', maxWidth: 620 }}
+          >
             <a href="https://lrapxstore.vercel.app" target="_blank" rel="noopener noreferrer" aria-label="เปิดเว็บไซต์ LrapX Store">
               <img
                 src={settings.hero_corner_image}
                 alt="LrapX Store — lrapxstore.vercel.app"
-                className="block h-auto w-full rounded-[13px] object-contain"
+                className="block h-auto w-full object-contain drop-shadow-[0_0_12px_rgba(255,140,20,0.22)]"
                 loading="eager"
                 decoding="async"
               />
