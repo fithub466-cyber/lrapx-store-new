@@ -199,7 +199,7 @@ function Hero({ settings, loading }: { settings: Record<string, string>; loading
               key={image}
               src={image}
               alt="LrapX Store"
-              className="absolute inset-0 h-full w-full object-contain object-center"
+              className="absolute inset-0 h-full w-full object-cover object-center"
               style={{ borderRadius: 18, clipPath: "inset(0 round 18px)" }}
               fetchPriority="high"
               decoding="async"
