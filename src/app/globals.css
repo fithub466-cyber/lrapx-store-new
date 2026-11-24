@@ -369,3 +369,23 @@ body:has(.lrapx-home-page)::before {
   background-size: cover;
   background-repeat: no-repeat;
 }
+
+
+/* Keep every icon glyph clean: no box, border, fill panel, or shadow behind the icon itself. */
+svg.lucide {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  outline: 0 !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+}
+.icon-badge,
+.icon-wrapper,
+.icon-container,
+.section-icon,
+[data-icon-wrapper] {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
