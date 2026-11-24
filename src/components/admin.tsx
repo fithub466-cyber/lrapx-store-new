@@ -1220,6 +1220,10 @@ function SettingsTab() {
     { key: 'trust_4_image', label: 'ภาพจุดเด่น 4' },
   ];
 
+  const motionOptions = [
+    { key: 'motion_shine_enabled', label: 'เปิดเอฟเฟกต์แสงวิ่งผ่านรูปภาพ' },
+    { key: 'motion_all_images', label: 'ใช้กับรูปภาพทั่วทั้งเว็บไซต์' },
+  ];
   const themeColors = [{key:'theme_primary',label:'สีหลักของเว็บ',help:'ปุ่มหลัก ลิงก์ และจุดเน้น'},{key:'theme_background',label:'สีพื้นหลังเว็บไซต์',help:'พื้นหลังทุกหน้า'},{key:'theme_surface',label:'สีพื้นการ์ดและกล่อง',help:'การ์ดสินค้าและเมนู'},{key:'theme_text',label:'สีตัวอักษรหลัก',help:'หัวข้อและเนื้อหาหลัก'},{key:'theme_muted',label:'สีข้อความรอง',help:'คำอธิบาย'},{key:'theme_border',label:'สีเส้นขอบ',help:'กรอบและเส้นแบ่ง'},{key:'theme_icon_color',label:'สีไอคอน UI',help:'สีไอคอนทั่วไปในเมนูและส่วนประกอบ'}];
   const presetThemes = [{name:'ดำ–ทอง',v:['#c89565','#000000','#0a0a0a','#ffffff','#9e9e9e','#242424']},{name:'น้ำเงิน–ฟ้า',v:['#38bdf8','#07111f','#0d1b2d','#f8fafc','#9fb3c8','#26384d']},{name:'ม่วง–ชมพู',v:['#d879ff','#100817','#1d1028','#fff7ff','#c5a9d1','#392344']},{name:'เขียว–มิ้นต์',v:['#34d399','#06130f','#0d211a','#f0fdf4','#9ab8a9','#244234']},{name:'แดง–ดำ',v:['#fb7185','#14090b','#241216','#fff1f2','#c9aeb2','#43242b']}];
   const bankFields: { key: string; label: string; placeholder?: string }[] = [
@@ -1317,8 +1321,36 @@ function SettingsTab() {
       </div>
       <div className="gaming-card p-6 space-y-4">
         <div>
+          <h3 className="font-display font-semibold mb-1">✨ เอฟเฟกต์ภาพเคลื่อนไหว</h3>
+          <p className="text-xs text-muted-foreground">ตั้งค่าแสงวิ่งบนรูปภาพ และอัปโหลดภาพเคลื่อนไหว GIF / WebP ได้จากส่วนจัดการภาพด้านล่าง</p>
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <label className="flex items-center justify-between gap-3 rounded-xl border border-border p-3">
+            <span className="text-sm">เปิดเอฟเฟกต์แสงวิ่งผ่านรูปภาพ</span>
+            <Switch checked={settings.motion_shine_enabled === 'true'} onCheckedChange={(v) => setSettings((s) => ({ ...s, motion_shine_enabled: String(v) }))} />
+          </label>
+          <label className="flex items-center justify-between gap-3 rounded-xl border border-border p-3">
+            <span className="text-sm">ใช้กับรูปภาพทุกจุดบนเว็บไซต์</span>
+            <Switch checked={settings.motion_all_images !== 'false'} onCheckedChange={(v) => setSettings((s) => ({ ...s, motion_all_images: String(v) }))} />
+          </label>
+          <div className="space-y-1.5">
+            <Label>ความเร็วแสงวิ่ง</Label>
+            <select value={settings.motion_shine_speed || '3'} onChange={(e) => setSettings((s) => ({ ...s, motion_shine_speed: e.target.value }))} className="h-10 w-full rounded-md border bg-secondary px-3">
+              <option value="1.5">เร็ว</option><option value="3">ปกติ</option><option value="5">ช้า</option>
+            </select>
+          </div>
+          <div className="rounded-xl border border-border p-3">
+            <p className="text-xs text-muted-foreground">ตัวอย่างแสงวิ่ง</p>
+            <div className="mt-2 overflow-hidden rounded-lg border border-primary/30">
+              <div className="motion-preview-sheen h-16 bg-gradient-to-r from-[#171717] via-[#c89565] to-[#171717]" />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="gaming-card p-6 space-y-4">
+        <div>
           <h3 className="font-display font-semibold mb-1">จัดการภาพในเว็บไซต์</h3>
-          <p className="text-xs text-muted-foreground">อัปโหลดหรือเปลี่ยนภาพได้จากตรงนี้ รองรับ PNG, JPG และ WEBP สูงสุด 4MB ต่อภาพ</p>
+          <p className="text-xs text-muted-foreground">อัปโหลดหรือเปลี่ยนภาพได้จากตรงนี้ รองรับ PNG, JPG, WEBP และ GIF เคลื่อนไหว สูงสุด 8MB ต่อภาพ</p>
         </div>
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {siteImageFields.map((f) => (
