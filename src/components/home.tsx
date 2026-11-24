@@ -187,11 +187,15 @@ function MarqueeProductCard({ p }: { p: Product }) {
 
 function Hero({ settings, loading }: { settings: Record<string, string>; loading: boolean }) {
   const image = settings.hero_background_image || '/images/hero-banner.png';
+  const [imageAspectRatio, setImageAspectRatio] = useState<number | null>(null);
 
   return (
     <section className="relative w-full bg-transparent pt-5 pb-8 sm:pt-7 sm:pb-10 lg:pt-8 lg:pb-12">
       <div className="mx-auto w-full max-w-7xl px-4 sm:px-6">
-        <div className="relative mx-auto aspect-[100/35] w-[calc(100%+24px)] overflow-hidden rounded-[18px] bg-transparent sm:aspect-[100/21] sm:w-[calc(100%+32px)] sm:rounded-[26px]">
+        <div
+          className="relative mx-auto w-[calc(100%+24px)] overflow-hidden rounded-[18px] bg-transparent sm:w-[calc(100%+32px)] sm:rounded-[26px]"
+          style={{ aspectRatio: imageAspectRatio ?? '100 / 35' }}
+        >
         {!loading && (
           <div className="shine-sweep shine-target-hero absolute inset-0 overflow-hidden rounded-[18px] sm:rounded-[26px]" style={{ borderRadius: 18, clipPath: "inset(0 round 18px)" }}>
             <span className="shine-sweep-overlay" aria-hidden="true" />
@@ -199,8 +203,14 @@ function Hero({ settings, loading }: { settings: Record<string, string>; loading
               key={image}
               src={image}
               alt="LrapX Store"
-              className="absolute inset-0 h-full w-full object-cover object-center"
+              className="absolute inset-0 h-full w-full object-contain"
               style={{ borderRadius: 18, clipPath: "inset(0 round 18px)" }}
+              onLoad={(event) => {
+                const { naturalWidth, naturalHeight } = event.currentTarget;
+                if (naturalWidth > 0 && naturalHeight > 0) {
+                  setImageAspectRatio(naturalWidth / naturalHeight);
+                }
+              }}
               fetchPriority="high"
               decoding="async"
             />
