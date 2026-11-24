@@ -204,6 +204,16 @@ function Hero({ settings, loading }: { settings: Record<string, string>; loading
             />
           </div>
         )}
+        {settings.hero_corner_image && (
+          <img
+            src={settings.hero_corner_image}
+            alt=""
+            aria-hidden="true"
+            className="pointer-events-none absolute left-2 top-1 z-20 h-auto w-[54%] max-w-[560px] object-contain object-left-top drop-shadow-[0_0_14px_rgba(255,150,20,0.28)] sm:left-4 sm:top-2 sm:w-[42%]"
+            loading="eager"
+            decoding="async"
+          />
+        )}
       </div>
     </section>
   );
