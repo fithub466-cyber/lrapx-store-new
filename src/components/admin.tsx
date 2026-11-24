@@ -1211,6 +1211,7 @@ function SettingsTab() {
   const siteImageFields = [
     { key: 'home_background_image', label: 'รูปพื้นหลังหน้าแรก (แสดงเฉพาะหน้าหลัก)' },
     { key: 'hero_background_image', label: 'รูปภาพ Hero Banner (แสดงแทนข้อความหน้าแรก)' },
+    { key: 'hero_corner_image', label: 'ภาพตกแต่งมุมซ้ายบน Hero Banner' },
     { key: 'loader_logo', label: 'โลโก้หน้าโหลด' },
     { key: 'loader_background_image', label: 'ภาพพื้นหลังหน้าโหลด' },
     { key: 'robux_package_logo', label: 'โลโก้ Robux บนการ์ดแพ็กเกจ' },
