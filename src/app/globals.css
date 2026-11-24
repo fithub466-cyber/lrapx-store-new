@@ -360,9 +360,10 @@ svg.lucide { stroke-width: var(--icon-stroke-width, 2); }
   position: relative;
   background-color: #080808;
   background-position: center top;
-  background-size: cover;
+  /* Fit the uploaded image to the homepage area without cover-cropping/zooming. */
+  background-size: 100% 100%;
   background-repeat: no-repeat;
-  background-attachment: fixed;
+  background-attachment: scroll;
 }
 
 /* Keep every icon glyph clean: no box, border, fill panel, or shadow behind the icon itself. */
