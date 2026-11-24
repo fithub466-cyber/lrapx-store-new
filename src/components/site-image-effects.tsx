@@ -21,9 +21,11 @@ export function SiteImageEffects() {
     let interval: ReturnType<typeof setInterval> | undefined;
     let observer: MutationObserver | undefined;
     let duration = 1200;
+    let enabled = false;
+    let targets: string[] = [];
 
     const startSweep = () => {
-      if (!active || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (!active || !enabled || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
       document.querySelectorAll<HTMLElement>('.shine-sweep:not(.shine-preview) .shine-sweep-overlay').forEach((overlay) => {
         const parent = overlay.parentElement;
         if (!parent || parent.dataset.shineDisabled === 'true') return;
@@ -39,34 +41,40 @@ export function SiteImageEffects() {
       });
     };
 
-    fetch('/api/data/settings', { cache: 'no-store' })
-      .then((r) => r.ok ? r.json() : null)
-      .then((data) => {
-        if (!active || !data?.settings) return;
-        const s = data.settings as Record<string, string>;
-        const enabled = s.motion_shine_enabled === 'true';
-        const targets = (s.motion_shine_targets || 'hero,store_logo').split(',').filter((key) => key in TARGET_CLASSES);
-        duration = [700, 1200, 2000].includes(Number(s.motion_shine_speed)) ? Number(s.motion_shine_speed) : 1200;
+    const updateTargets = () => {
+      Object.entries(TARGET_CLASSES).forEach(([key, selector]) => {
+        document.querySelectorAll<HTMLElement>(selector).forEach((element) => {
+          element.dataset.shineDisabled = enabled && targets.includes(key) ? 'false' : 'true';
+        });
+      });
+      startSweep();
+    };
 
-        const updateTargets = () => {
-          Object.entries(TARGET_CLASSES).forEach(([key, selector]) => {
-            document.querySelectorAll<HTMLElement>(selector).forEach((element) => {
-              element.dataset.shineDisabled = enabled && targets.includes(key) ? 'false' : 'true';
-            });
-          });
-          startSweep();
-        };
-        updateTargets();
-        observer = new MutationObserver(updateTargets);
-        observer.observe(document.body, { childList: true, subtree: true });
-        interval = setInterval(startSweep, 30000);
-      })
-      .catch(() => {});
+    const loadSettings = () => {
+      fetch('/api/data/settings', { cache: 'no-store' })
+        .then((r) => r.ok ? r.json() : null)
+        .then((data) => {
+          if (!active || !data?.settings) return;
+          const s = data.settings as Record<string, string>;
+          enabled = s.motion_shine_enabled === 'true';
+          targets = (s.motion_shine_targets ?? 'hero,store_logo').split(',').filter((key) => key in TARGET_CLASSES);
+          duration = [700, 1200, 2000].includes(Number(s.motion_shine_speed)) ? Number(s.motion_shine_speed) : 1200;
+          updateTargets();
+        })
+        .catch(() => {});
+    };
+
+    loadSettings();
+    observer = new MutationObserver(updateTargets);
+    observer.observe(document.body, { childList: true, subtree: true });
+    interval = setInterval(startSweep, 30000);
+    window.addEventListener('lrapx-settings-updated', loadSettings);
 
     return () => {
       active = false;
       if (interval) clearInterval(interval);
       observer?.disconnect();
+      window.removeEventListener('lrapx-settings-updated', loadSettings);
     };
   }, []);
   return null;
