@@ -1233,6 +1233,7 @@ function SettingsTab() {
     setSaving(true);
     try {
       await api('/api/admin/settings', { method: 'PATCH', body: JSON.stringify({ settings }) });
+      window.dispatchEvent(new Event('lrapx-settings-updated'));
       toast({ title: 'บันทึกตั้งค่าร้านสำเร็จ', description: 'หน้าเว็บหลักและหน้าเติมเงินจะใช้ค่าใหม่ทันที' });
     } catch {
       // toast จาก api()
@@ -1339,10 +1340,10 @@ function SettingsTab() {
               { key: 'trust_3', label: 'ภาพจุดเด่น 3' },
               { key: 'trust_4', label: 'ภาพจุดเด่น 4' },
             ].map((item) => {
-              const selected = (settings.motion_shine_targets || 'hero,store_logo').split(',').filter(Boolean);
+              const selected = (settings.motion_shine_targets ?? 'hero,store_logo').split(',').filter(Boolean);
               return <label key={item.key} className="flex items-center gap-3 rounded-xl border border-border p-3 text-sm">
                 <input type="checkbox" checked={selected.includes(item.key)} onChange={(e) => setSettings((s) => {
-                  const current = (s.motion_shine_targets || 'hero,store_logo').split(',').filter(Boolean);
+                  const current = (s.motion_shine_targets ?? 'hero,store_logo').split(',').filter(Boolean);
                   const next = e.target.checked ? [...new Set([...current, item.key])] : current.filter((key) => key !== item.key);
                   return { ...s, motion_shine_targets: next.join(',') };
                 })} className="h-4 w-4 accent-primary" />
