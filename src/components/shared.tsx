@@ -25,7 +25,7 @@ export function SectionHeading({
     <div className="flex items-end justify-between gap-4 mb-6">
       <div className="flex items-center gap-3">
         {Icon && (
-          <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/15 text-primary glow-purple">
+          <span className="flex h-11 w-11 items-center justify-center text-primary">
             <Icon className="h-5.5 w-5.5" />
           </span>
         )}
