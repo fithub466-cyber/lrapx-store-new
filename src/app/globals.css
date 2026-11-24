@@ -331,6 +331,8 @@ svg.lucide { stroke-width: var(--icon-stroke-width, 2); }
 
 /* Admin-selected directional shine sweep. JavaScript starts one sweep every 30 seconds. */
 .shine-sweep { position: relative; isolation: isolate; overflow: hidden; }
+/* Keep the Hero image wrapper stretched to its banner frame. */
+.shine-sweep.shine-target-hero { position: absolute; inset: 0; }
 .shine-sweep-overlay {
   position: absolute;
   z-index: 5;
