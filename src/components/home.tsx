@@ -43,7 +43,7 @@ export function HomePage() {
   const topupCategories = categories.filter((c) => c.type === 'TOPUP');
 
   return (
-    <div className="page-enter">
+    <div className="page-enter lrapx-home-page">
       <Hero settings={settings} loading={loading} />
       <TrustBar settings={settings} />
 
@@ -86,7 +86,7 @@ export function HomePage() {
       </section>
 
       {/* รีวิวจากลูกค้า + สินค้าที่มีคนซื้อ — เลื่อนไปข้าง ๆ เรื่อย ๆ วนไม่สิ้นสุด */}
-      <section className="relative py-12 gaming-grid bg-[#000000] border-y border-border">
+      <section className="relative py-12 border-y border-border bg-black/30">
         <div className="mx-auto max-w-7xl px-4 md:px-6">
           <SectionHeading
             icon={Star}
@@ -189,8 +189,8 @@ function Hero({ settings, loading }: { settings: Record<string, string>; loading
   const image = settings.hero_background_image || '/images/hero-banner.png';
 
   return (
-    <section className="relative w-full overflow-hidden bg-black">
-      <div className="relative h-[230px] w-full bg-[#080808] sm:h-[340px] lg:h-[480px]">
+    <section className="relative w-full overflow-hidden bg-transparent">
+      <div className="relative h-[230px] w-full bg-transparent sm:h-[340px] lg:h-[480px]">
         {!loading && (
           <div className="shine-sweep shine-target-hero absolute inset-0">
             <span className="shine-sweep-overlay" aria-hidden="true" />
@@ -217,7 +217,7 @@ function TrustBar({ settings }: { settings: Record<string, string> }) {
     { icon: Sparkles, image: settings.trust_4_image, title: settings.trust_4_title || 'ราคาดีกว่าในเกม', desc: settings.trust_4_desc || 'ส่วนลดทุกแพ็กเกจ' },
   ];
   return (
-    <div className="border-b border-border bg-card/50">
+    <div className="border-b border-border bg-black/25 backdrop-blur-[2px]">
       <div className="mx-auto grid max-w-7xl grid-cols-2 gap-4 px-4 py-6 md:grid-cols-4 md:px-6">
         {items.map((it, i) => (
           <div key={i} className="flex min-w-0 items-center gap-3">
