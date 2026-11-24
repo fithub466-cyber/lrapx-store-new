@@ -5,7 +5,7 @@ import { rateLimit } from '@/lib/auth';
 
 export const runtime = 'nodejs';
 
-const MAX_SIZE = 4 * 1024 * 1024;
+const MAX_SIZE = 8 * 1024 * 1024;
 const STORE_ID = 'store_Ac0vivuo8rHYDh2v';
 
 function detectImageType(buffer: Buffer): { extension: string; contentType: string } | null {
@@ -28,6 +28,11 @@ function detectImageType(buffer: Buffer): { extension: string; contentType: stri
     buffer[2] === 0xff
   ) return { extension: 'jpg', contentType: 'image/jpeg' };
 
+  if (buffer.length >= 6) {
+    const signature = buffer.subarray(0, 6).toString('ascii');
+    if (signature === 'GIF87a' || signature === 'GIF89a') return { extension: 'gif', contentType: 'image/gif' };
+  }
+
   if (
     buffer.length >= 12 &&
     buffer.subarray(0, 4).toString('ascii') === 'RIFF' &&
@@ -47,11 +52,11 @@ export async function POST(req: NextRequest) {
     const file = form.get('file');
     if (!(file instanceof File)) return err('กรุณาเลือกไฟล์รูปภาพ');
     if (file.size < 100) return err('ไฟล์รูปภาพไม่ถูกต้อง');
-    if (file.size > MAX_SIZE) return err('ไฟล์ใหญ่เกิน 4MB กรุณาเลือกรูปขนาดเล็กลง');
+    if (file.size > MAX_SIZE) return err('ไฟล์ใหญ่เกิน 8MB กรุณาเลือกรูปขนาดเล็กลง');
 
     const buffer = Buffer.from(await file.arrayBuffer());
     const image = detectImageType(buffer);
-    if (!image) return err('รองรับเฉพาะไฟล์ PNG, JPG หรือ WEBP เท่านั้น');
+    if (!image) return err('รองรับเฉพาะไฟล์ PNG, JPG, WEBP หรือ GIF เท่านั้น');
 
     const token = process.env.BLOB_READ_WRITE_TOKEN;
     if (!token) return err('ระบบจัดเก็บรูปยังตั้งค่าไม่เสร็จ กรุณาลองใหม่ภายหลัง', 503);
