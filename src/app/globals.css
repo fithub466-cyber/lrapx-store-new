@@ -332,9 +332,9 @@ svg.lucide { stroke-width: var(--icon-stroke-width, 2); }
 /* Admin-selected directional shine sweep. JavaScript starts one sweep every 30 seconds. */
 .shine-sweep { position: relative; isolation: isolate; overflow: hidden; }
 /* Keep the banner's vertical expansion and reduce its horizontal overhang by 5% per side. */
-.shine-sweep.shine-target-hero { position: absolute; inset: calc(48px - 20%) -1% -20%; }
+.shine-sweep.shine-target-hero { position: absolute; inset: calc(48px - 20%) 5% -20%; }
 @media (min-width: 640px) {
-  .shine-sweep.shine-target-hero { inset: calc(62px - 20%) -1% -20%; }
+  .shine-sweep.shine-target-hero { inset: calc(62px - 20%) 5% -20%; }
 }
 .shine-sweep-overlay {
   position: absolute;
