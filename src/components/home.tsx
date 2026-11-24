@@ -192,14 +192,17 @@ function Hero({ settings, loading }: { settings: Record<string, string>; loading
     <section className="relative w-full overflow-hidden bg-black">
       <div className="relative h-[230px] w-full bg-[#080808] sm:h-[340px] lg:h-[480px]">
         {!loading && (
-          <img
-            key={image}
-            src={image}
-            alt="LrapX Store"
-            className="absolute inset-0 h-full w-full object-cover object-center"
-            fetchPriority="high"
-            decoding="async"
-          />
+          <div className="shine-sweep shine-target-hero absolute inset-0">
+            <span className="shine-sweep-overlay" aria-hidden="true" />
+            <img
+              key={image}
+              src={image}
+              alt="LrapX Store"
+              className="absolute inset-0 h-full w-full object-cover object-center"
+              fetchPriority="high"
+              decoding="async"
+            />
+          </div>
         )}
       </div>
     </section>
