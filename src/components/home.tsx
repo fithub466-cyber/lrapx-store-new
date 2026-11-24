@@ -195,7 +195,11 @@ function Hero({ settings, loading }: { settings: Record<string, string>; loading
         {settings.hero_corner_image && (
           <div
             className="relative z-20 mb-[-14px] ml-0 h-auto max-w-full sm:mb-[-20px]"
-            style={{ width: (Math.min(100, Math.max(10, Number(settings.hero_corner_width) || 38))) + '%', maxWidth: 620 }}
+            style={{
+              width: (Math.min(100, Math.max(10, Number(settings.hero_corner_width) || 38))) + '%',
+              maxWidth: 620,
+              transform: 'translateY(' + Math.min(300, Math.max(-300, Number(settings.hero_corner_offset_y) || 0)) + 'px)',
+            }}
           >
             <a href="https://lrapxstore.vercel.app" target="_blank" rel="noopener noreferrer" aria-label="เปิดเว็บไซต์ LrapX Store">
               <img
