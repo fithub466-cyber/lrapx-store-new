@@ -190,7 +190,7 @@ function Hero({ settings, loading }: { settings: Record<string, string>; loading
   const [imageAspectRatio, setImageAspectRatio] = useState<number | null>(null);
 
   return (
-    <section className="relative w-full bg-transparent pt-5 pb-8 sm:pt-7 sm:pb-10 lg:pt-8 lg:pb-12">
+    <section className="relative w-full bg-transparent pt-8 pb-8 sm:pt-10 sm:pb-10 lg:pt-11 lg:pb-12">
       <div className="mx-auto w-full max-w-7xl px-4 sm:px-6">
         <div
           className="relative mx-auto w-[calc(100%+24px)] overflow-hidden rounded-[18px] bg-transparent sm:w-[calc(100%+32px)] sm:rounded-[26px]"
@@ -221,7 +221,7 @@ function Hero({ settings, loading }: { settings: Record<string, string>; loading
             src={settings.hero_corner_image}
             alt=""
             aria-hidden="true"
-            className="pointer-events-none absolute left-2 top-1 z-20 h-auto w-[58%] max-w-[620px] object-contain object-left-top drop-shadow-[0_0_14px_rgba(255,150,20,0.28)] sm:left-4 sm:top-2 sm:w-[46%]"
+            className="pointer-events-none absolute left-2 top-2 z-20 h-auto w-[58%] max-w-[620px] object-contain object-left-top drop-shadow-[0_0_14px_rgba(255,150,20,0.28)] sm:left-4 sm:top-3 sm:w-[46%]"
             loading="eager"
             decoding="async"
           />
