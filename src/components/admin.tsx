@@ -1209,6 +1209,7 @@ function SettingsTab() {
     { key: 'loading_subtitle', label: 'ข้อความรองหน้าโหลด' },
   ];
   const siteImageFields = [
+    { key: 'home_background_image', label: 'รูปพื้นหลังหน้าแรก (แสดงเฉพาะหน้าหลัก)' },
     { key: 'hero_background_image', label: 'รูปภาพ Hero Banner (แสดงแทนข้อความหน้าแรก)' },
     { key: 'loader_logo', label: 'โลโก้หน้าโหลด' },
     { key: 'loader_background_image', label: 'ภาพพื้นหลังหน้าโหลด' },
