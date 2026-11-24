@@ -1317,29 +1317,51 @@ function SettingsTab() {
       </div>
       <div className="gaming-card p-6 space-y-4">
         <div>
-          <h3 className="font-display font-semibold mb-1">✨ เอฟเฟกต์ภาพเคลื่อนไหว</h3>
-          <p className="text-xs text-muted-foreground">ตั้งค่าแสงวิ่งบนรูปภาพ และอัปโหลดภาพเคลื่อนไหว GIF / WebP ได้จากส่วนจัดการภาพด้านล่าง</p>
+          <h3 className="font-display font-semibold mb-1">✨ ตั้งค่าแสงกวาดผ่านรูปภาพ</h3>
+          <p className="text-xs text-muted-foreground">แสงสีขาวทองจะกวาดจากซ้ายไปขวา 1 ครั้ง แล้วเว้น 30 วินาทีก่อนกวาดครั้งถัดไป เลือกตำแหน่งที่ต้องการได้หลายรายการ</p>
         </div>
-        <div className="grid gap-3 sm:grid-cols-2">
-          <label className="flex items-center justify-between gap-3 rounded-xl border border-border p-3">
-            <span className="text-sm">เปิดเอฟเฟกต์แสงวิ่งผ่านรูปภาพ</span>
-            <Switch checked={settings.motion_shine_enabled === 'true'} onCheckedChange={(v) => setSettings((s) => ({ ...s, motion_shine_enabled: String(v) }))} />
-          </label>
-          <label className="flex items-center justify-between gap-3 rounded-xl border border-border p-3">
-            <span className="text-sm">ใช้กับรูปภาพทุกจุดบนเว็บไซต์</span>
-            <Switch checked={settings.motion_all_images !== 'false'} onCheckedChange={(v) => setSettings((s) => ({ ...s, motion_all_images: String(v) }))} />
-          </label>
-          <div className="space-y-1.5">
-            <Label>ความเร็วแสงวิ่ง</Label>
-            <select value={settings.motion_shine_speed || '3'} onChange={(e) => setSettings((s) => ({ ...s, motion_shine_speed: e.target.value }))} className="h-10 w-full rounded-md border bg-secondary px-3">
-              <option value="1.5">เร็ว</option><option value="3">ปกติ</option><option value="5">ช้า</option>
-            </select>
+        <label className="flex items-center justify-between gap-3 rounded-xl border border-border p-3">
+          <span className="text-sm font-medium">เปิดใช้งานเอฟเฟกต์แสง</span>
+          <Switch checked={settings.motion_shine_enabled === 'true'} onCheckedChange={(v) => setSettings((s) => ({ ...s, motion_shine_enabled: String(v) }))} />
+        </label>
+        <div className="space-y-2">
+          <Label>เลือกตำแหน่งที่ให้แสงกวาดผ่าน (เลือกได้หลายรายการ)</Label>
+          <div className="grid gap-2 sm:grid-cols-2">
+            {[
+              { key: 'hero', label: 'Hero Banner หน้าแรก' },
+              { key: 'store_logo', label: 'โลโก้ร้านบนหัวเว็บ' },
+              { key: 'loader_logo', label: 'โลโก้หน้าโหลด' },
+              { key: 'loader_background', label: 'พื้นหลังหน้าโหลด' },
+              { key: 'robux_logo', label: 'โลโก้ Robux' },
+              { key: 'announcement', label: 'ภาพแถบประกาศ' },
+              { key: 'trust_1', label: 'ภาพจุดเด่น 1' },
+              { key: 'trust_2', label: 'ภาพจุดเด่น 2' },
+              { key: 'trust_3', label: 'ภาพจุดเด่น 3' },
+              { key: 'trust_4', label: 'ภาพจุดเด่น 4' },
+            ].map((item) => {
+              const selected = (settings.motion_shine_targets || 'hero,store_logo').split(',').filter(Boolean);
+              return <label key={item.key} className="flex items-center gap-3 rounded-xl border border-border p-3 text-sm">
+                <input type="checkbox" checked={selected.includes(item.key)} onChange={(e) => setSettings((s) => {
+                  const current = (s.motion_shine_targets || 'hero,store_logo').split(',').filter(Boolean);
+                  const next = e.target.checked ? [...new Set([...current, item.key])] : current.filter((key) => key !== item.key);
+                  return { ...s, motion_shine_targets: next.join(',') };
+                })} className="h-4 w-4 accent-primary" />
+                {item.label}
+              </label>;
+            })}
           </div>
-          <div className="rounded-xl border border-border p-3">
-            <p className="text-xs text-muted-foreground">ตัวอย่างแสงวิ่ง</p>
-            <div className="mt-2 overflow-hidden rounded-lg border border-primary/30">
-              <div className="motion-preview-sheen h-16 bg-gradient-to-r from-[#171717] via-[#c89565] to-[#171717]" />
-            </div>
+        </div>
+        <div className="max-w-sm space-y-1.5">
+          <Label>ความเร็วในการกวาดแสง</Label>
+          <select value={settings.motion_shine_speed || '1200'} onChange={(e) => setSettings((s) => ({ ...s, motion_shine_speed: e.target.value }))} className="h-10 w-full rounded-md border bg-secondary px-3">
+            <option value="700">เร็วมาก</option><option value="1200">ปกติ</option><option value="2000">ช้า</option>
+          </select>
+          <p className="text-xs text-muted-foreground">ความเร็วนี้มีผลเฉพาะช่วงที่แสงกำลังกวาด ส่วนช่วงพักยังคง 30 วินาที</p>
+        </div>
+        <div className="rounded-xl border border-border p-3">
+          <p className="text-xs text-muted-foreground">ตัวอย่างแสงกวาด</p>
+          <div className="shine-sweep shine-preview relative mt-2 h-16 overflow-hidden rounded-lg border border-primary/30 bg-gradient-to-r from-[#171717] via-[#c89565] to-[#171717]">
+            <span className="shine-sweep-overlay" aria-hidden="true" />
           </div>
         </div>
       </div>
