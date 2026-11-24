@@ -359,7 +359,6 @@ svg.lucide { stroke-width: var(--icon-stroke-width, 2); }
 .lrapx-home-page {
   position: relative;
   background-color: #080808;
-  background-image: linear-gradient(rgba(0,0,0,.10), rgba(0,0,0,.16)), url("/images/home-background.webp");
   background-position: center top;
   background-size: cover;
   background-repeat: no-repeat;
