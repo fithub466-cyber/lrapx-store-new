@@ -155,7 +155,7 @@ function AnnouncementBar() {
   if (!announcement.announcement) return null;
   const AnnouncementContent = () => (
     <span className="flex shrink-0 items-center gap-2 whitespace-nowrap px-8">
-      {announcement.announcement_image ? <img src={announcement.announcement_image} alt="" aria-hidden="true" className="h-5 w-5 shrink-0 object-contain" /> : <Megaphone className="h-3.5 w-3.5 shrink-0" />}
+      {announcement.announcement_image ? <span className="shine-sweep shine-target-announcement inline-flex h-5 w-5 shrink-0"><span className="shine-sweep-overlay" aria-hidden="true" /><img src={announcement.announcement_image} alt="" aria-hidden="true" className="h-5 w-5 shrink-0 object-contain" /></span> : <Megaphone className="h-3.5 w-3.5 shrink-0" />}
       <span>{announcement.announcement}</span>
     </span>
   );
