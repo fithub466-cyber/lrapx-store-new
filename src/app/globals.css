@@ -298,10 +298,15 @@
 .marquee-track {
   display: flex;
   width: max-content;
-  animation: marqueeX 55s linear infinite;
+  animation: marqueeX 52s linear infinite;
+  animation-play-state: running !important;
 }
-.marquee-track:hover {
-  animation-play-state: paused;
+.marquee-track-reverse {
+  animation-direction: reverse;
+  animation-duration: 60s;
+}
+.marquee-track-slower {
+  animation-duration: 68s;
 }
 @media (prefers-reduced-motion: reduce) {
   .marquee-track { animation: none; }
