@@ -189,11 +189,11 @@ function Hero({ settings, loading }: { settings: Record<string, string>; loading
   const image = settings.hero_background_image || '/images/hero-banner.png';
 
   return (
-    <section className="relative w-full bg-transparent pb-8 sm:pb-10 lg:pb-12">
+    <section className="relative w-full bg-transparent pt-5 pb-8 sm:pt-7 sm:pb-10 lg:pt-8 lg:pb-12">
       <div className="mx-auto w-full max-w-7xl px-4 sm:px-6">
-        <div className="relative aspect-[5/3] w-full overflow-hidden bg-transparent sm:aspect-[20/7]">
+        <div className="relative aspect-[5/3] w-full overflow-hidden rounded-[18px] bg-transparent sm:aspect-[20/7] sm:rounded-[26px]">
         {!loading && (
-          <div className="shine-sweep shine-target-hero absolute inset-0 overflow-hidden">
+          <div className="shine-sweep shine-target-hero absolute inset-0 overflow-hidden rounded-[18px] sm:rounded-[26px]">
             <span className="shine-sweep-overlay" aria-hidden="true" />
             <img
               key={image}
