@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Kanit, Oxanium } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
+import { SiteImageEffects } from "@/components/site-image-effects";
 
 const kanit = Kanit({
   variable: "--font-kanit",
@@ -41,6 +42,7 @@ export default function RootLayout({
       <body
         className={`${kanit.variable} ${oxanium.variable} antialiased bg-background text-foreground`}
       >
+        <SiteImageEffects />
         {children}
         <Toaster />
       </body>
