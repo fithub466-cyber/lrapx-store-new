@@ -43,7 +43,7 @@ export function HomePage() {
   const topupCategories = categories.filter((c) => c.type === 'TOPUP');
 
   return (
-    <div className="page-enter lrapx-home-page">
+    <div className="page-enter lrapx-home-page" style={settings.home_background_image ? { backgroundImage: `linear-gradient(rgba(0,0,0,.10), rgba(0,0,0,.16)), url("${settings.home_background_image.replace(/["\\\\]/g, "")}")` } : undefined}>
       <Hero settings={settings} loading={loading} />
       <TrustBar settings={settings} />
 
