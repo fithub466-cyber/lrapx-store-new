@@ -1220,10 +1220,6 @@ function SettingsTab() {
     { key: 'trust_4_image', label: 'ภาพจุดเด่น 4' },
   ];
 
-  const motionOptions = [
-    { key: 'motion_shine_enabled', label: 'เปิดเอฟเฟกต์แสงวิ่งผ่านรูปภาพ' },
-    { key: 'motion_all_images', label: 'ใช้กับรูปภาพทั่วทั้งเว็บไซต์' },
-  ];
   const themeColors = [{key:'theme_primary',label:'สีหลักของเว็บ',help:'ปุ่มหลัก ลิงก์ และจุดเน้น'},{key:'theme_background',label:'สีพื้นหลังเว็บไซต์',help:'พื้นหลังทุกหน้า'},{key:'theme_surface',label:'สีพื้นการ์ดและกล่อง',help:'การ์ดสินค้าและเมนู'},{key:'theme_text',label:'สีตัวอักษรหลัก',help:'หัวข้อและเนื้อหาหลัก'},{key:'theme_muted',label:'สีข้อความรอง',help:'คำอธิบาย'},{key:'theme_border',label:'สีเส้นขอบ',help:'กรอบและเส้นแบ่ง'},{key:'theme_icon_color',label:'สีไอคอน UI',help:'สีไอคอนทั่วไปในเมนูและส่วนประกอบ'}];
   const presetThemes = [{name:'ดำ–ทอง',v:['#c89565','#000000','#0a0a0a','#ffffff','#9e9e9e','#242424']},{name:'น้ำเงิน–ฟ้า',v:['#38bdf8','#07111f','#0d1b2d','#f8fafc','#9fb3c8','#26384d']},{name:'ม่วง–ชมพู',v:['#d879ff','#100817','#1d1028','#fff7ff','#c5a9d1','#392344']},{name:'เขียว–มิ้นต์',v:['#34d399','#06130f','#0d211a','#f0fdf4','#9ab8a9','#244234']},{name:'แดง–ดำ',v:['#fb7185','#14090b','#241216','#fff1f2','#c9aeb2','#43242b']}];
   const bankFields: { key: string; label: string; placeholder?: string }[] = [
