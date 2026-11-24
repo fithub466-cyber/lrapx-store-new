@@ -190,7 +190,7 @@ function Hero({ settings, loading }: { settings: Record<string, string>; loading
 
   return (
     <section className="relative w-full overflow-hidden bg-transparent">
-      <div className="relative h-[230px] w-full bg-transparent sm:h-[340px] lg:h-[480px]">
+      <div className="relative h-[276px] w-full bg-transparent sm:h-[408px] lg:h-[576px]">
         {!loading && (
           <div className="shine-sweep shine-target-hero absolute inset-x-[5%] bottom-0 top-12 overflow-hidden rounded-[22px] sm:rounded-[28px]">
             <span className="shine-sweep-overlay" aria-hidden="true" />
