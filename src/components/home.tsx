@@ -191,7 +191,7 @@ function Hero({ settings, loading }: { settings: Record<string, string>; loading
   return (
     <section className="relative w-full bg-transparent pt-5 pb-8 sm:pt-7 sm:pb-10 lg:pt-8 lg:pb-12">
       <div className="mx-auto w-full max-w-7xl px-4 sm:px-6">
-        <div className="relative mx-auto aspect-[100/57.7125] w-[calc(100%+16px)] overflow-hidden rounded-[18px] bg-transparent sm:aspect-[100/33.665625] sm:w-[calc(100%+24px)] sm:rounded-[26px]">
+        <div className="relative mx-auto aspect-[100/42] w-full overflow-hidden rounded-[18px] bg-transparent sm:aspect-[100/25] sm:rounded-[26px]">
         {!loading && (
           <div className="shine-sweep shine-target-hero absolute inset-0 overflow-hidden rounded-[18px] sm:rounded-[26px]" style={{ borderRadius: 18, clipPath: "inset(0 round 18px)" }}>
             <span className="shine-sweep-overlay" aria-hidden="true" />
