@@ -355,21 +355,23 @@ svg.lucide { stroke-width: var(--icon-stroke-width, 2); }
 }
 
 
-/* Homepage-only artwork background; other routes keep the plain theme. */
-html:has(.lrapx-home-page), body:has(.lrapx-home-page) { background: transparent !important; }
-body:has(.lrapx-home-page) { position: relative; isolation: isolate; }
-body:has(.lrapx-home-page)::before {
+/* Homepage-only artwork background: keep it visible and above the document canvas. */
+.lrapx-home-page {
+  position: relative;
+  isolation: isolate;
+}
+.lrapx-home-page::before {
   content: "";
   position: fixed;
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  background-image: linear-gradient(rgba(0,0,0,.70), rgba(0,0,0,.78)), url("/images/home-background.webp");
-  background-position: center top;
+  background-color: #080808;
+  background-image: linear-gradient(rgba(0,0,0,.12), rgba(0,0,0,.20)), url("/images/home-background.webp");
+  background-position: center center;
   background-size: cover;
   background-repeat: no-repeat;
 }
-
 
 /* Keep every icon glyph clean: no box, border, fill panel, or shadow behind the icon itself. */
 svg.lucide {
