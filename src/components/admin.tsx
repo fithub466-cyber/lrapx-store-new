@@ -1303,6 +1303,20 @@ function SettingsTab() {
         </div>
       </div>
 
+      <div className="gaming-card border border-primary/40 p-6 space-y-3">
+        <div>
+          <h3 className="font-display font-semibold mb-1">รูปมุมซ้ายบนของ Hero Banner</h3>
+          <p className="text-xs text-muted-foreground">อัปโหลดรูปที่จะวางซ้อนบริเวณมุมซ้ายบน เหนือแบนเนอร์หลัก รองรับ PNG พื้นหลังโปร่งใส, JPG, WEBP และ GIF สูงสุด 8MB</p>
+        </div>
+        <div className="max-w-xl">
+          <SingleImageUpload
+            value={settings.hero_corner_image ?? ''}
+            onChange={(url) => setSettings((current) => ({ ...current, hero_corner_image: url }))}
+            label="เลือกรูปมุมซ้ายบน Hero Banner"
+            aspect="aspect-[3/1]"
+          />
+        </div>
+      </div>
       <div className="gaming-card p-6 space-y-4">
         <div>
           <h3 className="font-display font-semibold mb-1">แก้ไขข้อความในเว็บไซต์</h3>
@@ -1365,20 +1379,6 @@ function SettingsTab() {
           <div className="shine-sweep shine-preview relative mt-2 h-16 overflow-hidden rounded-lg border border-primary/30 bg-gradient-to-r from-[#171717] via-[#c89565] to-[#171717]">
             <span className="shine-sweep-overlay" aria-hidden="true" />
           </div>
-        </div>
-      </div>
-      <div className="gaming-card border border-primary/40 p-6 space-y-3">
-        <div>
-          <h3 className="font-display font-semibold mb-1">รูปมุมซ้ายบนของ Hero Banner</h3>
-          <p className="text-xs text-muted-foreground">อัปโหลดรูปที่จะวางซ้อนบริเวณมุมซ้ายบน เหนือแบนเนอร์หลัก รองรับ PNG พื้นหลังโปร่งใส, JPG, WEBP และ GIF สูงสุด 8MB</p>
-        </div>
-        <div className="max-w-xl">
-          <SingleImageUpload
-            value={settings.hero_corner_image ?? ''}
-            onChange={(url) => setSettings((current) => ({ ...current, hero_corner_image: url }))}
-            label="เลือกรูปมุมซ้ายบน Hero Banner"
-            aspect="aspect-[3/1]"
-          />
         </div>
       </div>
       <div className="gaming-card p-6 space-y-4">
