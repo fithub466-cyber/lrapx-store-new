@@ -192,6 +192,19 @@ function Hero({ settings, loading }: { settings: Record<string, string>; loading
   return (
     <section className="relative w-full bg-transparent pt-8 pb-8 sm:pt-10 sm:pb-10 lg:pt-11 lg:pb-12">
       <div className="mx-auto w-full max-w-7xl px-4 sm:px-6">
+        {settings.hero_corner_image && (
+          <div className="relative z-20 mb-[-14px] ml-0 w-[min(82%,620px)] rounded-[18px] border border-white/15 bg-black/70 p-1.5 shadow-[0_0_22px_rgba(255,120,20,0.18)] sm:mb-[-20px] sm:w-[min(48%,620px)]">
+            <a href="https://lrapxstore.vercel.app" target="_blank" rel="noopener noreferrer" aria-label="เปิดเว็บไซต์ LrapX Store">
+              <img
+                src={settings.hero_corner_image}
+                alt="LrapX Store — lrapxstore.vercel.app"
+                className="block h-auto w-full rounded-[13px] object-contain"
+                loading="eager"
+                decoding="async"
+              />
+            </a>
+          </div>
+        )}
         <div
           className="relative mx-auto w-[calc(100%+24px)] overflow-hidden rounded-[18px] bg-transparent sm:w-[calc(100%+32px)] sm:rounded-[26px]"
           style={{ aspectRatio: imageAspectRatio ?? '100 / 35' }}
@@ -215,16 +228,6 @@ function Hero({ settings, loading }: { settings: Record<string, string>; loading
               decoding="async"
             />
           </div>
-        )}
-        {settings.hero_corner_image && (
-          <img
-            src={settings.hero_corner_image}
-            alt=""
-            aria-hidden="true"
-            className="pointer-events-none absolute left-2 top-2 z-20 h-auto w-[58%] max-w-[620px] object-contain object-left-top drop-shadow-[0_0_14px_rgba(255,150,20,0.28)] sm:left-4 sm:top-3 sm:w-[46%]"
-            loading="eager"
-            decoding="async"
-          />
         )}
         </div>
       </div>
