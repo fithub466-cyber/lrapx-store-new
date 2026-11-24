@@ -88,7 +88,7 @@ export function Header({ currentPath }: { currentPath: string }) {
 
           <button onClick={() => navigate('/')} className="flex shrink-0 items-center gap-2 cursor-pointer" aria-label="ไปหน้าหลัก">
             {/* โลโก้พื้นหลังโปร่งใส ไม่มีกรอบ */}
-            {brandSettingsLoaded && <img src={brandSettings.store_logo ? `${brandSettings.store_logo}${brandSettings.store_logo.includes("?") ? "&" : "?"}v=${brandLogoVersion}` : "/images/logo.png"} alt="โลโก้ร้าน" className="h-10 w-10 object-contain drop-shadow-[0_0_8px_rgba(240,180,41,0.45)]" />}
+            {brandSettingsLoaded && <span className="shine-sweep shine-target-store-logo inline-flex h-10 w-10"><span className="shine-sweep-overlay" aria-hidden="true" /><img src={brandSettings.store_logo ? `${brandSettings.store_logo}${brandSettings.store_logo.includes("?") ? "&" : "?"}v=${brandLogoVersion}` : "/images/logo.png"} alt="โลโก้ร้าน" className="h-10 w-10 object-contain drop-shadow-[0_0_8px_rgba(240,180,41,0.45)]" /></span>}
             <span className="text-left leading-tight">
               <span className="font-brand text-lg sm:text-xl font-extrabold not-italic uppercase tracking-[0.09em] text-transparent bg-clip-text bg-gradient-to-b from-[#fff0c2] via-[#e2ad52] to-[#9b5b24] drop-shadow-[0_0_12px_rgba(200,149,101,0.48)]">{brandSettings.store_name || "LrapX Store"}</span>
               <span className="hidden sm:block text-[10px] text-muted-foreground tracking-widest uppercase">Game ID &amp; Top-Up Center</span>
@@ -276,7 +276,7 @@ function SidebarDrawer({ currentPath }: { currentPath: string }) {
       >
         <div className="flex items-center justify-between border-b border-border px-4 py-3">
           <div className="flex items-center gap-2.5">
-            <img src={settings.store_logo || "/images/logo.png"} alt="โลโก้ร้าน" className="h-10 w-10 object-contain" />
+            <span className="shine-sweep shine-target-store-logo inline-flex h-10 w-10"><span className="shine-sweep-overlay" aria-hidden="true" /><img src={settings.store_logo || "/images/logo.png"} alt="โลโก้ร้าน" className="h-10 w-10 object-contain" /></span>
             <div className="leading-tight">
               <div className="font-brand text-lg font-extrabold not-italic uppercase tracking-[0.09em] text-transparent bg-clip-text bg-gradient-to-b from-[#fff0c2] via-[#e2ad52] to-[#9b5b24] drop-shadow-[0_0_10px_rgba(200,149,101,0.4)]">{settings.store_name || "LrapX Store"}</div>
               <div className="text-[10px] text-muted-foreground">Game ID &amp; Top-Up Center</div>
@@ -431,7 +431,7 @@ export function Footer() {
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
           <div>
             <div className="flex items-center gap-2.5 mb-4">
-              <img src={settings.store_logo || "/images/logo.png"} alt="โลโก้ร้าน" className="h-12 w-12 object-contain" />
+              <span className="shine-sweep shine-target-store-logo inline-flex h-12 w-12"><span className="shine-sweep-overlay" aria-hidden="true" /><img src={settings.store_logo || "/images/logo.png"} alt="โลโก้ร้าน" className="h-12 w-12 object-contain" /></span>
               <div>
                 <div className="font-brand text-xl font-bold not-italic normal-case tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-[#f7dfbd] via-[#c89565] to-[#a56b42]">{settings.store_name || "LrapX Store"}</div>
                 <div className="text-xs text-muted-foreground">{settings.store_tagline || 'ร้านขายไอดีเกมและเติมเกมออนไลน์'}</div>
