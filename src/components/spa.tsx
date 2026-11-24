@@ -138,11 +138,11 @@ export default function App() {
     : '';
   if (!mounted || !settingsLoaded || !minimumLoaderElapsed) {
     return (
-      <div className="flex min-h-screen flex-col bg-background" style={loaderBackground ? { backgroundImage: `linear-gradient(rgba(0,0,0,.58), rgba(0,0,0,.78)), url("${loaderBackground}")`, backgroundSize: "cover", backgroundPosition: "center" } : undefined}>
+      <div className="shine-sweep shine-target-loader-background relative flex min-h-screen flex-col bg-background" style={loaderBackground ? { backgroundImage: `linear-gradient(rgba(0,0,0,.58), rgba(0,0,0,.78)), url("${loaderBackground}")`, backgroundSize: "cover", backgroundPosition: "center" } : undefined}><span className="shine-sweep-overlay" aria-hidden="true" />
         <div className="h-[104px] w-full border-b border-border bg-[#000000]" />
         <div className="flex flex-1 items-center justify-center">
           <div className="flex flex-col items-center gap-4">
-            {settingsLoaded && <img src={loaderLogoSrc} alt="โลโก้ร้าน" className="h-20 w-20 object-contain animate-floaty" />}
+            {settingsLoaded && <span className="shine-sweep shine-target-loader-logo inline-flex h-20 w-20"><span className="shine-sweep-overlay" aria-hidden="true" /><img src={loaderLogoSrc} alt="โลโก้ร้าน" className="h-20 w-20 object-contain animate-floaty" /></span>}
             <div className="text-center text-sm font-semibold text-[#d9b18d]">{loaderSettings.loading_title || loaderSettings.store_name || "LrapX Store"}</div>
             {loaderSettings.loading_subtitle && <div className="text-xs text-muted-foreground">{loaderSettings.loading_subtitle}</div>}
             <div className="h-1.5 w-40 overflow-hidden rounded-full bg-secondary">
