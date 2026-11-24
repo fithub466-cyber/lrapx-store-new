@@ -1333,6 +1333,23 @@ function SettingsTab() {
           />
           <p className="text-xs text-muted-foreground">เลื่อนเพื่อย่อหรือขยายรูป จากนั้นกด “บันทึกทั้งหมด”</p>
         </div>
+        <div className="max-w-xl space-y-2 rounded-xl border border-border p-3">
+          <div className="flex items-center justify-between gap-3">
+            <Label htmlFor="hero-corner-offset-y">ตำแหน่งแนวตั้ง (ขึ้น–ลง)</Label>
+            <span className="text-sm font-semibold tabular-nums">{Number(settings.hero_corner_offset_y) || 0}px</span>
+          </div>
+          <input
+            id="hero-corner-offset-y"
+            type="range"
+            min="-150"
+            max="300"
+            step="1"
+            value={Math.min(300, Math.max(-150, Number(settings.hero_corner_offset_y) || 0))}
+            onChange={(event) => setSettings((current) => ({ ...current, hero_corner_offset_y: event.target.value }))}
+            className="w-full accent-primary"
+          />
+          <p className="text-xs text-muted-foreground">เลื่อนไปทางซ้ายเพื่อขยับขึ้น และทางขวาเพื่อขยับลง จากนั้นกด “บันทึกทั้งหมด”</p>
+        </div>
       </div>
       <div className="gaming-card p-6 space-y-4">
         <div>
