@@ -1303,10 +1303,10 @@ function SettingsTab() {
         </div>
       </div>
 
-      <div className="gaming-card border border-primary/40 p-6 space-y-3">
+      <div className="gaming-card border border-primary/40 p-6 space-y-4">
         <div>
           <h3 className="font-display font-semibold mb-1">รูปมุมซ้ายบนของ Hero Banner</h3>
-          <p className="text-xs text-muted-foreground">อัปโหลดรูปที่จะวางซ้อนบริเวณมุมซ้ายบน เหนือแบนเนอร์หลัก รองรับ PNG พื้นหลังโปร่งใส, JPG, WEBP และ GIF สูงสุด 8MB</p>
+          <p className="text-xs text-muted-foreground">อัปโหลดรูปแล้วปรับขนาดให้พอดีได้ รูป PNG ที่มีพื้นหลังโปร่งใสจะแสดงโดยไม่มีพื้นสีหรือกรอบเพิ่ม</p>
         </div>
         <div className="max-w-xl">
           <SingleImageUpload
@@ -1315,6 +1315,23 @@ function SettingsTab() {
             label="เลือกรูปมุมซ้ายบน Hero Banner"
             aspect="aspect-[3/1]"
           />
+        </div>
+        <div className="max-w-xl space-y-2 rounded-xl border border-border p-3">
+          <div className="flex items-center justify-between gap-3">
+            <Label htmlFor="hero-corner-width">ขนาดรูปมุมซ้ายบน</Label>
+            <span className="text-sm font-semibold tabular-nums">{Math.min(100, Math.max(10, Number(settings.hero_corner_width) || 38))}%</span>
+          </div>
+          <input
+            id="hero-corner-width"
+            type="range"
+            min="10"
+            max="100"
+            step="1"
+            value={Math.min(100, Math.max(10, Number(settings.hero_corner_width) || 38))}
+            onChange={(event) => setSettings((current) => ({ ...current, hero_corner_width: event.target.value }))}
+            className="w-full accent-primary"
+          />
+          <p className="text-xs text-muted-foreground">เลื่อนเพื่อย่อหรือขยายรูป จากนั้นกด “บันทึกทั้งหมด”</p>
         </div>
       </div>
       <div className="gaming-card p-6 space-y-4">
