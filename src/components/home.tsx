@@ -93,33 +93,26 @@ export function HomePage() {
             title="รีวิวจากลูกค้า"
             subtitle="ความเห็นจริงจากผู้ใช้ พร้อมสินค้าที่ลูกค้าซื้อไปแล้ว"
           />
-          <div className="space-y-3" aria-label="รีวิวและสินค้าที่มีคนซื้อ เลื่อนอัตโนมัติ 3 แถว">
-            {[0, 1, 2].map((row) => {
+          <div className="marquee" aria-label="รีวิวและสินค้าที่มีคนซื้อ เลื่อนอัตโนมัติ 1 แถว">
+            {(() => {
               const items = buildStrip(reviews, bought);
-              const rowItems = row === 1
-                ? [...items.slice(3), ...items.slice(0, 3)]
-                : row === 2
-                  ? [...items.slice(6), ...items.slice(0, 6)]
-                  : items;
               return (
-                <div key={row} className="marquee">
-                  <div className={`marquee-track py-1 ${row === 1 ? 'marquee-track-reverse' : ''} ${row === 2 ? 'marquee-track-slower' : ''}`}>
-                    {(loading ? Array.from({ length: 8 }) : [...rowItems, ...rowItems]).map((item, i) => (
-                      <div key={i} className="w-[270px] shrink-0 pr-4">
-                        {loading ? (
-                          <div className="gaming-card h-44 animate-pulse bg-secondary/40" />
-                        ) : 'rating' in (item as object) ? (
-                          <MarqueeReviewCard r={item as Review} />
-                        ) : (
-                          <MarqueeProductCard p={item as Product} />
-                        )}
-                      </div>
-                    ))}
-                  </div>
+                <div className="marquee-track py-1">
+                  {(loading ? Array.from({ length: 8 }) : [...items, ...items]).map((item, i) => (
+                    <div key={i} className="w-[270px] shrink-0 pr-4">
+                      {loading ? (
+                        <div className="gaming-card h-44 animate-pulse bg-secondary/40" />
+                      ) : 'rating' in (item as object) ? (
+                        <MarqueeReviewCard r={item as Review} />
+                      ) : (
+                        <MarqueeProductCard p={item as Product} />
+                      )}
+                    </div>
+                  ))}
                 </div>
               );
-            })}
-          </div>
+            })()}
+          </div>>
         </div>
       </section>
 
