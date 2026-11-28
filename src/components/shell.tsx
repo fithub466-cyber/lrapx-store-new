@@ -74,13 +74,13 @@ export function Header({ currentPath }: { currentPath: string }) {
 
   return (
     <>
-      <header className="sticky top-0 z-40 mx-2 mt-2 w-[calc(100%-1rem)] overflow-hidden rounded-2xl border border-border bg-background/85 shadow-lg shadow-black/20 backdrop-blur-xl supports-[backdrop-filter]:bg-background/70">
+      <header className="sticky top-0 z-40 w-full bg-transparent px-2 pt-2">
         {/* แถบประกาศ */}
         <AnnouncementBar />
-        <div className="mx-auto flex h-16 max-w-7xl items-center gap-3 px-3 md:px-6">
+        <div className="mx-auto flex h-16 w-full max-w-7xl items-center gap-3 rounded-full border border-white/15 bg-[#080b14]/90 px-3 shadow-[0_8px_30px_rgba(0,0,0,0.35)] backdrop-blur-xl md:px-6">
           <button
             onClick={() => setSidebarOpen(true)}
-            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-border text-foreground hover:border-primary hover:text-primary transition-colors"
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/15 bg-white/[0.06] text-foreground transition-colors hover:border-primary hover:text-primary"
             aria-label="เปิดเมนู"
           >
             <Menu className="h-5 w-5" />
@@ -109,7 +109,7 @@ export function Header({ currentPath }: { currentPath: string }) {
           <div className="ml-auto flex items-center gap-2">
             <button
               onClick={() => navigate('/search')}
-              className="flex h-10 w-10 items-center justify-center rounded-lg border border-border hover:border-primary hover:text-primary transition-colors md:hidden"
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/[0.06] transition-colors hover:border-primary hover:text-primary md:hidden"
               aria-label="ค้นหา"
             >
               <Search className="h-5 w-5" />
@@ -192,7 +192,7 @@ function UserMenu() {
     <div className="flex items-center gap-2">
       <button
         onClick={() => setPopup('profile')}
-        className="flex h-10 items-center gap-2 rounded-xl border border-border bg-secondary/50 px-2.5 hover:border-primary transition-colors cursor-pointer"
+        className="flex h-10 items-center gap-2 rounded-full border border-white/15 bg-white/[0.06] px-3 transition-colors hover:border-primary cursor-pointer"
         aria-label="เมนูโปรไฟล์"
       >
         {user.avatar ? (
