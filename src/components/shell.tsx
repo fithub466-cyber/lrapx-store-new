@@ -75,9 +75,9 @@ export function Header({ currentPath }: { currentPath: string }) {
   return (
     <>
       <header className="sticky top-0 z-40 w-full bg-transparent px-2 pt-2">
-        {/* แถบประกาศ */}
+        {/* แถบประกาศแยกจากแถบนำทาง เพื่อไม่ให้ถูกบีบหรือถูกตัด */}
         <AnnouncementBar />
-        <div className="mx-auto flex h-16 w-full max-w-7xl items-center gap-3 rounded-full border border-white/15 bg-[#080b14]/90 px-3 shadow-[0_8px_30px_rgba(0,0,0,0.35)] backdrop-blur-xl md:px-6">
+        <div className="mx-auto mt-2 flex h-16 w-full max-w-5xl items-center gap-3 rounded-full border border-white/15 bg-transparent px-3 shadow-none backdrop-blur-none md:px-6">
           <button
             onClick={() => setSidebarOpen(true)}
             className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/15 bg-white/[0.06] text-foreground transition-colors hover:border-primary hover:text-primary"
