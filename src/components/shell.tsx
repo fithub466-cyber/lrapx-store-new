@@ -74,13 +74,13 @@ export function Header({ currentPath }: { currentPath: string }) {
 
   return (
     <>
-      <header className="sticky top-0 z-40 w-full border-b border-border bg-background/85 backdrop-blur-xl supports-[backdrop-filter]:bg-background/70">
+      <header className="sticky top-0 z-40 mx-2 mt-2 w-[calc(100%-1rem)] overflow-hidden rounded-2xl border border-border bg-background/85 shadow-lg shadow-black/20 backdrop-blur-xl supports-[backdrop-filter]:bg-background/70">
         {/* แถบประกาศ */}
         <AnnouncementBar />
         <div className="mx-auto flex h-16 max-w-7xl items-center gap-3 px-3 md:px-6">
           <button
             onClick={() => setSidebarOpen(true)}
-            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-border text-foreground hover:border-primary hover:text-primary transition-colors"
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-border text-foreground hover:border-primary hover:text-primary transition-colors"
             aria-label="เปิดเมนู"
           >
             <Menu className="h-5 w-5" />
@@ -192,7 +192,7 @@ function UserMenu() {
     <div className="flex items-center gap-2">
       <button
         onClick={() => setPopup('profile')}
-        className="flex h-10 items-center gap-2 rounded-lg border border-border bg-secondary/50 px-2.5 hover:border-primary transition-colors cursor-pointer"
+        className="flex h-10 items-center gap-2 rounded-xl border border-border bg-secondary/50 px-2.5 hover:border-primary transition-colors cursor-pointer"
         aria-label="เมนูโปรไฟล์"
       >
         {user.avatar ? (
